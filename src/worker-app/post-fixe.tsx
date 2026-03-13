@@ -195,6 +195,106 @@ function createSeedFleuraisonNotes(posteId: string): FleuraisonNote[] {
   ];
 }
 
+function createSeedNouaisonNotes(
+  posteId: string,
+  status: ObservationItem["status"]
+): FleuraisonNote[] {
+  if (status === "Pas commencé") {
+    return [];
+  }
+
+  const baseNotes: FleuraisonNote[] = [
+    {
+      id: `${posteId}-nouaison-1`,
+      savedAt: "03 avr. 2026",
+      noteType: "Début",
+      observationDate: "2026-04-03",
+      densityValue: "Faible",
+      secondaryValue: "25%",
+      notes: "Premiers jeunes fruits observés sur les rangs extérieurs.",
+      images: [],
+    },
+    {
+      id: `${posteId}-nouaison-2`,
+      savedAt: "08 avr. 2026",
+      noteType: "Suivi",
+      observationDate: "2026-04-08",
+      densityValue: "Moyenne",
+      secondaryValue: "75%",
+      notes: "Nouaison mieux répartie sur l'ensemble de la parcelle.",
+      images: [fleuraisonSeedImage],
+    },
+  ];
+
+  if (status === "En cours") {
+    return baseNotes;
+  }
+
+  return [
+    ...baseNotes,
+    {
+      id: `${posteId}-nouaison-3`,
+      savedAt: "14 avr. 2026",
+      noteType: "Finale",
+      observationDate: "2026-04-14",
+      densityValue: "Élevée",
+      secondaryValue: "90%",
+      notes: "Phase de nouaison stabilisée avec une homogénéité élevée.",
+      images: [fleuraisonSeedImage, fleuraisonSeedImage],
+    },
+  ];
+}
+
+function createSeedChuteNotes(
+  posteId: string,
+  status: ObservationItem["status"]
+): FleuraisonNote[] {
+  if (status === "Pas commencé") {
+    return [];
+  }
+
+  const baseNotes: FleuraisonNote[] = [
+    {
+      id: `${posteId}-chute-1`,
+      savedAt: "05 mai 2026",
+      noteType: "Début",
+      observationDate: "2026-05-05",
+      densityValue: "Faible",
+      secondaryValue: "50%",
+      notes: "Début de chute physiologique observé sur les fruits les plus petits.",
+      images: [],
+    },
+    {
+      id: `${posteId}-chute-2`,
+      savedAt: "10 mai 2026",
+      noteType: "Suivi",
+      observationDate: "2026-05-10",
+      densityValue: "Forte",
+      secondaryValue: "75%",
+      notes: "Chute plus marquée sur la zone centrale du poste fixe.",
+      images: [fleuraisonSeedImage],
+    },
+  ];
+
+  if (status === "En cours") {
+    return baseNotes;
+  }
+
+  return [
+    ...baseNotes,
+    {
+      id: `${posteId}-chute-3`,
+      savedAt: "16 mai 2026",
+      noteType: "Finale",
+      observationDate: "2026-05-16",
+      densityValue: "Moyenne",
+      secondaryValue: "90%",
+      notes: "Fin de phase avec stabilisation du niveau de chute.",
+      images: [fleuraisonSeedImage, fleuraisonSeedImage],
+    },
+  ];
+}
+
 const initialObservationNotesByKey: Record<string, FleuraisonNote[]> = {
   [getObservationNotesKey("Poste Fixe 2381", "Fleuraison")]: createSeedFleuraisonNotes("2381"),
   [getObservationNotesKey("Poste Fixe 7642", "Fleuraison")]: createSeedFleuraisonNotes("7642"),
@@ -202,6 +302,38 @@ const initialObservationNotesByKey: Record<string, FleuraisonNote[]> = {
   [getObservationNotesKey("Poste Fixe 3318", "Fleuraison")]: createSeedFleuraisonNotes("3318"),
   [getObservationNotesKey("Poste Fixe 9026", "Fleuraison")]: createSeedFleuraisonNotes("9026"),
   [getObservationNotesKey("Poste Fixe 4473", "Fleuraison")]: createSeedFleuraisonNotes("4473"),
+  [getObservationNotesKey("Poste Fixe 7642", "Nouaison")]: createSeedNouaisonNotes(
+    "7642",
+    "Terminé"
+  ),
+  [getObservationNotesKey("Poste Fixe 5097", "Nouaison")]: createSeedNouaisonNotes(
+    "5097",
+    "Terminé"
+  ),
+  [getObservationNotesKey("Poste Fixe 3318", "Nouaison")]: createSeedNouaisonNotes(
+    "3318",
+    "Terminé"
+  ),
+  [getObservationNotesKey("Poste Fixe 9026", "Nouaison")]: createSeedNouaisonNotes(
+    "9026",
+    "Terminé"
+  ),
+  [getObservationNotesKey("Poste Fixe 4473", "Nouaison")]: createSeedNouaisonNotes(
+    "4473",
+    "Terminé"
+  ),
+  [getObservationNotesKey("Poste Fixe 5097", "Chute physiologique")]: createSeedChuteNotes(
+    "5097",
+    "Terminé"
+  ),
+  [getObservationNotesKey("Poste Fixe 3318", "Chute physiologique")]: createSeedChuteNotes(
+    "3318",
+    "Terminé"
+  ),
+  [getObservationNotesKey("Poste Fixe 9026", "Chute physiologique")]: createSeedChuteNotes(
+    "9026",
+    "Terminé"
+  ),
 };
 
 type PosteConfig = {
