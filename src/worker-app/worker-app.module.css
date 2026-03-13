@@ -664,7 +664,19 @@
 .skeletonBadge,
 .skeletonDate,
 .skeletonMeta,
-.skeletonChevron {
+.skeletonChevron,
+.detailSkeletonBack,
+.detailSkeletonTitle,
+.detailSkeletonSubtitle,
+.detailSkeletonSummaryTitle,
+.detailSkeletonSummaryMeta,
+.detailSkeletonSummaryProgress,
+.detailSkeletonObservationIcon,
+.detailSkeletonObservationTitle,
+.detailSkeletonObservationMeta,
+.detailSkeletonConfigDate,
+.detailSkeletonConfigAction,
+.detailSkeletonConfigLine {
   position: relative;
   display: block;
   border-radius: 8px;
@@ -678,7 +690,19 @@
 .skeletonBadge::after,
 .skeletonDate::after,
 .skeletonMeta::after,
-.skeletonChevron::after {
+.skeletonChevron::after,
+.detailSkeletonBack::after,
+.detailSkeletonTitle::after,
+.detailSkeletonSubtitle::after,
+.detailSkeletonSummaryTitle::after,
+.detailSkeletonSummaryMeta::after,
+.detailSkeletonSummaryProgress::after,
+.detailSkeletonObservationIcon::after,
+.detailSkeletonObservationTitle::after,
+.detailSkeletonObservationMeta::after,
+.detailSkeletonConfigDate::after,
+.detailSkeletonConfigAction::after,
+.detailSkeletonConfigLine::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -739,6 +763,93 @@
   width: 10px;
   height: 10px;
   border-radius: 999px;
+}
+
+.posteDetailLoadingHeaderText {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.detailSkeletonBack {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+}
+
+.detailSkeletonTitle {
+  width: 168px;
+  height: 16px;
+}
+
+.detailSkeletonSubtitle {
+  width: 130px;
+  height: 12px;
+}
+
+.detailSkeletonSummaryTitle {
+  width: 182px;
+  height: 16px;
+}
+
+.detailSkeletonSummaryMeta {
+  width: 174px;
+  height: 12px;
+}
+
+.detailSkeletonSummaryProgress {
+  width: 210px;
+  height: 12px;
+}
+
+.posteObservationSkeletonRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: none;
+  background: transparent;
+  padding: 12px 14px;
+}
+
+.posteObservationSkeletonMain {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.detailSkeletonObservationIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+}
+
+.detailSkeletonObservationTitle {
+  width: 128px;
+  height: 14px;
+}
+
+.detailSkeletonObservationMeta {
+  width: 104px;
+  height: 12px;
+}
+
+.detailSkeletonConfigDate {
+  width: 86px;
+  height: 12px;
+}
+
+.detailSkeletonConfigAction {
+  width: 74px;
+  height: 12px;
+}
+
+.detailSkeletonConfigLine {
+  width: 62%;
+  height: 14px;
 }
 
 @keyframes skeletonShimmer {
@@ -842,7 +953,7 @@
 .posteDetailHeaderTitle {
   color: var(--ds-text-primary);
   font-family: var(--font-geist-sans), sans-serif;
-  font-size: var(--fs-title-medium);
+  font-size: var(--fs-appbar-title);
   font-weight: 600;
   line-height: 1.25;
   letter-spacing: -0.01em;
@@ -937,7 +1048,7 @@
   color: #191f24;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: var(--fs-title-medium);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .posteEditChips {
@@ -1610,9 +1721,9 @@
 }
 
 .unsavedDanger {
-  border: 1px solid #f3c7cd;
-  background: #fdecee;
-  color: #b42318;
+  border: none;
+  background: #d92d20;
+  color: #fff;
 }
 
 .unsavedSecondary {

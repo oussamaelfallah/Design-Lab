@@ -108,6 +108,12 @@ const observationPhaseConfigs: Record<
   },
 };
 
+const observationNoteTypeOrder: Record<FleuraisonNoteType, number> = {
+  Finale: 0,
+  Suivi: 1,
+  "Début": 2,
+};
+
 function isObservationPhaseName(value: string): value is ObservationPhaseName {
   return value in observationPhaseConfigs;
 }
@@ -859,8 +865,18 @@ export function WorkerAppPostFixePage({
   const selectedPosteFleuraisonNotes =
     selectedObservationNotesKey != null ? (observationNotesByKey[selectedObservationNotesKey] ?? []) : [];
   const selectedPosteFleuraisonNotesSorted = [...selectedPosteFleuraisonNotes].sort(
-    (firstNote, secondNote) =>
-      parseIsoDateToTime(secondNote.observationDate) - parseIsoDateToTime(firstNote.observationDate)
+    (firstNote, secondNote) => {
+      const typeOrderDelta =
+        observationNoteTypeOrder[firstNote.noteType] - observationNoteTypeOrder[secondNote.noteType];
+
+      if (typeOrderDelta !== 0) {
+        return typeOrderDelta;
+      }
+
+      return (
+        parseIsoDateToTime(secondNote.observationDate) - parseIsoDateToTime(firstNote.observationDate)
+      );
+    }
   );
   const shouldShowFleuraisonForm = isAddingFleuraisonNote;
   const shouldShowFleuraisonEmptyState =
@@ -900,6 +916,9 @@ export function WorkerAppPostFixePage({
   }
   const hasFleuraisonValidationError = fleuraisonValidationError != null;
   const hasSavedConfig = selectedPoste != null ? Boolean(posteConfigs[selectedPoste.name]) : false;
+  const shouldShowPosteDetailLoading = Boolean(
+    selectedPoste && frameView === "loading" && !isEditingConfig && !isObservationScreen
+  );
   const getPosteObservationsWithFleuraisonState = (posteName: string): ObservationItem[] => {
     const baseObservations = getPosteObservations(posteName);
     return baseObservations.map((observation) => {
@@ -1134,7 +1153,83 @@ export function WorkerAppPostFixePage({
                   : styles.posteDetailLayoutRead
               }`}
             >
-              {isObservationScreen ? (
+              {shouldShowPosteDetailLoading ? (
+                <>
+                  <div className={styles.posteDetailTopBlock}>
+                    <div className={styles.posteDetailHeader}>
+                      <button
+                        className={styles.pageBackButton}
+                        type="button"
+                        aria-label="Retour"
+                        onClick={() => {
+                          setSelectedPoste(null);
+                          setIsEditingConfig(false);
+                          setSelectedObservation(null);
+                          setEditingFleuraisonNoteId(null);
+                          setSelectedFleuraisonNoteId(null);
+                          setDeleteConfirmNoteId(null);
+                          setImageViewer(null);
+                        }}
+                      >
+                        <span className={styles.pageBackIcon} aria-hidden="true">
+                          arrow_back
+                        </span>
+                      </button>
+                      <div className={styles.posteDetailHeaderText}>
+                        <h2 className={styles.posteDetailHeaderTitle}>{selectedPoste.name}</h2>
+                        <p className={styles.posteDetailHeaderLocation}>{selectedPoste.sector}</p>
+                      </div>
+                    </div>
+                    <div className={styles.posteDetailSummaryCard}>
+                      <span className={styles.detailSkeletonSummaryTitle} aria-hidden="true" />
+                      <span className={styles.detailSkeletonSummaryMeta} aria-hidden="true" />
+                      <span className={styles.detailSkeletonSummaryProgress} aria-hidden="true" />
+                      <div className={styles.posteProgressRow}>
+                        <span
+                          className={styles.skeletonProgress}
+                          style={{ width: "100%" }}
+                          aria-hidden="true"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <h3 className={`${styles.posteSectionTitle} ${styles.posteSectionTitleObservations}`}>
+                    Observations
+                  </h3>
+                  <div className={styles.posteObservationsCard}>
+                    {Array.from({ length: 4 }).map((_, index) => (
+                      <div
+                        key={index}
+                        className={`${styles.posteObservationSkeletonRow} ${
+                          index < 3 ? styles.observationRowBorder : ""
+                        }`}
+                      >
+                        <span className={styles.detailSkeletonObservationIcon} aria-hidden="true" />
+                        <div className={styles.posteObservationSkeletonMain}>
+                          <span className={styles.detailSkeletonObservationTitle} aria-hidden="true" />
+                          <span className={styles.detailSkeletonObservationMeta} aria-hidden="true" />
+                        </div>
+                        <span className={styles.skeletonBadge} aria-hidden="true" />
+                        <span className={styles.skeletonChevron} aria-hidden="true" />
+                      </div>
+                    ))}
+                  </div>
+
+                  <h3 className={styles.posteSectionTitle}>Configuration</h3>
+                  <div className={styles.posteConfigCard}>
+                    <div className={styles.posteConfigFooter}>
+                      <span className={styles.detailSkeletonConfigDate} aria-hidden="true" />
+                      <span className={styles.detailSkeletonConfigAction} aria-hidden="true" />
+                    </div>
+                    <div className={styles.posteConfigContent}>
+                      <span className={styles.detailSkeletonConfigLine} aria-hidden="true" />
+                      <span className={styles.detailSkeletonConfigLine} aria-hidden="true" />
+                      <span className={styles.detailSkeletonConfigLine} aria-hidden="true" />
+                    </div>
+                  </div>
+                </>
+              ) : isObservationScreen ? (
                 <div className={styles.posteEditLayout}>
                   <div className={styles.posteDetailHeader}>
                     <button
@@ -1837,17 +1932,21 @@ export function WorkerAppPostFixePage({
                   {showUnsavedModal ? (
                     <div className={styles.unsavedOverlay} role="dialog" aria-modal="true">
                       <div className={styles.unsavedCard}>
-                        <h4 className={styles.unsavedTitle}>Enregistrer les modifications ?</h4>
+                        <h4 className={styles.unsavedTitle}>Quitter sans enregistrer ?</h4>
                         <p className={styles.unsavedText}>
-                          Vos changements ne sont pas encore sauvegardés.
+                          Vos modifications seront perdues si vous quittez maintenant.
                         </p>
                         <div className={styles.unsavedActions}>
                           <button
                             className={styles.unsavedSecondary}
                             type="button"
-                            onClick={() => setShowUnsavedModal(false)}
+                            onClick={() => {
+                              setConfigDraft(selectedPosteConfig);
+                              setIsEditingConfig(false);
+                              setShowUnsavedModal(false);
+                            }}
                           >
-                            Annuler
+                            Quitter
                           </button>
                           <button
                             className={styles.unsavedPrimary}

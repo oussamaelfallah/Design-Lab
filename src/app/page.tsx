@@ -31,7 +31,7 @@ export default function Home() {
     | "boite"
     | "profile"
     | "synchronisation"
-  >("getStarted");
+  >("postFixe");
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [showDeviceFrame, setShowDeviceFrame] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -240,7 +240,7 @@ export default function Home() {
                   type="button"
                   onClick={() => setPostFixeFrameView("data")}
                 >
-                  Liste
+                  Données
                 </button>
                 <button
                   className={`${styles.frameViewTab} ${
