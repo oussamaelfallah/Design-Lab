@@ -1,0 +1,2304 @@
+.androidCanvas {
+  --brand: #01a362;
+
+  position: relative;
+  width: min(100%, 412px);
+  height: 917px;
+  border-radius: 40px;
+  padding: 12px;
+  overflow: hidden;
+  background: #0f1012;
+  box-shadow:
+    inset 0 0 0 2px #050607,
+    inset 0 0 0 4px #9aa0a8,
+    inset 0 0 0 6px #d8dce1,
+    inset 0 0 0 8px #6f747c,
+    inset 0 0 0 10px #0a0b0d;
+}
+
+.androidCanvasLightFrame {
+  --brand: #01a362;
+
+  position: relative;
+  width: min(100%, 412px);
+  height: 917px;
+  border-radius: 40px;
+  padding: 12px;
+  overflow: hidden;
+  background: #111;
+}
+
+.androidCanvasNoFrame {
+  --brand: #01a362;
+
+  width: 412px;
+  height: 917px;
+  border-radius: 28px;
+  overflow: hidden;
+  background: transparent;
+}
+
+.androidScreen {
+  --screen-margin: 16px;
+  --ds-brand: #01a362;
+  --ds-surface: #f3f5f7;
+  --ds-card: #fff;
+  --ds-border: #e3e8ee;
+  --ds-text-primary: #17211f;
+  --ds-text-secondary: #5f6f68;
+  --ds-text-muted: #8e98a5;
+  --fs-body-main: 16px;
+  --fs-body-secondary: 14px;
+  --fs-caption: 12px;
+  --fs-button-tab: 14px;
+  --fs-chip: 12px;
+  --fs-input-label: 12px;
+  --fs-title-medium: 16px;
+  --fs-title-large: 22px;
+  --fs-headline-small: 24px;
+  --fs-headline-medium: 28px;
+  --fs-headline-large: 32px;
+  --fs-appbar-title: 20px;
+  --fs-bottom-nav: 12px;
+  --nav-surface: #fff;
+  --nav-on-surface: #17211f;
+  --nav-on-surface-variant: #7b8490;
+  --nav-secondary-container: #e6f7f1;
+  --nav-on-secondary-container: #01a362;
+
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  border-radius: 28px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.getStartedCanvas {
+  background:
+    radial-gradient(circle at 82% 2%, rgb(1 163 98 / 14%), transparent 30%),
+    linear-gradient(180deg, #f8fefb 0%, #ffffff 42%);
+}
+
+.statusBar {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 48px;
+  padding: 10px 24px;
+  background: #f3f5f7;
+}
+
+.time {
+  color: #1d1b20;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 20px;
+  letter-spacing: 0.01em;
+}
+
+.cameraCutout {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  transform: translateX(-50%);
+}
+
+.rightIcons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rightIcons img:nth-child(1),
+.rightIcons img:nth-child(2) {
+  width: 17px;
+  height: 17px;
+}
+
+.rightIcons img:nth-child(3) {
+  width: 8px;
+  height: 15px;
+}
+
+.mobileContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: calc(100% - 48px - 24px);
+  background: transparent;
+  padding: var(--screen-margin);
+}
+
+.blankContent {
+  height: calc(100% - 48px - 24px);
+  background: #fff;
+}
+
+.homeContent {
+  height: calc(100% - 48px - 80px - 24px);
+  background: #f3f5f7;
+  padding: var(--screen-margin);
+}
+
+.secteursContent {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: calc(100% - 48px - 80px - 24px);
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  background: #f3f5f7;
+  padding: var(--screen-margin);
+}
+
+.secteursContentNoBottomBar {
+  height: calc(100% - 48px - 24px);
+  padding-bottom: 12px;
+}
+
+.posteFixeContent {
+  padding-top: 0;
+}
+
+.secteursContent::-webkit-scrollbar {
+  display: none;
+}
+
+.campaignSummaryCard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: none;
+  padding: 10px 12px;
+}
+
+.campaignSummaryIcon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: rgb(1 163 98 / 12%);
+  color: #018651;
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 22px;
+}
+
+.campaignSummaryCard h3 {
+  color: #232f2c;
+  font-size: var(--fs-title-medium);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.campaignSummaryCard p {
+  margin-top: 2px;
+  color: #8d939a;
+  font-size: var(--fs-caption);
+  font-weight: 400;
+}
+
+.campaignSummaryCard .posteFixeCampaignTitle {
+  color: #1f2a27;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-title-medium);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.campaignSummaryCard .posteFixeCampaignMeta {
+  margin-top: 2px;
+  color: #7e878f;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.homeHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.homeHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.homeTitle {
+  color: #17211f;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.posteFixeTitle {
+  margin: 0;
+  color: #17211f;
+  font-size: var(--fs-appbar-title);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.posteFixeTitleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.posteFixeSubtitle {
+  margin: 0;
+  color: #616161;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.posteFiltersRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 10px;
+  padding-right: 16px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  touch-action: pan-x;
+  user-select: none;
+  cursor: grab;
+}
+
+.posteFiltersRow::-webkit-scrollbar {
+  display: none;
+}
+
+.posteFiltersRow:active {
+  cursor: grabbing;
+}
+
+.posteFiltersSkeletonRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  overflow: hidden;
+  padding-bottom: 10px;
+}
+
+.posteFilterSkeletonChip {
+  position: relative;
+  display: block;
+  height: 32px;
+  border-radius: 999px;
+  background: #e5e9e7;
+  overflow: hidden;
+}
+
+.posteFilterSkeletonChip::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent 0%, rgb(255 255 255 / 54%) 50%, transparent 100%);
+  animation: skeletonShimmer 1.35s linear infinite;
+}
+
+.posteFilterChip {
+  border: 1px solid #d6dce2;
+  border-radius: 999px;
+  background: transparent;
+  color: #5e6d79;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  height: 32px;
+  padding: 0 16px;
+}
+
+.posteFilterChipActive {
+  border-color: #01a362;
+  background: #01a362;
+  color: #fff;
+}
+
+.syncBadge {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 999px;
+  background: #fff;
+  color: #7f8a96;
+  cursor: pointer;
+}
+
+.syncBadge .googleSymbol {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.syncBadgeIdle {
+  color: #9e9e9e;
+  background: #fff;
+}
+
+.syncBadgeSyncing {
+  color: #1565c0;
+  background: #fff;
+}
+
+.syncBadgeSynced {
+  color: #01a362;
+  background: #e6f7f1;
+}
+
+.syncBadgeError {
+  color: #f57c00;
+  background: #fff3e0;
+}
+
+.syncBadgeSpinner {
+  position: absolute;
+  animation: syncSpin 1s linear infinite;
+}
+
+.syncBadgeCheckPop {
+  animation: syncCheckPop 200ms ease-out;
+}
+
+.syncBadgeErrorPulse {
+  animation: syncErrorPulse 800ms ease-in-out infinite;
+}
+
+@keyframes syncSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes syncCheckPop {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes syncErrorPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.homeAvatar {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: rgb(1 163 98 / 14%);
+  color: #018651;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.syncSnackbar {
+  position: absolute;
+  right: 16px;
+  bottom: 92px;
+  left: 16px;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-radius: 12px;
+  background: rgb(20 27 25 / 94%);
+  color: #fff;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+  padding: 10px 12px;
+}
+
+.syncSnackbarAction {
+  border: none;
+  border-radius: 999px;
+  background: rgb(1 163 98 / 18%);
+  color: #8ff0c7;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  padding: 6px 10px;
+}
+
+.postesFixesList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.posteCard {
+  border: none;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: none;
+  text-align: left;
+  padding: 12px;
+}
+
+.posteCardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.posteCardTopActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.posteCardTop .posteFixeCardTitle {
+  color: #1a2623;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-title-medium);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.posteArrow {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 18px;
+  color: #6f807b;
+}
+
+.posteCard .posteFixeCardSubtitle {
+  margin-top: 4px;
+  color: #667774;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-body-secondary);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.posteFixeDates {
+  display: block;
+  margin-top: 6px;
+  color: #808a90;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.posteStatusBadge {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  border-radius: 999px;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 0 8px;
+  white-space: nowrap;
+}
+
+.posteStatusNotStarted {
+  background: #f5f5f5;
+  color: #6b7280;
+}
+
+.posteStatusInProgress {
+  background: #e3f0ff;
+  color: #1d4ed8;
+}
+
+.posteStatusDone {
+  background: #e6f7f1;
+  color: #01a362;
+}
+
+.posteProgressLabel {
+  margin-top: 8px;
+  color: #6f7a87;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.posteProgressLabelMuted {
+  color: #8b949c;
+}
+
+.posteProgressRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.posteProgressTrack {
+  flex: 1;
+  height: 4px;
+  border-radius: 999px;
+  background: #e2e8e6;
+  overflow: hidden;
+}
+
+.posteProgressFill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: #01a362;
+}
+
+.posteProgressValue {
+  min-width: 36px;
+  color: #3c4c48;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-chip);
+  font-weight: 500;
+}
+
+.posteCardSkeleton {
+  pointer-events: none;
+}
+
+.postesFilterEmptyState {
+  border-radius: 12px;
+  background: #fff;
+  color: #78838f;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+  padding: 14px 12px;
+  text-align: center;
+}
+
+.loadingSummaryCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: none;
+  padding: 12px;
+}
+
+.loadingSummaryIcon,
+.loadingLinePrimary,
+.loadingLineSecondary {
+  display: block;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #edf2f0 0%, #e3ebe8 50%, #edf2f0 100%);
+}
+
+.loadingSummaryIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+}
+
+.loadingSummaryText {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.loadingLinePrimary {
+  width: 160px;
+  height: 16px;
+}
+
+.loadingLineSecondary {
+  width: 120px;
+  height: 12px;
+}
+
+.skeletonTitle,
+.skeletonSub,
+.skeletonProgress,
+.skeletonBadge,
+.skeletonDate,
+.skeletonMeta,
+.skeletonChevron {
+  position: relative;
+  display: block;
+  border-radius: 8px;
+  background: #e5e9e7;
+  overflow: hidden;
+}
+
+.skeletonTitle::after,
+.skeletonSub::after,
+.skeletonProgress::after,
+.skeletonBadge::after,
+.skeletonDate::after,
+.skeletonMeta::after,
+.skeletonChevron::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent 0%, rgb(255 255 255 / 54%) 50%, transparent 100%);
+  animation: skeletonShimmer 1.35s linear infinite;
+}
+
+.skeletonHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.skeletonHeaderRight {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.skeletonTitle {
+  width: 128px;
+  height: 16px;
+}
+
+.skeletonBadge {
+  width: 76px;
+  height: 22px;
+  border-radius: 999px;
+}
+
+.skeletonSub {
+  width: 130px;
+  height: 14px;
+  margin-top: 7px;
+}
+
+.skeletonDate {
+  width: 172px;
+  height: 12px;
+  margin-top: 7px;
+}
+
+.skeletonMeta {
+  width: 206px;
+  height: 12px;
+  margin-top: 8px;
+}
+
+.skeletonProgress {
+  max-width: 100%;
+  height: 4px;
+  margin-top: 0;
+}
+
+.skeletonChevron {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+}
+
+@keyframes skeletonShimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.emptyState {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 14px;
+  background: #fff;
+  text-align: center;
+  padding: 24px;
+}
+
+.emptyStateIcon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 28px;
+  color: #6b7b76;
+}
+
+.emptyState h3 {
+  color: #1f2b28;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.emptyState p {
+  color: #657671;
+  font-size: var(--fs-caption);
+  line-height: 1.4;
+}
+
+.selectedPosteHint {
+  color: #5a6b67;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.posteDetailLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: max-content;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.posteDetailLayoutEdit {
+  min-height: 100%;
+}
+
+.posteDetailLayoutRead {
+  gap: 0;
+}
+
+.posteDetailLayoutRead .posteDetailTopBlock {
+  padding-bottom: 14px;
+}
+
+.posteStickyTop {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 6px;
+  background: var(--ds-surface);
+}
+
+.posteStickyTop .homeHeaderRow {
+  padding-top: 8px;
+}
+
+.posteDetailTopBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 6px;
+}
+
+.posteDetailHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.posteDetailHeaderText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.posteDetailHeaderTitle {
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-title-medium);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.posteDetailHeaderLocation {
+  color: var(--ds-text-muted);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.posteDetailSummaryCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: none;
+  border-radius: 16px;
+  background: var(--ds-card);
+  box-shadow: none;
+  padding: 14px;
+}
+
+.posteDetailSummaryTitle {
+  margin: 0;
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-title-medium);
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.posteDetailSummaryMeta {
+  margin: 0;
+  color: var(--ds-text-muted);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.posteDetailSummaryMetaValue {
+  color: var(--ds-brand);
+  font-weight: 600;
+}
+
+.posteDetailSummaryDates {
+  margin: 2px 0 0;
+  color: #97a0ab;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.posteEditLayout {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.posteEditMainTitle {
+  color: #0d1413;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-title-large);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.posteEditCard {
+  border: none;
+  border-radius: 18px;
+  background: var(--ds-card);
+  box-shadow: none;
+  padding: 16px;
+}
+
+.posteEditSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.posteEditSectionTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  margin: 0;
+  color: #191f24;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-title-medium);
+  font-weight: 600;
+}
+
+.posteEditChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.posteEditChip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  border: 1px solid #d6dce2;
+  border-radius: 999px;
+  background: transparent;
+  color: #5e6d79;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-chip);
+  font-weight: 500;
+  line-height: 1;
+  padding: 0 16px;
+  white-space: nowrap;
+}
+
+.posteEditChipActive {
+  border-color: var(--ds-brand);
+  background: var(--ds-brand);
+  color: #fff;
+}
+
+.posteEditChipCheck {
+  display: inline-block;
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 500,
+    "GRAD" 0,
+    "opsz" 20;
+  line-height: 1;
+}
+
+.posteEditDivider {
+  height: 1px;
+  background: var(--ds-border);
+  margin: 14px 0;
+}
+
+.posteEditActions {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: auto;
+  position: sticky;
+  bottom: -12px;
+  z-index: 12;
+  margin-right: calc(var(--screen-margin) * -1);
+  margin-left: calc(var(--screen-margin) * -1);
+  padding-top: 12px;
+  padding-right: var(--screen-margin);
+  padding-bottom: 12px;
+  padding-left: var(--screen-margin);
+  background: var(--ds-surface);
+  box-shadow: 0 -10px 22px -18px rgb(15 23 42 / 38%);
+}
+
+.posteEditActions::before {
+  content: "";
+  position: absolute;
+  top: -16px;
+  right: 0;
+  left: 0;
+  height: 16px;
+  background: linear-gradient(to top, var(--ds-surface), rgb(243 245 247 / 0%));
+  pointer-events: none;
+}
+
+.fleuraisonCard {
+  border: none;
+  border-radius: 18px;
+  background: var(--ds-card);
+  box-shadow: none;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.fleuraisonField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fleuraisonLabel {
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-input-label);
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.fleuraisonDateGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.fleuraisonInput,
+.fleuraisonTextarea {
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  background: #edf1f5;
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-body-main);
+  font-weight: 400;
+  padding: 12px 14px;
+}
+
+.fleuraisonTimeField {
+  position: relative;
+  width: 100%;
+  height: 46px;
+  border: none;
+  border-radius: 12px;
+  background: #edf1f5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  color: var(--ds-text-primary);
+  cursor: pointer;
+}
+
+.fleuraisonTimeValue {
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-body-main);
+  font-weight: 400;
+}
+
+.fleuraisonTimeIcon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 18px;
+  color: var(--ds-text-muted);
+}
+
+.fleuraisonTimeNative {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  cursor: pointer;
+}
+
+.fleuraisonInput:focus,
+.fleuraisonTextarea:focus {
+  outline: 1px solid #c8d5d1;
+}
+
+.fleuraisonTextarea {
+  min-height: 92px;
+  resize: none;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.fleuraisonTextarea::placeholder {
+  font-size: 12px;
+}
+
+.fleuraisonInlineError {
+  color: #b42318;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 500;
+  margin-top: -4px;
+}
+
+.fleuraisonImagePlaceholder {
+  width: 84px;
+  height: 84px;
+  border: 2px dashed #d0d8e2;
+  border-radius: 14px;
+  background: #f7f9fc;
+  display: grid;
+  place-items: center;
+  padding: 0;
+}
+
+.fleuraisonImageIcon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 24px;
+  color: #9ca3af;
+}
+
+.fleuraisonImagesGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.fleuraisonImageInput {
+  display: none;
+}
+
+.fleuraisonImageThumb {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #edf1f5;
+}
+
+.fleuraisonImageThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fleuraisonImageRemove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 60%);
+  color: #fff;
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 16px;
+}
+
+.fleuraisonNotesList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fleuraisonSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.fleuraisonSectionTitle {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  margin: 0;
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.fleuraisonEmptyWrap {
+  display: grid;
+  flex: 1;
+  place-items: center;
+  min-height: 0;
+}
+
+.fleuraisonEmptyCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  width: min(100%, 340px);
+  border-radius: 16px;
+  border: 1px solid #e6ebf0;
+  background: linear-gradient(180deg, #fff 0%, #fbfcfd 100%);
+  padding: 24px;
+  text-align: center;
+}
+
+.fleuraisonEmptyIllustration {
+  display: grid;
+  place-items: center;
+  width: 82px;
+  height: 82px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f2f5f8 0%, #edf1f5 100%);
+}
+
+.fleuraisonEmptyIcon {
+  color: #8f99a5;
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 38px;
+  line-height: 1;
+}
+
+.fleuraisonEmptyText {
+  min-width: 0;
+}
+
+.fleuraisonEmptyTitle {
+  color: #4d5864;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-title-medium);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.fleuraisonEmptySubTitle {
+  margin-top: 6px;
+  color: #8b95a1;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-body-secondary);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.fleuraisonEmptyAction {
+  margin-top: 2px;
+  max-width: 220px;
+}
+
+.fleuraisonNoteCard {
+  border: none;
+  border-radius: 14px;
+  background: var(--ds-card);
+  text-align: left;
+  padding: 14px;
+  cursor: default;
+}
+
+.fleuraisonNoteTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.fleuraisonNoteTitle {
+  margin-top: 6px;
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-body-secondary);
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.fleuraisonNoteDate {
+  color: var(--ds-text-muted);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.fleuraisonNoteMeta {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.fleuraisonNoteType {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  border-radius: 999px;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 0 8px;
+  white-space: nowrap;
+}
+
+.fleuraisonNoteTypeStart {
+  background: #e6f7f1;
+  color: #0a8b55;
+}
+
+.fleuraisonNoteTypeFollowUp {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.fleuraisonNoteTypeEnd {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.fleuraisonNoteMore {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 17px;
+  color: var(--ds-text-muted);
+}
+
+.fleuraisonNoteMoreButton {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  padding: 0;
+}
+
+.fleuraisonNoteSummary {
+  margin-top: 3px;
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.fleuraisonNoteComment {
+  margin-top: 10px;
+  border-radius: 10px;
+  background: #f5f7fa;
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.45;
+  padding: 10px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.fleuraisonNoteImages {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.fleuraisonNoteImages img {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.fleuraisonNoteImageTap {
+  width: 52px;
+  height: 52px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  padding: 0;
+  overflow: hidden;
+}
+
+.fleuraisonSheetOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgb(23 33 31 / 24%);
+  padding: 10px;
+}
+
+.fleuraisonActionSheet {
+  width: 100%;
+  border-radius: 16px;
+  background: #fff;
+  padding: 8px 12px 10px;
+}
+
+.fleuraisonSheetHandle {
+  display: block;
+  width: 36px;
+  height: 4px;
+  border-radius: 999px;
+  background: #d7dde5;
+  margin: 4px auto 10px;
+}
+
+.fleuraisonSheetAction {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 44px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-button-tab);
+  font-weight: 500;
+  text-align: center;
+  padding: 0;
+}
+
+.fleuraisonSheetAction + .fleuraisonSheetAction {
+  border-top: 1px solid #edf1f5;
+}
+
+.fleuraisonSheetActionDanger {
+  color: #b42318;
+}
+
+.fleuraisonSheetActionDisabled {
+  opacity: 0.45;
+}
+
+.fleuraisonViewerOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: pan-y;
+}
+
+.fleuraisonViewerClose {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 14%);
+  color: #fff;
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 20px;
+  z-index: 1;
+}
+
+.fleuraisonViewerImage {
+  width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.fleuraisonViewerCounter {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 500;
+}
+
+.fleuraisonViewerHitArea {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 22%;
+  border: none;
+  background: transparent;
+}
+
+.fleuraisonViewerHitLeft {
+  left: 0;
+}
+
+.fleuraisonViewerHitRight {
+  right: 0;
+}
+
+.posteSaveButton {
+  width: 100%;
+  height: 40px;
+  border: none;
+  border-radius: 999px;
+  background: var(--ds-brand);
+  color: #fff;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-button-tab);
+  font-weight: 500;
+  padding: 0 16px;
+}
+
+.posteCancelButton {
+  width: 100%;
+  height: 40px;
+  border: 1px solid var(--ds-border);
+  border-radius: 999px;
+  background: #fff;
+  color: #5f6f68;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-button-tab);
+  font-weight: 500;
+  padding: 0 16px;
+}
+
+.posteButtonDisabled {
+  opacity: 0.5;
+}
+
+.unsavedOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(23 33 31 / 26%);
+  padding: 16px;
+}
+
+.unsavedCard {
+  width: 100%;
+  max-width: 320px;
+  border-radius: 16px;
+  background: var(--ds-card);
+  padding: 20px;
+}
+
+.unsavedTitle {
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-title-medium);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.unsavedText {
+  margin-top: 8px;
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.unsavedActions {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.unsavedPrimary,
+.unsavedSecondary {
+  width: 100%;
+  height: 40px;
+  border-radius: 999px;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-button-tab);
+  font-weight: 500;
+  padding: 0 12px;
+}
+
+.unsavedPrimary {
+  border: none;
+  background: var(--ds-brand);
+  color: #fff;
+}
+
+.unsavedDanger {
+  border: 1px solid #f3c7cd;
+  background: #fdecee;
+  color: #b42318;
+}
+
+.unsavedSecondary {
+  border: 1px solid var(--ds-border);
+  background: #fff;
+  color: var(--ds-text-secondary);
+}
+
+.posteSectionTitle {
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  margin-top: 8px;
+  margin-bottom: 10px;
+}
+
+.posteSectionTitleObservations {
+  font-size: 18px;
+}
+
+.posteDetailLayoutRead .posteSectionTitle {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  margin: 0;
+}
+
+.posteObservationsCard + .posteSectionTitle,
+.posteConfigCard + .posteSectionTitle,
+.posteConfigEmptyCard + .posteSectionTitle {
+  margin-top: 14px;
+}
+
+.posteDetailLayoutRead .posteObservationsCard + .posteSectionTitle,
+.posteDetailLayoutRead .posteConfigCard + .posteSectionTitle,
+.posteDetailLayoutRead .posteConfigEmptyCard + .posteSectionTitle {
+  margin-top: 16px;
+}
+
+.posteSectionTitle + .posteObservationsCard,
+.posteSectionTitle + .posteConfigCard,
+.posteSectionTitle + .posteConfigEmptyCard {
+  margin-top: 0;
+}
+
+.posteConfigCard {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border: none;
+  border-radius: 16px;
+  background: var(--ds-card);
+  box-shadow: none;
+  padding: 16px;
+}
+
+.posteConfigContent {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.posteConfigFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.posteConfigAction {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: none;
+  background: transparent;
+  color: var(--ds-text-muted);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.posteConfigAction .posteArrow {
+  font-size: 16px;
+}
+
+.posteConfigLine {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-body-secondary);
+  font-weight: 400;
+  line-height: 1.3;
+  width: 100%;
+  margin: 0;
+}
+
+.posteConfigIcon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+  color: var(--ds-brand);
+}
+
+.posteConfigDate {
+  margin: 0;
+  color: var(--ds-text-muted);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 400;
+}
+
+.posteConfigEmptyCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: none;
+  padding: 22px 16px;
+  text-align: center;
+}
+
+.postesEmptyCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  width: min(100%, 340px);
+  border-radius: 20px;
+  border: 1px solid #e6ebf0;
+  background: linear-gradient(180deg, #fff 0%, #fbfcfd 100%);
+  padding: 28px 24px;
+  text-align: center;
+}
+
+.postesEmptyWrap {
+  display: grid;
+  flex: 1;
+  place-items: center;
+  min-height: 0;
+  padding: 6px 0;
+}
+
+.postesEmptyIllustration {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 82px;
+  height: 82px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f2f5f8 0%, #edf1f5 100%);
+}
+
+.postesEmptyIconMain {
+  font-family: "Material Symbols Outlined", sans-serif;
+  line-height: 1;
+}
+
+.postesEmptyIconMain {
+  color: #909aa6;
+  font-size: 38px;
+}
+
+.postesEmptyText {
+  min-width: 0;
+}
+
+.postesEmptyTitle {
+  color: #4d5864;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-title-medium);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.postesEmptySubtitle {
+  margin-top: 6px;
+  color: #8b95a1;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-body-secondary);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.posteConfigEmptyText {
+  min-width: 0;
+  max-width: none;
+}
+
+.posteConfigEmptyTitle {
+  color: #616b78;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-title-medium);
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.posteConfigEmptySubTitle {
+  margin-top: 4px;
+  color: #8d97a4;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 400;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.posteConfigEmptyAction {
+  align-self: center;
+  height: 34px;
+  border: none;
+  border-radius: 999px;
+  background: var(--ds-brand);
+  color: #fff;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-chip);
+  font-weight: 500;
+  line-height: 1;
+  padding: 0 14px;
+  white-space: nowrap;
+}
+
+.postesEmptyCard .posteConfigEmptyText {
+  flex: 0;
+}
+
+.postesEmptyCard .posteConfigEmptyTitle,
+.postesEmptyCard .posteConfigEmptySubTitle {
+  text-align: center;
+}
+
+.posteObservationsCard {
+  border: none;
+  border-radius: 16px;
+  background: var(--ds-card);
+  box-shadow: none;
+  overflow: hidden;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.posteObservationsCard::-webkit-scrollbar {
+  display: none;
+}
+
+.observationRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  border: none;
+  background: transparent;
+  text-align: left;
+  padding: 12px 14px;
+}
+
+.observationRowBorder {
+  position: relative;
+}
+
+.observationRowBorder::after {
+  content: "";
+  position: absolute;
+  right: 14px;
+  bottom: 0;
+  left: 14px;
+  height: 1px;
+  background: rgb(227 232 238 / 55%);
+}
+
+.observationIconWrap {
+  --obs-icon-bg: rgb(1 163 98 / 10%);
+  --obs-icon-color: var(--ds-brand);
+
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--obs-icon-bg);
+  flex-shrink: 0;
+}
+
+.observationIcon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 20px;
+  color: var(--obs-icon-color);
+}
+
+.observationToneViolet {
+  --obs-icon-bg: rgb(123 97 255 / 12%);
+  --obs-icon-color: #6e56cf;
+}
+
+.observationToneBlue {
+  --obs-icon-bg: rgb(37 99 235 / 11%);
+  --obs-icon-color: #1d4ed8;
+}
+
+.observationToneOrange {
+  --obs-icon-bg: rgb(249 115 22 / 12%);
+  --obs-icon-color: #c2410c;
+}
+
+.observationToneTeal {
+  --obs-icon-bg: rgb(13 148 136 / 12%);
+  --obs-icon-color: #0f766e;
+}
+
+.observationToneRose {
+  --obs-icon-bg: rgb(225 29 72 / 11%);
+  --obs-icon-color: #be185d;
+}
+
+.observationMain {
+  min-width: 0;
+  flex: 1;
+}
+
+.observationTitle {
+  color: #4a5a53;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  letter-spacing: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.observationDate {
+  margin-top: 4px;
+  color: var(--ds-text-muted);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.observationStatus {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  border-radius: 999px;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 0 8px;
+  white-space: nowrap;
+}
+
+.observationStatusDone {
+  background: rgb(1 163 98 / 14%);
+  color: #0a8b55;
+}
+
+.observationStatusNotStarted {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.observationStatusInProgress {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.detailContent {
+  height: calc(100% - 48px - 24px);
+  background: #f3f5f7;
+  padding: var(--screen-margin);
+}
+
+.pageTopBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pageBackButton {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ds-text-primary);
+  cursor: pointer;
+}
+
+.pageBackIcon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 20px;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 500,
+    "GRAD" 0,
+    "opsz" 24;
+  line-height: 1;
+}
+
+.pageTopTitle {
+  color: #17211f;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.getStartedTop {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 28px;
+  width: 100%;
+}
+
+.brandRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brandIcon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: rgb(1 163 98 / 12%);
+  color: var(--brand);
+}
+
+.brandIcon svg {
+  width: 24px;
+  height: 24px;
+  fill: currentcolor;
+}
+
+.brandName {
+  color: #102317;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.imagePlaceholder {
+  width: 100%;
+  height: 280px;
+  border: 1px dashed #9fd0bd;
+  border-radius: 18px;
+  background: rgb(255 255 255 / 70%);
+  display: grid;
+  place-items: center;
+}
+
+.imagePlaceholder span {
+  color: #5e7f73;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.getStartedTitle {
+  color: #121618;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  text-align: left;
+  text-wrap: balance;
+}
+
+.textBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.getStartedText {
+  max-width: 320px;
+  color: #4c5a58;
+  font-size: 16px;
+  line-height: 1.56;
+  text-align: left;
+  text-wrap: pretty;
+}
+
+.featuresList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-left: 18px;
+  color: #23312f;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.featuresList li::marker {
+  color: var(--brand);
+}
+
+.getStartedBottom {
+  width: 100%;
+  margin-top: auto;
+  padding-top: 30px;
+}
+
+.signInButton {
+  width: 100%;
+  border: none;
+  border-radius: 16px;
+  background: var(--brand);
+  color: #fff;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  padding: 16px;
+  cursor: pointer;
+}
+
+.navigationBar {
+  display: grid;
+  place-items: center;
+  height: 24px;
+  background: transparent;
+}
+
+.navigationBarPageSurface {
+  background: #f3f5f7;
+}
+
+.homeBottomBar {
+  display: flex;
+  align-items: center;
+  height: 80px;
+  padding: 12px 0 16px;
+  border-top: 1px solid #edf1f5;
+  background: var(--nav-surface);
+}
+
+.homeNavItem {
+  display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  max-width: 168px;
+  border: none;
+  background: transparent;
+  color: var(--nav-on-surface-variant);
+}
+
+.homeNavItemInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.homeNavIconSlot {
+  display: grid;
+  place-items: center;
+  height: 32px;
+}
+
+.homeNavIconContainer {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 32px;
+  border-radius: 16px;
+  background: transparent;
+}
+
+.homeNavIconFrame {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+}
+
+.homeNavItem:disabled {
+  opacity: 1;
+  cursor: default;
+}
+
+.homeNavItemActive .homeNavIconContainer {
+  background: var(--nav-secondary-container);
+}
+
+.homeNavItemActive .homeNavIcon {
+  color: var(--nav-on-secondary-container);
+  font-variation-settings:
+    "FILL" 1,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+.homeNavItemActive .homeNavLabel {
+  color: var(--ds-brand);
+  font-weight: 600;
+}
+
+.homeNavItem:not(:disabled):hover .homeNavIconContainer {
+  background: rgb(1 163 98 / 10%);
+}
+
+.homeNavItem:not(:disabled):active .homeNavIconContainer {
+  background: rgb(1 163 98 / 18%);
+}
+
+.homeNavItemActive.homeNavItem:not(:disabled):hover .homeNavIconContainer,
+.homeNavItemActive.homeNavItem:not(:disabled):active .homeNavIconContainer {
+  background: var(--nav-secondary-container);
+}
+
+.homeNavItem:not(:disabled):focus-visible .homeNavIconContainer {
+  outline: 2px solid rgb(1 163 98 / 32%);
+  outline-offset: 1px;
+}
+
+.homeNavIcon {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 24px;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+  line-height: 1;
+  color: inherit;
+}
+
+.googleSymbol {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 32px;
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 24px;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+.homeNavLabel {
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-bottom-nav);
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: 0;
+  color: inherit;
+  white-space: nowrap;
+}
+
+.navHandle {
+  width: 108px;
+  height: 4px;
+  border-radius: 12px;
+  background: #1d1b20;
+}
+
+@media (max-width: 900px) {
+  .androidCanvas {
+    height: min(917px, 78vh);
+  }
+}

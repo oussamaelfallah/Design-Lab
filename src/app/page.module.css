@@ -1,141 +1,337 @@
 .page {
-  --background: #fafafa;
-  --foreground: #fff;
-
-  --text-primary: #000;
-  --text-secondary: #666;
-
-  --button-primary-hover: #383838;
-  --button-secondary-hover: #f2f2f2;
-  --button-secondary-border: #ebebeb;
+  --page-bg: #0f1117;
+  --sidebar-bg: #2b2d31;
+  --sidebar-border: #2a2f3b;
+  --sidebar-text: #f3f5fa;
+  --tabs-label: #90a0bf;
+  --tab-bg: #1a202b;
+  --tab-border: #2b3140;
+  --tab-text: #d2d9e8;
+  --tab-hover-bg: #1e2533;
+  --tab-hover-border: #567199;
+  --active-bg: #202a3a;
+  --active-border: #6cb6ff;
+  --active-text: #f5f8ff;
+  --subtabs-rail: #30384c;
+  --subtab-bg: #18202e;
+  --subtab-border: #273247;
+  --subtab-text: #c6d4ea;
+  --subtab-hover-bg: #1b2738;
+  --subtab-hover-border: #4a688f;
+  --canvas-title: #dbe4f6;
+  --canvas-bg: #17191f;
+  --canvas-border: #252a36;
 
   display: flex;
   min-height: 100vh;
-  align-items: center;
-  justify-content: center;
   font-family: var(--font-geist-sans);
-  background-color: var(--background);
+  background: var(--page-bg);
 }
 
-.main {
+.page[data-theme="light"] {
+  --page-bg: #eef2f7;
+  --sidebar-bg: #ffffff;
+  --sidebar-border: #d7dee8;
+  --sidebar-text: #0f1722;
+  --tabs-label: #5f6f84;
+  --tab-bg: #f8fafc;
+  --tab-border: #d6dee8;
+  --tab-text: #27344a;
+  --tab-hover-bg: #edf3f9;
+  --tab-hover-border: #9ab1cb;
+  --active-bg: #e8f3ff;
+  --active-border: #3d9df5;
+  --active-text: #12325f;
+  --subtabs-rail: #cad5e3;
+  --subtab-bg: #f7fafe;
+  --subtab-border: #d3deec;
+  --subtab-text: #304664;
+  --subtab-hover-bg: #edf4fb;
+  --subtab-hover-border: #8ca7c7;
+  --canvas-title: #132238;
+  --canvas-bg: #f8f8f8;
+  --canvas-border: #d3dde9;
+  --canvas-shadow: none;
+}
+
+.sidebar {
   display: flex;
-  min-height: 100vh;
-  width: 100%;
-  max-width: 800px;
+  width: 320px;
   flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
-  background-color: var(--foreground);
-  padding: 120px 60px;
+  gap: 20px;
+  border-right: 1px solid var(--sidebar-border);
+  background: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  padding: 24px;
 }
 
-.intro {
+.sidebarTop {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  gap: 24px;
-}
-
-.intro h1 {
-  max-width: 320px;
-  font-size: 40px;
-  font-weight: 600;
-  line-height: 48px;
-  letter-spacing: -2.4px;
-  text-wrap: balance;
-  color: var(--text-primary);
-}
-
-.intro p {
-  max-width: 440px;
-  font-size: 18px;
-  line-height: 32px;
-  text-wrap: balance;
-  color: var(--text-secondary);
-}
-
-.intro a {
-  font-weight: 500;
-  color: var(--text-primary);
-}
-
-.ctas {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  max-width: 440px;
-  gap: 16px;
-  font-size: 14px;
-}
-
-.ctas a {
-  display: flex;
-  justify-content: center;
   align-items: center;
-  height: 40px;
-  padding: 0 16px;
-  border-radius: 128px;
-  border: 1px solid transparent;
-  transition: 0.2s;
-  cursor: pointer;
-  width: fit-content;
-  font-weight: 500;
+  justify-content: flex-start;
+  gap: 10px;
+  padding-bottom: 4px;
 }
 
-a.primary {
-  background: var(--text-primary);
-  color: var(--background);
+.header {
+  font-size: 24px;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.settingsMenu {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.menuTrigger {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--tab-border);
+  border-radius: 8px;
+  background: var(--tab-bg);
+  cursor: pointer;
+}
+
+.selectArrow {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--tabs-label);
+}
+
+.menuDropdown {
+  position: absolute;
+  top: 38px;
+  right: 0;
+  min-width: 150px;
+  border: 1px solid var(--tab-border);
+  border-radius: 10px;
+  background: var(--sidebar-bg);
+  box-shadow: 0 10px 24px rgb(0 0 0 / 18%);
+  padding: 8px;
+  z-index: 20;
+}
+
+.menuSectionTitle {
+  color: var(--tabs-label);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 6px 6px;
+}
+
+.menuItem {
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--tab-text);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+.menuItem:hover {
+  background: var(--tab-hover-bg);
+}
+
+.menuItemActive {
+  background: var(--active-bg);
+  color: var(--active-text);
+}
+
+.tabsPanel {
+  border-radius: 14px;
+  background: transparent;
+  padding: 4px 0;
+}
+
+.canvasTabs {
+  display: flex;
+  flex-direction: column;
   gap: 8px;
 }
 
-a.secondary {
-  border-color: var(--button-secondary-border);
+.tabsLabel {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tabs-label);
+  margin-bottom: 4px;
 }
 
-/* Enable hover only on non-touch devices */
-@media (hover: hover) and (pointer: fine) {
-  a.primary:hover {
-    background: var(--button-primary-hover);
-    border-color: transparent;
-  }
-
-  a.secondary:hover {
-    background: var(--button-secondary-hover);
-    border-color: transparent;
-  }
+.canvasTab {
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--tab-text);
+  text-align: left;
+  font-size: 14px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
 }
 
-@media (max-width: 600px) {
-  .main {
-    padding: 48px 24px;
-  }
-
-  .intro {
-    gap: 16px;
-  }
-
-  .intro h1 {
-    font-size: 32px;
-    line-height: 40px;
-    letter-spacing: -1.92px;
-  }
+.canvasTab:hover {
+  background: var(--tab-hover-bg);
 }
 
-@media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
-  }
+.activeTab {
+  background: var(--active-bg);
+  color: var(--active-text);
+}
 
+.parentTabRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.parentTabArrow {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--tabs-label);
+}
+
+.subTabs {
+  margin-top: 8px;
+  margin-left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.subTab {
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--subtab-text);
+  text-align: left;
+  font-size: 13px;
+  padding: 6px 8px;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.subTab:hover {
+  background: var(--subtab-hover-bg);
+}
+
+.activeSubTab {
+  background: transparent;
+  color: var(--active-border);
+}
+
+.canvasArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 20px;
+}
+
+.canvasHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.canvasHeader h2 {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--canvas-title);
+}
+
+.copyTargetButton {
+  border: 1px solid var(--active-border);
+  border-radius: 999px;
+  background: var(--active-bg);
+  color: var(--active-text);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.canvasSubHeader {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 3;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.frameViewTabs {
+  display: flex;
+  gap: 8px;
+}
+
+.frameViewTab {
+  border: 1px solid var(--tab-border);
+  border-radius: 999px;
+  background: var(--tab-bg);
+  color: var(--tab-text);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 7px 12px;
+  cursor: pointer;
+}
+
+.frameViewTabActive {
+  border-color: var(--active-border);
+  background: var(--active-bg);
+  color: var(--active-text);
+}
+
+.canvasPage {
+  position: relative;
+  flex: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: var(--canvas-bg);
+  box-shadow:
+    inset 0 0 0 1px var(--canvas-border),
+    var(--canvas-shadow, 0 20px 50px rgb(0 0 0 / 25%));
+  padding: 28px;
+}
+
+@media (max-width: 900px) {
   .page {
-    --background: #000;
-    --foreground: #000;
+    flex-direction: column;
+  }
 
-    --text-primary: #ededed;
-    --text-secondary: #999;
+  .sidebar {
+    width: 100%;
+    border-right: 0;
+    border-bottom: 1px solid var(--sidebar-border);
+  }
 
-    --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
-    --button-secondary-border: #1a1a1a;
+  .canvasArea {
+    padding: 16px;
   }
 }
