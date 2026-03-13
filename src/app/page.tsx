@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
 import {
   WORKER_APP_BOITE_PAGE_NAME,
-  WORKER_APP_CANVAS_NAME,
   WORKER_APP_GET_STARTED_PAGE_NAME,
   WORKER_APP_HOME_PAGE_NAME,
   WORKER_APP_POST_FIXE_PAGE_NAME,
@@ -22,100 +21,6 @@ import { WorkerAppProfilePage } from "../worker-app/profile";
 import { WorkerAppSynchronisationPage } from "../worker-app/synchronisation";
 import { WorkerAppTravailPage } from "../worker-app/travail";
 
-const designSystem = {
-  colors: {
-    brand: "#01A362",
-    homeBackground: "#F3F5F7",
-    dark: {
-      pageBg: "#0F1117",
-      sidebarBg: "#161A23",
-      sidebarBorder: "#2A2F3B",
-      sidebarText: "#F3F5FA",
-      tabBg: "#1A202B",
-      tabBorder: "#2B3140",
-      tabText: "#D2D9E8",
-      activeBg: "#202A3A",
-      activeBorder: "#6CB6FF",
-      activeText: "#F5F8FF",
-      canvasBg: "#0E131C",
-      canvasBorder: "#252A36",
-    },
-    light: {
-      pageBg: "#EEF2F7",
-      sidebarBg: "#FFFFFF",
-      sidebarBorder: "#D7DEE8",
-      sidebarText: "#0F1722",
-      tabBg: "#F8FAFC",
-      tabBorder: "#D6DEE8",
-      tabText: "#27344A",
-      activeBg: "#E8F3FF",
-      activeBorder: "#3D9DF5",
-      activeText: "#12325F",
-      canvasBg: "#F7F9FC",
-      canvasBorder: "#D3DDE9",
-    },
-  },
-  spacing: {
-    xxs: 2,
-    xs: 4,
-    sm: 8,
-    md: 12,
-    lg: 16,
-    xl: 20,
-    xxl: 24,
-    section: 28,
-    sidebarGap: 40,
-  },
-} as const;
-
-function getDesignSystemMarkdown() {
-  return [
-    "# Design System",
-    "",
-    "## Colors",
-    "",
-    "- `brand`: `#01A362`",
-    "- `homeBackground`: `#F3F5F7`",
-    "- `dark.pageBg`: `#0F1117`",
-    "- `dark.sidebarBg`: `#161A23`",
-    "- `dark.sidebarBorder`: `#2A2F3B`",
-    "- `dark.sidebarText`: `#F3F5FA`",
-    "- `dark.tabBg`: `#1A202B`",
-    "- `dark.tabBorder`: `#2B3140`",
-    "- `dark.tabText`: `#D2D9E8`",
-    "- `dark.activeBg`: `#202A3A`",
-    "- `dark.activeBorder`: `#6CB6FF`",
-    "- `dark.activeText`: `#F5F8FF`",
-    "- `dark.canvasBg`: `#0E131C`",
-    "- `dark.canvasBorder`: `#252A36`",
-    "- `light.pageBg`: `#EEF2F7`",
-    "- `light.sidebarBg`: `#FFFFFF`",
-    "- `light.sidebarBorder`: `#D7DEE8`",
-    "- `light.sidebarText`: `#0F1722`",
-    "- `light.tabBg`: `#F8FAFC`",
-    "- `light.tabBorder`: `#D6DEE8`",
-    "- `light.tabText`: `#27344A`",
-    "- `light.activeBg`: `#E8F3FF`",
-    "- `light.activeBorder`: `#3D9DF5`",
-    "- `light.activeText`: `#12325F`",
-    "- `light.canvasBg`: `#F7F9FC`",
-    "- `light.canvasBorder`: `#D3DDE9`",
-    "",
-    "## Spacing",
-    "",
-    "- `xxs`: `2px`",
-    "- `xs`: `4px`",
-    "- `sm`: `8px`",
-    "- `md`: `12px`",
-    "- `lg`: `16px`",
-    "- `xl`: `20px`",
-    "- `xxl`: `24px`",
-    "- `section`: `28px`",
-    "- `sidebarGap`: `40px`",
-    "",
-  ].join("\n");
-}
-
 export default function Home() {
   const [activeScreen, setActiveScreen] = useState<
     | "prototype"
@@ -130,22 +35,45 @@ export default function Home() {
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [showDeviceFrame, setShowDeviceFrame] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [copyStatus, setCopyStatus] = useState<"idle" | "copied">("idle");
   const [postFixeFrameView, setPostFixeFrameView] = useState<SecteursFrameView>("data");
+  const [sidebarWidth, setSidebarWidth] = useState(300);
+  const [isSidebarResizing, setIsSidebarResizing] = useState(false);
+  const sidebarResizeStartXRef = useRef(0);
+  const sidebarResizeStartWidthRef = useRef(300);
 
-  const handleCopyDesignSystem = async () => {
-    const json = JSON.stringify(designSystem, null, 2);
-    const markdown = getDesignSystemMarkdown();
-    const output = `# JSON\n\n${json}\n\n# Markdown\n\n${markdown}`;
+  useEffect(() => {
+    if (!isSidebarResizing) {
+      return;
+    }
 
-    await navigator.clipboard.writeText(output);
-    setCopyStatus("copied");
-    window.setTimeout(() => setCopyStatus("idle"), 1500);
-  };
+    const handlePointerMove = (event: PointerEvent) => {
+      const delta = event.clientX - sidebarResizeStartXRef.current;
+      const nextWidth = sidebarResizeStartWidthRef.current + delta;
+      const boundedWidth = Math.min(560, Math.max(240, nextWidth));
+      setSidebarWidth(boundedWidth);
+    };
+
+    const stopResizing = () => {
+      setIsSidebarResizing(false);
+    };
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", stopResizing);
+    window.addEventListener("pointercancel", stopResizing);
+
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", stopResizing);
+      window.removeEventListener("pointercancel", stopResizing);
+    };
+  }, [isSidebarResizing]);
 
   return (
-    <div className={styles.page} data-theme={theme}>
-      <aside className={styles.sidebar}>
+    <div
+      className={`${styles.page} ${isSidebarResizing ? styles.pageResizing : ""}`}
+      data-theme={theme}
+    >
+      <aside className={styles.sidebar} style={{ width: `${sidebarWidth}px` }}>
         <div className={styles.sidebarTop}>
           <h1 className={styles.header}>Design Lab</h1>
           <div className={styles.settingsMenu}>
@@ -224,6 +152,23 @@ export default function Home() {
             </button>
             <div className={styles.subTabs}>
               <button
+                className={`${styles.subTab} ${activeScreen === "postFixe" ? styles.activeSubTab : ""}`}
+                type="button"
+                onClick={() => {
+                  setActiveScreen("postFixe");
+                  setPostFixeFrameView("data");
+                }}
+              >
+                <span className={styles.subTabLabelRow}>
+                  <span>{WORKER_APP_POST_FIXE_PAGE_NAME}</span>
+                  <span className={styles.devReadyBadge}>
+                    <span className={styles.devReadyDot} aria-hidden="true" />
+                    Ready for dev
+                  </span>
+                </span>
+              </button>
+              <div className={styles.subTabDivider} aria-hidden="true" />
+              <button
                 className={`${styles.subTab} ${activeScreen === "getStarted" ? styles.activeSubTab : ""}`}
                 type="button"
                 onClick={() => setActiveScreen("getStarted")}
@@ -243,16 +188,6 @@ export default function Home() {
                 onClick={() => setActiveScreen("travail")}
               >
                 {WORKER_APP_TRAVAIL_PAGE_NAME}
-              </button>
-              <button
-                className={`${styles.subTab} ${activeScreen === "postFixe" ? styles.activeSubTab : ""}`}
-                type="button"
-                onClick={() => {
-                  setActiveScreen("postFixe");
-                  setPostFixeFrameView("data");
-                }}
-              >
-                {WORKER_APP_POST_FIXE_PAGE_NAME}
               </button>
               <button
                 className={`${styles.subTab} ${activeScreen === "boite" ? styles.activeSubTab : ""}`}
@@ -279,38 +214,21 @@ export default function Home() {
           </div>
         </div>
       </aside>
+      <button
+        type="button"
+        className={`${styles.sidebarResizer} ${
+          isSidebarResizing ? styles.sidebarResizerActive : ""
+        }`}
+        aria-label="Resize sidebar"
+        onPointerDown={(event) => {
+          event.preventDefault();
+          sidebarResizeStartXRef.current = event.clientX;
+          sidebarResizeStartWidthRef.current = sidebarWidth;
+          setIsSidebarResizing(true);
+        }}
+      />
 
       <main className={styles.canvasArea}>
-        <div className={styles.canvasHeader}>
-          <div className={styles.canvasHeaderRow}>
-            <h2>
-              {activeScreen === "prototype"
-                ? WORKER_APP_CANVAS_NAME
-                : activeScreen === "home"
-                  ? WORKER_APP_HOME_PAGE_NAME
-                  : activeScreen === "travail"
-                    ? WORKER_APP_TRAVAIL_PAGE_NAME
-                    : activeScreen === "postFixe"
-                      ? WORKER_APP_POST_FIXE_PAGE_NAME
-                      : activeScreen === "boite"
-                        ? WORKER_APP_BOITE_PAGE_NAME
-                        : activeScreen === "profile"
-                          ? WORKER_APP_PROFILE_PAGE_NAME
-                          : activeScreen === "synchronisation"
-                            ? WORKER_APP_SYNCHRONISATION_PAGE_NAME
-                            : WORKER_APP_GET_STARTED_PAGE_NAME}
-            </h2>
-            <div className={styles.headerActions}>
-              <button
-                className={styles.copyTargetButton}
-                type="button"
-                onClick={handleCopyDesignSystem}
-              >
-                {copyStatus === "copied" ? "Copied" : "Copy DS"}
-              </button>
-            </div>
-          </div>
-        </div>
         <div className={styles.canvasPage}>
           {activeScreen === "postFixe" ? (
             <div className={styles.canvasSubHeader}>
