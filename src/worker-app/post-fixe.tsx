@@ -40,7 +40,6 @@ type ObservationItem = {
 };
 
 type PosteStatus = "Pas commencé" | "En cours" | "Terminé";
-type PosteFilter = "Tous" | PosteStatus;
 type FleuraisonNoteType = "Début" | "Suivi" | "Finale";
 type ObservationPhaseName = "Fleuraison" | "Nouaison" | "Chute physiologique";
 type ObservationSecondaryMode = "input" | "chips";
@@ -765,13 +764,6 @@ const observationToneClasses = {
   rose: styles.observationToneRose,
 } as const;
 
-const posteStatusClasses = {
-  "Pas commencé": styles.posteStatusNotStarted,
-  "En cours": styles.posteStatusInProgress,
-  "Terminé": styles.posteStatusDone,
-} as const;
-const posteFilters: PosteFilter[] = ["Tous", "Pas commencé", "En cours", "Terminé"];
-
 const irrigationOptions = [
   "Goutte-à-goutte en surface",
   "Goutte-à-goutte enterré",
@@ -823,18 +815,12 @@ export function WorkerAppPostFixePage({
   const [showUnsavedModal, setShowUnsavedModal] = useState(false);
   const [selectedObservation, setSelectedObservation] = useState<ObservationItem | null>(null);
   const [isAddingFleuraisonNote, setIsAddingFleuraisonNote] = useState(true);
-  const [posteFilter, setPosteFilter] = useState<PosteFilter>("Tous");
   const [editingFleuraisonNoteId, setEditingFleuraisonNoteId] = useState<string | null>(null);
   const [selectedFleuraisonNoteId, setSelectedFleuraisonNoteId] = useState<string | null>(null);
   const [deleteConfirmNoteId, setDeleteConfirmNoteId] = useState<string | null>(null);
   const [imageViewer, setImageViewer] = useState<{ images: string[]; index: number } | null>(null);
   const fleuraisonImageInputRef = useRef<HTMLInputElement | null>(null);
   const imageViewerTouchStartXRef = useRef<number | null>(null);
-  const filterRowRef = useRef<HTMLDivElement | null>(null);
-  const filterRowDraggingRef = useRef(false);
-  const filterRowStartXRef = useRef(0);
-  const filterRowStartScrollLeftRef = useRef(0);
-  const filterRowDidDragRef = useRef(false);
   const [observationNotesByKey, setObservationNotesByKey] = useState<
     Record<string, FleuraisonNote[]>
   >(initialObservationNotesByKey);
@@ -961,81 +947,6 @@ export function WorkerAppPostFixePage({
 
     return { poste, observations, progress, completedCount, status };
   });
-  const posteStatusCounts = {
-    "Pas commencé": posteCards.filter((posteCard) => posteCard.status === "Pas commencé").length,
-    "En cours": posteCards.filter((posteCard) => posteCard.status === "En cours").length,
-    "Terminé": posteCards.filter((posteCard) => posteCard.status === "Terminé").length,
-  };
-  const posteFilterCounts: Record<PosteFilter, number> = {
-    Tous: posteCards.length,
-    "Pas commencé": posteStatusCounts["Pas commencé"],
-    "En cours": posteStatusCounts["En cours"],
-    "Terminé": posteStatusCounts["Terminé"],
-  };
-  const hasAnyPosteCards = posteCards.length > 0;
-  const filteredPosteCards =
-    posteFilter === "Tous"
-      ? posteCards
-      : posteCards.filter((posteCard) => posteCard.status === posteFilter);
-  const renderPosteFilters = (counts: Record<PosteFilter, number>) => (
-    <div
-      ref={filterRowRef}
-      className={styles.posteFiltersRow}
-      role="tablist"
-      aria-label="Filtres poste fixe"
-      onPointerDown={(event) => {
-        if (!filterRowRef.current) {
-          return;
-        }
-
-        filterRowDraggingRef.current = true;
-        filterRowStartXRef.current = event.clientX;
-        filterRowStartScrollLeftRef.current = filterRowRef.current.scrollLeft;
-        filterRowDidDragRef.current = false;
-      }}
-      onPointerMove={(event) => {
-        if (!filterRowDraggingRef.current || !filterRowRef.current) {
-          return;
-        }
-
-        const deltaX = event.clientX - filterRowStartXRef.current;
-        if (Math.abs(deltaX) > 8) {
-          filterRowDidDragRef.current = true;
-        }
-        filterRowRef.current.scrollLeft = filterRowStartScrollLeftRef.current - deltaX;
-      }}
-      onPointerUp={() => {
-        filterRowDraggingRef.current = false;
-      }}
-      onPointerCancel={() => {
-        filterRowDraggingRef.current = false;
-      }}
-      onPointerLeave={() => {
-        filterRowDraggingRef.current = false;
-      }}
-    >
-      {posteFilters.map((filter) => (
-        <button
-          key={filter}
-          type="button"
-          role="tab"
-          aria-selected={posteFilter === filter}
-          className={`${styles.posteFilterChip} ${
-            posteFilter === filter ? styles.posteFilterChipActive : ""
-          }`}
-          onClick={() => {
-            if (filterRowDidDragRef.current) {
-              filterRowDidDragRef.current = false;
-              return;
-            }
-            setPosteFilter(filter);
-          }}
-        >
-          {filter} ({counts[filter]})
-        </button>
-      ))}
-    </div>
-  );
   const selectedPosteConfig =
     selectedPoste != null
       ? (posteConfigs[selectedPoste.name] ?? emptyPosteConfig)
@@ -2089,66 +2000,6 @@ export function WorkerAppPostFixePage({
                     ))}
                   </div>
 
-                  <h3 className={styles.posteSectionTitle}>Configuration</h3>
-                  {hasSavedConfig ? (
-                    <div className={styles.posteConfigCard}>
-                      <div className={styles.posteConfigFooter}>
-                        <p className={styles.posteConfigDate}>Modifié le 28 Avr</p>
-                        <button
-                          className={styles.posteConfigAction}
-                          type="button"
-                          onClick={() => {
-                            setConfigDraft(selectedPosteConfig);
-                            setIsEditingConfig(true);
-                          }}
-                        >
-                          Modifier
-                          <span className={styles.posteArrow} aria-hidden="true">
-                            chevron_right
-                          </span>
-                        </button>
-                      </div>
-                      <div className={styles.posteConfigContent}>
-                        <p className={styles.posteConfigLine}>
-                          <span className={styles.posteConfigIcon} aria-hidden="true">
-                            water_drop
-                          </span>
-                          {selectedPosteConfig.irrigationType}
-                        </p>
-                        <p className={styles.posteConfigLine}>
-                          <span className={styles.posteConfigIcon} aria-hidden="true">
-                            water
-                          </span>
-                          {selectedPosteConfig.waterSource}
-                        </p>
-                        <p className={styles.posteConfigLine}>
-                          <span className={styles.posteConfigIcon} aria-hidden="true">
-                            star
-                          </span>
-                          Qualité : {selectedPosteConfig.waterQuality}
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className={styles.posteConfigEmptyCard}>
-                      <div className={styles.posteConfigEmptyText}>
-                        <p className={styles.posteConfigEmptyTitle}>Configuration non renseignée</p>
-                        <p className={styles.posteConfigEmptySubTitle}>
-                          Irrigation, source et qualité de l&apos;eau
-                        </p>
-                      </div>
-                      <button
-                        className={styles.posteConfigEmptyAction}
-                        type="button"
-                        onClick={() => {
-                          setConfigDraft(defaultPosteConfig);
-                          setIsEditingConfig(true);
-                        }}
-                      >
-                        Configurer
-                      </button>
-                    </div>
-                  )}
                 </>
               )}
             </div>
@@ -2167,11 +2018,10 @@ export function WorkerAppPostFixePage({
                     </span>
                   </div>
                 </div>
-                {hasAnyPosteCards ? renderPosteFilters(posteFilterCounts) : null}
               </div>
 
               <div className={styles.postesFixesList}>
-                {filteredPosteCards.map(
+                {posteCards.map(
                   ({ poste, observations: posteObservations, progress: posteProgress, completedCount: posteCompletedCount, status: posteStatus }) => {
 
                     return (
@@ -2184,11 +2034,6 @@ export function WorkerAppPostFixePage({
                         <div className={styles.posteCardTop}>
                           <h3 className={styles.posteFixeCardTitle}>{poste.name}</h3>
                           <div className={styles.posteCardTopActions}>
-                            <span
-                              className={`${styles.posteStatusBadge} ${posteStatusClasses[posteStatus]}`}
-                            >
-                              {posteStatus}
-                            </span>
                             <span className={styles.posteArrow} aria-hidden="true">
                               chevron_right
                             </span>
@@ -2218,7 +2063,7 @@ export function WorkerAppPostFixePage({
                     );
                   }
                 )}
-                {filteredPosteCards.length === 0 ? (
+                {posteCards.length === 0 ? (
                   <div className={styles.postesFilterEmptyState}>Aucun poste fixe pour ce filtre.</div>
                 ) : null}
               </div>
@@ -2238,12 +2083,6 @@ export function WorkerAppPostFixePage({
                     </span>
                   </div>
                 </div>
-                <div className={styles.posteFiltersSkeletonRow} aria-hidden="true">
-                  <span className={styles.posteFilterSkeletonChip} style={{ width: "84px" }} />
-                  <span className={styles.posteFilterSkeletonChip} style={{ width: "144px" }} />
-                  <span className={styles.posteFilterSkeletonChip} style={{ width: "114px" }} />
-                  <span className={styles.posteFilterSkeletonChip} style={{ width: "108px" }} />
-                </div>
               </div>
 
               <div className={styles.postesFixesList}>
@@ -2252,7 +2091,6 @@ export function WorkerAppPostFixePage({
                     <div className={styles.skeletonHeader}>
                       <span className={styles.skeletonTitle} style={{ width: `${skeleton.title}%` }} />
                       <div className={styles.skeletonHeaderRight}>
-                        <span className={styles.skeletonBadge} />
                         <span className={styles.skeletonChevron} />
                       </div>
                     </div>
