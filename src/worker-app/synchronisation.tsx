@@ -5,18 +5,22 @@ import { WorkerAppStatusBar } from "./screens/status-bar";
 type WorkerAppSynchronisationPageProps = {
   showDeviceFrame: boolean;
   theme: "dark" | "light";
+  frameTheme?: "dark" | "light";
 };
 
 export function WorkerAppSynchronisationPage({
   showDeviceFrame,
   theme,
+  frameTheme,
 }: WorkerAppSynchronisationPageProps) {
-  const frameClass = theme === "light" ? styles.androidCanvasLightFrame : styles.androidCanvas;
+  const resolvedFrameTheme = frameTheme ?? theme;
+  const frameClass =
+    resolvedFrameTheme === "light" ? styles.androidCanvasLightFrame : styles.androidCanvas;
 
   return (
     <div className={showDeviceFrame ? frameClass : styles.androidCanvasNoFrame}>
       <div className={styles.androidScreen}>
-        <WorkerAppStatusBar />
+        <WorkerAppStatusBar theme={theme} />
         <div className={styles.detailContent}>
           <div className={styles.pageTopBar}>
             <button className={styles.pageBackButton} type="button" aria-label="Back">

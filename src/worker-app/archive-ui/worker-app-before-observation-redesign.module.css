@@ -39,79 +39,32 @@
 }
 
 .androidScreen {
-  --screen-margin: var(--spacing-layout-padding-sm, 16px);
-  --font-geist-sans: var(--typography-font-family-base, Inter, ui-sans-serif, system-ui, sans-serif);
-  --ds-brand: var(--color-brand-primary, #01a362);
-  --ds-surface: var(--color-surface-default, #f3f5f7);
-  --ds-card: var(--color-surface-raised, #ffffff);
-  --ds-border: var(--color-border-default, #e3e8ee);
-  --ds-border-strong: var(--color-border-strong, #d1d8e1);
-  --ds-text-primary: var(--color-text-primary, #17211f);
-  --ds-text-secondary: var(--color-text-secondary, #5f6f68);
-  --ds-text-muted: var(--color-text-tertiary, #8e98a5);
-  --ds-text-inverse: var(--color-text-inverse, #ffffff);
-  --ds-text-danger: var(--color-text-danger, #d92d20);
-  --ds-overlay: var(--color-surface-overlay, rgb(11 17 16 / 60%));
-  --ds-success-bg: var(--color-feedback-success-bg, #e8f8f2);
-  --ds-success-text: var(--color-feedback-success-text, #055035);
-  --ds-info-bg: var(--color-feedback-info-bg, #eff6ff);
-  --ds-info-text: var(--color-feedback-info-text, #1e40af);
-  --ds-warning-bg: var(--color-feedback-warning-bg, #fff4e9);
-  --ds-warning-text: var(--color-feedback-warning-text, #92400e);
-  --ds-error-bg: var(--color-feedback-error-bg, #fef2f2);
-  --ds-error-text: var(--color-feedback-error-text, #991b1b);
-  --ds-status-done-bg: var(--color-status-done-bg, rgba(1, 163, 98, 0.14));
-  --ds-status-done-text: var(--color-status-done-text, #018b54);
-  --ds-status-in-progress-bg: var(--color-status-in-progress-bg, #dbeafe);
-  --ds-status-in-progress-text: var(--color-status-in-progress-text, #1d4ed8);
-  --ds-status-not-started-bg: var(--color-status-not-started-bg, #f3f5f7);
-  --ds-status-not-started-text: var(--color-status-not-started-text, #6b7280);
-  --ds-status-not-started-border: var(--color-status-not-started-border, #d1d8e1);
-  --ds-icon-green-bg: var(--color-card-icon-green-icon-bg, rgba(1, 163, 98, 0.1));
-  --ds-icon-green-fg: var(--color-card-icon-green-icon-color, #01a362);
-  --ds-icon-blue-bg: var(--color-card-icon-blue-icon-bg, rgba(37, 99, 235, 0.11));
-  --ds-icon-blue-fg: var(--color-card-icon-blue-icon-color, #1d4ed8);
-  --ds-icon-teal-bg: var(--color-card-icon-teal-icon-bg, rgba(13, 148, 136, 0.12));
-  --ds-icon-teal-fg: var(--color-card-icon-teal-icon-color, #0f766e);
-  --ds-icon-violet-bg: var(--color-card-icon-violet-icon-bg, rgba(123, 97, 255, 0.12));
-  --ds-icon-violet-fg: var(--color-card-icon-violet-icon-color, #6e56cf);
-  --ds-icon-orange-bg: var(--color-card-icon-orange-icon-bg, rgba(249, 115, 22, 0.12));
-  --ds-icon-orange-fg: var(--color-card-icon-orange-icon-color, #c2410c);
-  --ds-icon-rose-bg: var(--color-card-icon-rose-icon-bg, rgba(225, 29, 72, 0.11));
-  --ds-icon-rose-fg: var(--color-card-icon-rose-icon-color, #be185d);
-  --fs-body-main: var(--typography-body-md-font-size, 16px);
-  --fs-body-secondary: var(--typography-body-sm-font-size, 14px);
-  --fs-caption: var(--typography-caption-sm-font-size, 12px);
-  --fs-button-tab: var(--typography-label-md-font-size, 14px);
-  --fs-chip: var(--typography-caption-sm-font-size, 12px);
-  --fs-input-label: var(--typography-caption-sm-font-size, 12px);
-  --fs-title-medium: var(--typography-label-lg-font-size, 16px);
-  --fs-title-large: var(--typography-heading-sm-font-size, 20px);
-  --fs-headline-small: var(--typography-heading-md-font-size, 24px);
-  --fs-headline-medium: var(--typography-heading-lg-font-size, 30px);
-  --fs-headline-large: var(--typography-heading-xl-font-size, 36px);
-  --fs-appbar-title: var(--typography-heading-sm-font-size, 20px);
-  --fs-bottom-nav: var(--typography-caption-sm-font-size, 12px);
-  --space-1: var(--spacing-component-gap-xs, 4px);
-  --space-2: var(--spacing-component-gap-sm, 8px);
-  --space-3: var(--spacing-component-gap-md, 12px);
-  --space-4: var(--spacing-component-gap-lg, 16px);
-  --space-5: var(--spacing-component-gap-xl, 24px);
-  --inset-sm: var(--spacing-inset-sm, 12px);
-  --inset-md: var(--spacing-inset-md, 16px);
-  --inset-lg: var(--spacing-inset-lg, 24px);
-  --radius-xs: 10px;
-  --radius-sm: 12px;
-  --radius-md: 14px;
-  --radius-lg: 16px;
-  --radius-xl: 18px;
-  --radius-2xl: 20px;
-  --radius-full: 999px;
-  --nav-surface: var(--color-surface-raised, #ffffff);
-  --nav-on-surface: var(--color-text-primary, #17211f);
-  --nav-on-surface-variant: var(--color-text-secondary, #7b8490);
-  --nav-secondary-container: var(--color-brand-primary-subtle, #e6f7f1);
-  --nav-on-secondary-container: var(--color-brand-primary, #01a362);
+  --screen-margin: 16px;
+  --ds-brand: #01a362;
+  --ds-surface: #f3f5f7;
+  --ds-card: #fff;
+  --ds-border: #e3e8ee;
+  --ds-text-primary: #17211f;
+  --ds-text-secondary: #5f6f68;
+  --ds-text-muted: #8e98a5;
+  --fs-body-main: 16px;
+  --fs-body-secondary: 14px;
+  --fs-caption: 12px;
+  --fs-button-tab: 14px;
+  --fs-chip: 12px;
+  --fs-input-label: 12px;
+  --fs-title-medium: 16px;
+  --fs-title-large: 22px;
+  --fs-headline-small: 24px;
+  --fs-headline-medium: 28px;
+  --fs-headline-large: 32px;
+  --fs-appbar-title: 20px;
+  --fs-bottom-nav: 12px;
+  --nav-surface: #fff;
+  --nav-on-surface: #17211f;
+  --nav-on-surface-variant: #7b8490;
+  --nav-secondary-container: #e6f7f1;
+  --nav-on-secondary-container: #01a362;
 
   position: relative;
   z-index: 2;
@@ -119,7 +72,7 @@
   height: 100%;
   border-radius: 28px;
   overflow: hidden;
-  background: var(--ds-card);
+  background: #fff;
 }
 
 .getStartedCanvas {
@@ -135,25 +88,15 @@
   justify-content: space-between;
   height: 48px;
   padding: 10px 24px;
-  background: var(--ds-surface);
-}
-
-.statusBarDark {
-  color: #1d1b20;
-}
-
-.statusBarLight {
-  color: #1d1b20;
+  background: #f3f5f7;
 }
 
 .time {
-  color: currentcolor;
-  font-family: Roboto, var(--font-geist-sans), sans-serif;
+  color: #1d1b20;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 700;
   line-height: 20px;
-  letter-spacing: 0.14px;
-  font-variant-numeric: lining-nums proportional-nums;
+  letter-spacing: 0.01em;
 }
 
 .cameraCutout {
@@ -168,34 +111,18 @@
 .rightIcons {
   display: flex;
   align-items: center;
-  gap: 0;
-  color: currentcolor;
+  gap: 6px;
 }
 
-.statusAssetImage {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.statusWifi {
-  position: relative;
+.rightIcons img:nth-child(1),
+.rightIcons img:nth-child(2) {
   width: 17px;
   height: 17px;
 }
 
-.statusSignal {
-  width: 17px;
-  height: 17px;
-  margin-left: 16px;
-}
-
-.statusBattery {
+.rightIcons img:nth-child(3) {
   width: 8px;
   height: 15px;
-  margin-top: 1px;
-  margin-left: 5px;
 }
 
 .mobileContent {
@@ -209,91 +136,13 @@
 
 .blankContent {
   height: calc(100% - 48px - 24px);
-  background: var(--ds-card);
-}
-
-.prototypePlaceholder {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  background: transparent;
-  min-height: 0;
-  padding: 24px 0;
-  text-align: center;
-}
-
-.prototypePlaceholderHero {
-  display: grid;
-  place-items: center;
-  width: 88px;
-  height: 88px;
-  border-radius: 28px;
-  background: color-mix(in srgb, var(--ds-brand) 10%, var(--ds-card));
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ds-brand) 10%, transparent);
-}
-
-.prototypePlaceholderIcon {
-  display: grid;
-  place-items: center;
-  font-family: "Material Symbols Outlined", sans-serif;
-  font-size: 36px;
-  line-height: 1;
-  color: var(--ds-brand);
-  font-variation-settings:
-    "FILL" 0,
-    "wght" 400,
-    "GRAD" 0,
-    "opsz" 36;
-}
-
-.prototypePlaceholderBody {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  max-width: 280px;
-}
-
-.prototypePlaceholderEyebrow {
-  margin: 0;
-  color: var(--ds-brand);
-  font-family: var(--font-geist-sans), sans-serif;
-  font-size: var(--fs-caption);
-  font-weight: 600;
-  line-height: 1.3;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
-
-.prototypePlaceholderTitle {
-  margin: 0;
-  color: var(--ds-text-primary);
-  font-family: var(--font-geist-sans), sans-serif;
-  font-size: var(--fs-title-large);
-  font-weight: 700;
-  line-height: 1.2;
-}
-
-.prototypePlaceholderDescription {
-  margin: 0;
-  color: var(--ds-text-secondary);
-  font-family: var(--font-geist-sans), sans-serif;
-  font-size: var(--fs-body-secondary);
-  line-height: 1.5;
+  background: #fff;
 }
 
 .homeContent {
   height: calc(100% - 48px - 80px - 24px);
-  background: var(--ds-surface);
+  background: #f3f5f7;
   padding: var(--screen-margin);
-}
-
-.prototypeScreenContent {
-  display: flex;
-  flex-direction: column;
 }
 
 .secteursContent {
@@ -304,7 +153,7 @@
   overflow-y: auto;
   -ms-overflow-style: none;
   scrollbar-width: none;
-  background: var(--ds-surface);
+  background: #f3f5f7;
   padding: var(--screen-margin);
 }
 
@@ -326,7 +175,7 @@
   align-items: center;
   gap: 10px;
   border-radius: 14px;
-  background: var(--ds-card);
+  background: #fff;
   box-shadow: none;
   padding: 10px 12px;
 }
@@ -337,14 +186,14 @@
   width: 44px;
   height: 44px;
   border-radius: 999px;
-  background: var(--ds-icon-green-bg);
-  color: var(--ds-icon-green-fg);
+  background: rgb(1 163 98 / 12%);
+  color: #018651;
   font-family: "Material Symbols Outlined", sans-serif;
   font-size: 22px;
 }
 
 .campaignSummaryCard h3 {
-  color: var(--ds-text-primary);
+  color: #232f2c;
   font-size: var(--fs-title-medium);
   font-weight: 500;
   letter-spacing: -0.01em;
@@ -352,13 +201,13 @@
 
 .campaignSummaryCard p {
   margin-top: 2px;
-  color: var(--ds-text-muted);
+  color: #8d939a;
   font-size: var(--fs-caption);
   font-weight: 400;
 }
 
 .campaignSummaryCard .posteFixeCampaignTitle {
-  color: var(--ds-text-primary);
+  color: #1f2a27;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: var(--fs-title-medium);
   font-weight: 500;
@@ -368,7 +217,7 @@
 
 .campaignSummaryCard .posteFixeCampaignMeta {
   margin-top: 2px;
-  color: var(--ds-text-muted);
+  color: #7e878f;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: var(--fs-caption);
   font-weight: 400;
@@ -388,7 +237,7 @@
 }
 
 .homeTitle {
-  color: var(--ds-text-primary);
+  color: #17211f;
   font-size: 24px;
   font-weight: 700;
   line-height: 1.2;
@@ -397,7 +246,7 @@
 
 .posteFixeTitle {
   margin: 0;
-  color: var(--ds-text-primary);
+  color: #17211f;
   font-size: var(--fs-appbar-title);
   font-weight: 700;
   line-height: 1.25;
@@ -412,7 +261,7 @@
 
 .posteFixeSubtitle {
   margin: 0;
-  color: var(--ds-text-secondary);
+  color: #616161;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: var(--fs-caption);
   font-weight: 400;
@@ -458,7 +307,7 @@
   display: block;
   height: 32px;
   border-radius: 999px;
-  background: var(--ds-border);
+  background: #e5e9e7;
   overflow: hidden;
 }
 
@@ -472,10 +321,10 @@
 }
 
 .posteFilterChip {
-  border: 1px solid var(--ds-border-strong);
+  border: 1px solid #d6dce2;
   border-radius: 999px;
   background: transparent;
-  color: var(--ds-text-secondary);
+  color: #5e6d79;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: 12px;
   font-weight: 500;
@@ -486,9 +335,9 @@
 }
 
 .posteFilterChipActive {
-  border-color: var(--ds-brand);
-  background: var(--ds-brand);
-  color: var(--ds-text-inverse);
+  border-color: #01a362;
+  background: #01a362;
+  color: #fff;
 }
 
 .syncBadge {
@@ -499,8 +348,8 @@
   height: 40px;
   border: none;
   border-radius: 999px;
-  background: var(--ds-card);
-  color: var(--ds-text-muted);
+  background: #fff;
+  color: #7f8a96;
   cursor: pointer;
 }
 
@@ -514,23 +363,23 @@
 }
 
 .syncBadgeIdle {
-  color: var(--ds-text-muted);
-  background: var(--ds-card);
+  color: #9e9e9e;
+  background: #fff;
 }
 
 .syncBadgeSyncing {
-  color: var(--ds-info-text);
-  background: var(--ds-card);
+  color: #1565c0;
+  background: #fff;
 }
 
 .syncBadgeSynced {
-  color: var(--ds-status-done-text);
-  background: var(--ds-status-done-bg);
+  color: #01a362;
+  background: #e6f7f1;
 }
 
 .syncBadgeError {
-  color: var(--ds-warning-text);
-  background: var(--ds-warning-bg);
+  color: #f57c00;
+  background: #fff3e0;
 }
 
 .syncBadgeSpinner {
@@ -580,8 +429,8 @@
   width: 40px;
   height: 40px;
   border-radius: 999px;
-  background: var(--ds-status-done-bg);
-  color: var(--ds-status-done-text);
+  background: rgb(1 163 98 / 14%);
+  color: #018651;
   font-size: 14px;
   font-weight: 700;
 }
@@ -597,8 +446,8 @@
   justify-content: space-between;
   gap: 10px;
   border-radius: 12px;
-  background: color-mix(in srgb, var(--ds-text-primary) 92%, transparent);
-  color: var(--ds-text-inverse);
+  background: rgb(20 27 25 / 94%);
+  color: #fff;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: 12px;
   font-weight: 500;
@@ -609,8 +458,8 @@
 .syncSnackbarAction {
   border: none;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--ds-brand) 18%, transparent);
-  color: var(--ds-text-inverse);
+  background: rgb(1 163 98 / 18%);
+  color: #8ff0c7;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: 12px;
   font-weight: 600;
@@ -628,7 +477,7 @@
 .posteCard {
   border: none;
   border-radius: 14px;
-  background: var(--ds-card);
+  background: #fff;
   box-shadow: none;
   text-align: left;
   padding: 12px;
@@ -647,8 +496,7 @@
 }
 
 .posteCardTop .posteFixeCardTitle {
-  margin: 0;
-  color: var(--ds-text-primary);
+  color: #1a2623;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: var(--fs-title-medium);
   font-weight: 500;
@@ -659,12 +507,12 @@
 .posteArrow {
   font-family: "Material Symbols Outlined", sans-serif;
   font-size: 18px;
-  color: var(--ds-text-secondary);
+  color: #6f807b;
 }
 
 .posteCard .posteFixeCardSubtitle {
-  margin: 4px 0 0;
-  color: var(--ds-text-secondary);
+  margin-top: 4px;
+  color: #667774;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: var(--fs-body-secondary);
   font-weight: 400;
@@ -673,8 +521,8 @@
 
 .posteFixeDates {
   display: block;
-  margin: 6px 0 0;
-  color: var(--ds-text-muted);
+  margin-top: 6px;
+  color: #808a90;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: var(--fs-caption);
   font-weight: 400;
@@ -695,23 +543,23 @@
 }
 
 .posteStatusNotStarted {
-  background: var(--ds-status-not-started-bg);
-  color: var(--ds-status-not-started-text);
+  background: #f5f5f5;
+  color: #6b7280;
 }
 
 .posteStatusInProgress {
-  background: var(--ds-status-in-progress-bg);
-  color: var(--ds-status-in-progress-text);
+  background: #e3f0ff;
+  color: #1d4ed8;
 }
 
 .posteStatusDone {
-  background: var(--ds-status-done-bg);
-  color: var(--ds-status-done-text);
+  background: #e6f7f1;
+  color: #01a362;
 }
 
 .posteProgressLabel {
-  margin: 8px 0 0;
-  color: var(--ds-text-secondary);
+  margin-top: 8px;
+  color: #6f7a87;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: var(--fs-caption);
   font-weight: 500;
@@ -719,7 +567,7 @@
 }
 
 .posteProgressLabelMuted {
-  color: var(--ds-text-muted);
+  color: #8b949c;
 }
 
 .posteProgressRow {
@@ -730,27 +578,23 @@
 }
 
 .posteProgressTrack {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 4px;
   flex: 1;
-  align-items: center;
-}
-
-.posteProgressSegment {
-  display: block;
-  height: 6px;
+  height: 4px;
   border-radius: 999px;
-  background: var(--ds-border);
+  background: #e2e8e6;
+  overflow: hidden;
 }
 
-.posteProgressSegmentDone {
-  background: var(--ds-brand);
+.posteProgressFill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: #01a362;
 }
 
 .posteProgressValue {
   min-width: 36px;
-  color: var(--ds-text-primary);
+  color: #3c4c48;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: var(--fs-chip);
   font-weight: 500;
@@ -762,8 +606,8 @@
 
 .postesFilterEmptyState {
   border-radius: 12px;
-  background: var(--ds-card);
-  color: var(--ds-text-muted);
+  background: #fff;
+  color: #78838f;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: 13px;
   font-weight: 400;
@@ -777,7 +621,7 @@
   align-items: center;
   gap: 12px;
   border-radius: 14px;
-  background: var(--ds-card);
+  background: #fff;
   box-shadow: none;
   padding: 12px;
 }
@@ -787,7 +631,7 @@
 .loadingLineSecondary {
   display: block;
   border-radius: 999px;
-  background: linear-gradient(90deg, color-mix(in srgb, var(--ds-border) 82%, var(--ds-surface)) 0%, var(--ds-border) 50%, color-mix(in srgb, var(--ds-border) 82%, var(--ds-surface)) 100%);
+  background: linear-gradient(90deg, #edf2f0 0%, #e3ebe8 50%, #edf2f0 100%);
 }
 
 .loadingSummaryIcon {
@@ -1022,7 +866,7 @@
   justify-content: center;
   gap: 8px;
   border-radius: 14px;
-  background: var(--ds-card);
+  background: #fff;
   text-align: center;
   padding: 24px;
 }
@@ -1030,23 +874,23 @@
 .emptyStateIcon {
   font-family: "Material Symbols Outlined", sans-serif;
   font-size: 28px;
-  color: var(--ds-text-secondary);
+  color: #6b7b76;
 }
 
 .emptyState h3 {
-  color: var(--ds-text-primary);
+  color: #1f2b28;
   font-size: 16px;
   font-weight: 700;
 }
 
 .emptyState p {
-  color: var(--ds-text-secondary);
+  color: #657671;
   font-size: var(--fs-caption);
   line-height: 1.4;
 }
 
 .selectedPosteHint {
-  color: var(--ds-text-secondary);
+  color: #5a6b67;
   font-size: 12px;
   line-height: 1.35;
 }
@@ -1159,7 +1003,7 @@
 
 .posteDetailSummaryDates {
   margin: 2px 0 0;
-  color: var(--ds-text-muted);
+  color: #97a0ab;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: var(--fs-caption);
   font-weight: 400;
@@ -1174,7 +1018,7 @@
 }
 
 .posteEditMainTitle {
-  color: var(--ds-text-primary);
+  color: #0d1413;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: var(--fs-title-large);
   font-weight: 600;
@@ -1201,7 +1045,7 @@
   gap: 10px;
   min-height: 48px;
   margin: 0;
-  color: var(--ds-text-primary);
+  color: #191f24;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: var(--fs-title-medium);
   font-weight: 500;
@@ -1219,10 +1063,10 @@
   justify-content: center;
   gap: 6px;
   height: 32px;
-  border: 1px solid var(--ds-border-strong);
+  border: 1px solid #d6dce2;
   border-radius: 999px;
   background: transparent;
-  color: var(--ds-text-secondary);
+  color: #5e6d79;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: var(--fs-chip);
   font-weight: 500;
@@ -1234,7 +1078,7 @@
 .posteEditChipActive {
   border-color: var(--ds-brand);
   background: var(--ds-brand);
-  color: var(--ds-text-inverse);
+  color: #fff;
 }
 
 .posteEditChipCheck {
@@ -1282,7 +1126,7 @@
   right: 0;
   left: 0;
   height: 16px;
-  background: linear-gradient(to top, var(--ds-surface), color-mix(in srgb, var(--ds-surface) 0%, transparent));
+  background: linear-gradient(to top, var(--ds-surface), rgb(243 245 247 / 0%));
   pointer-events: none;
 }
 
@@ -1322,7 +1166,7 @@
   width: 100%;
   border: none;
   border-radius: 12px;
-  background: var(--ds-surface);
+  background: #edf1f5;
   color: var(--ds-text-primary);
   font-family: var(--font-geist-sans), sans-serif;
   font-size: var(--fs-body-main);
@@ -1336,7 +1180,7 @@
   height: 46px;
   border: none;
   border-radius: 12px;
-  background: var(--ds-surface);
+  background: #edf1f5;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1347,9 +1191,8 @@
 
 .fleuraisonTimeValue {
   font-family: var(--font-geist-sans), sans-serif;
-  font-size: var(--fs-body-secondary);
+  font-size: var(--fs-body-main);
   font-weight: 400;
-  line-height: 1.3;
 }
 
 .fleuraisonTimeIcon {
@@ -1370,7 +1213,7 @@
 
 .fleuraisonInput:focus,
 .fleuraisonTextarea:focus {
-  outline: 1px solid var(--ds-border-strong);
+  outline: 1px solid #c8d5d1;
 }
 
 .fleuraisonTextarea {
@@ -1385,7 +1228,7 @@
 }
 
 .fleuraisonInlineError {
-  color: var(--ds-text-danger);
+  color: #b42318;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: var(--fs-caption);
   font-weight: 500;
@@ -1395,9 +1238,9 @@
 .fleuraisonImagePlaceholder {
   width: 84px;
   height: 84px;
-  border: 2px dashed var(--ds-border-strong);
+  border: 2px dashed #d0d8e2;
   border-radius: 14px;
-  background: var(--ds-surface);
+  background: #f7f9fc;
   display: grid;
   place-items: center;
   padding: 0;
@@ -1406,7 +1249,7 @@
 .fleuraisonImageIcon {
   font-family: "Material Symbols Outlined", sans-serif;
   font-size: 24px;
-  color: var(--ds-text-muted);
+  color: #9ca3af;
 }
 
 .fleuraisonImagesGrid {
@@ -1425,7 +1268,7 @@
   height: 84px;
   border-radius: 14px;
   overflow: hidden;
-  background: var(--ds-surface);
+  background: #edf1f5;
 }
 
 .fleuraisonImageThumb img {
@@ -1444,8 +1287,8 @@
   height: 22px;
   border: none;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--ds-text-primary) 60%, transparent);
-  color: var(--ds-text-inverse);
+  background: rgb(0 0 0 / 60%);
+  color: #fff;
   font-family: "Material Symbols Outlined", sans-serif;
   font-size: 16px;
 }
@@ -1460,13 +1303,6 @@
   display: flex;
   flex-direction: column;
   gap: 0;
-}
-
-.fleuraisonSectionHeader {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
 }
 
 .fleuraisonSectionTitle {
@@ -1496,8 +1332,8 @@
   gap: 14px;
   width: min(100%, 340px);
   border-radius: 16px;
-  border: 1px solid var(--ds-border);
-  background: linear-gradient(180deg, var(--ds-card) 0%, color-mix(in srgb, var(--ds-card) 82%, var(--ds-surface)) 100%);
+  border: 1px solid #e6ebf0;
+  background: linear-gradient(180deg, #fff 0%, #fbfcfd 100%);
   padding: 24px;
   text-align: center;
 }
@@ -1508,11 +1344,11 @@
   width: 82px;
   height: 82px;
   border-radius: 999px;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--ds-surface) 70%, var(--ds-card)) 0%, var(--ds-surface) 100%);
+  background: linear-gradient(180deg, #f2f5f8 0%, #edf1f5 100%);
 }
 
 .fleuraisonEmptyIcon {
-  color: var(--ds-text-muted);
+  color: #8f99a5;
   font-family: "Material Symbols Outlined", sans-serif;
   font-size: 38px;
   line-height: 1;
@@ -1523,7 +1359,7 @@
 }
 
 .fleuraisonEmptyTitle {
-  color: var(--ds-text-primary);
+  color: #4d5864;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: var(--fs-title-medium);
   font-weight: 600;
@@ -1532,7 +1368,7 @@
 
 .fleuraisonEmptySubTitle {
   margin-top: 6px;
-  color: var(--ds-text-secondary);
+  color: #8b95a1;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: var(--fs-body-secondary);
   font-weight: 400;
@@ -1597,18 +1433,18 @@
 }
 
 .fleuraisonNoteTypeStart {
-  background: var(--ds-status-done-bg);
-  color: var(--ds-status-done-text);
+  background: #e6f7f1;
+  color: #0a8b55;
 }
 
 .fleuraisonNoteTypeFollowUp {
-  background: var(--ds-status-in-progress-bg);
-  color: var(--ds-status-in-progress-text);
+  background: #dbeafe;
+  color: #1d4ed8;
 }
 
 .fleuraisonNoteTypeEnd {
-  background: var(--ds-status-not-started-bg);
-  color: var(--ds-status-not-started-text);
+  background: #f1f5f9;
+  color: #475569;
 }
 
 .fleuraisonNoteMore {
@@ -1640,7 +1476,7 @@
 .fleuraisonNoteComment {
   margin-top: 10px;
   border-radius: 10px;
-  background: var(--ds-surface);
+  background: #f5f7fa;
   color: var(--ds-text-secondary);
   font-family: var(--font-geist-sans), sans-serif;
   font-size: 12px;
@@ -1683,14 +1519,14 @@
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  background: color-mix(in srgb, var(--ds-text-primary) 24%, transparent);
+  background: rgb(23 33 31 / 24%);
   padding: 10px;
 }
 
 .fleuraisonActionSheet {
   width: 100%;
   border-radius: 16px;
-  background: var(--ds-card);
+  background: #fff;
   padding: 8px 12px 10px;
 }
 
@@ -1699,7 +1535,7 @@
   width: 36px;
   height: 4px;
   border-radius: 999px;
-  background: var(--ds-border-strong);
+  background: #d7dde5;
   margin: 4px auto 10px;
 }
 
@@ -1721,11 +1557,11 @@
 }
 
 .fleuraisonSheetAction + .fleuraisonSheetAction {
-  border-top: 1px solid var(--ds-border);
+  border-top: 1px solid #edf1f5;
 }
 
 .fleuraisonSheetActionDanger {
-  color: var(--ds-text-danger);
+  color: #b42318;
 }
 
 .fleuraisonSheetActionDisabled {
@@ -1736,7 +1572,7 @@
   position: absolute;
   inset: 0;
   z-index: 50;
-  background: color-mix(in srgb, var(--ds-text-primary) 96%, black);
+  background: #000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1753,8 +1589,8 @@
   height: 34px;
   border: none;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--ds-text-inverse) 14%, transparent);
-  color: var(--ds-text-inverse);
+  background: rgb(255 255 255 / 14%);
+  color: #fff;
   font-family: "Material Symbols Outlined", sans-serif;
   font-size: 20px;
   z-index: 1;
@@ -1771,7 +1607,7 @@
   bottom: 14px;
   left: 50%;
   transform: translateX(-50%);
-  color: var(--ds-text-inverse);
+  color: #fff;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: var(--fs-caption);
   font-weight: 500;
@@ -1800,7 +1636,7 @@
   border: none;
   border-radius: 999px;
   background: var(--ds-brand);
-  color: var(--ds-text-inverse);
+  color: #fff;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: var(--fs-button-tab);
   font-weight: 500;
@@ -1812,8 +1648,8 @@
   height: 40px;
   border: 1px solid var(--ds-border);
   border-radius: 999px;
-  background: var(--ds-card);
-  color: var(--ds-text-secondary);
+  background: #fff;
+  color: #5f6f68;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: var(--fs-button-tab);
   font-weight: 500;
@@ -1831,7 +1667,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: color-mix(in srgb, var(--ds-text-primary) 26%, transparent);
+  background: rgb(23 33 31 / 26%);
   padding: 16px;
 }
 
@@ -1881,18 +1717,18 @@
 .unsavedPrimary {
   border: none;
   background: var(--ds-brand);
-  color: var(--ds-text-inverse);
+  color: #fff;
 }
 
 .unsavedDanger {
   border: none;
-  background: var(--color-feedback-error-solid, #d92d20);
-  color: var(--ds-text-inverse);
+  background: #d92d20;
+  color: #fff;
 }
 
 .unsavedSecondary {
   border: 1px solid var(--ds-border);
-  background: var(--ds-card);
+  background: #fff;
   color: var(--ds-text-secondary);
 }
 
@@ -2014,7 +1850,7 @@
   align-items: center;
   gap: 12px;
   border-radius: 16px;
-  background: var(--ds-card);
+  background: #fff;
   box-shadow: none;
   padding: 22px 16px;
   text-align: center;
@@ -2028,8 +1864,8 @@
   gap: 14px;
   width: min(100%, 340px);
   border-radius: 20px;
-  border: 1px solid var(--ds-border);
-  background: linear-gradient(180deg, var(--ds-card) 0%, color-mix(in srgb, var(--ds-card) 82%, var(--ds-surface)) 100%);
+  border: 1px solid #e6ebf0;
+  background: linear-gradient(180deg, #fff 0%, #fbfcfd 100%);
   padding: 28px 24px;
   text-align: center;
 }
@@ -2049,7 +1885,7 @@
   width: 82px;
   height: 82px;
   border-radius: 999px;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--ds-surface) 70%, var(--ds-card)) 0%, var(--ds-surface) 100%);
+  background: linear-gradient(180deg, #f2f5f8 0%, #edf1f5 100%);
 }
 
 .postesEmptyIconMain {
@@ -2058,7 +1894,7 @@
 }
 
 .postesEmptyIconMain {
-  color: var(--ds-text-muted);
+  color: #909aa6;
   font-size: 38px;
 }
 
@@ -2067,7 +1903,7 @@
 }
 
 .postesEmptyTitle {
-  color: var(--ds-text-primary);
+  color: #4d5864;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: var(--fs-title-medium);
   font-weight: 600;
@@ -2076,7 +1912,7 @@
 
 .postesEmptySubtitle {
   margin-top: 6px;
-  color: var(--ds-text-secondary);
+  color: #8b95a1;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: var(--fs-body-secondary);
   font-weight: 400;
@@ -2089,7 +1925,7 @@
 }
 
 .posteConfigEmptyTitle {
-  color: var(--ds-text-primary);
+  color: #616b78;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: var(--fs-title-medium);
   font-weight: 600;
@@ -2099,7 +1935,7 @@
 
 .posteConfigEmptySubTitle {
   margin-top: 4px;
-  color: var(--ds-text-secondary);
+  color: #8d97a4;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: var(--fs-caption);
   font-weight: 400;
@@ -2113,7 +1949,7 @@
   border: none;
   border-radius: 999px;
   background: var(--ds-brand);
-  color: var(--ds-text-inverse);
+  color: #fff;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: var(--fs-chip);
   font-weight: 500;
@@ -2168,12 +2004,12 @@
   bottom: 0;
   left: 14px;
   height: 1px;
-  background: color-mix(in srgb, var(--ds-border) 55%, transparent);
+  background: rgb(227 232 238 / 55%);
 }
 
 .observationIconWrap {
-  --obs-icon-bg: var(--ds-icon-green-bg);
-  --obs-icon-color: var(--ds-icon-green-fg);
+  --obs-icon-bg: rgb(1 163 98 / 10%);
+  --obs-icon-color: var(--ds-brand);
 
   display: grid;
   place-items: center;
@@ -2191,28 +2027,28 @@
 }
 
 .observationToneViolet {
-  --obs-icon-bg: var(--ds-icon-violet-bg);
-  --obs-icon-color: var(--ds-icon-violet-fg);
+  --obs-icon-bg: rgb(123 97 255 / 12%);
+  --obs-icon-color: #6e56cf;
 }
 
 .observationToneBlue {
-  --obs-icon-bg: var(--ds-icon-blue-bg);
-  --obs-icon-color: var(--ds-icon-blue-fg);
+  --obs-icon-bg: rgb(37 99 235 / 11%);
+  --obs-icon-color: #1d4ed8;
 }
 
 .observationToneOrange {
-  --obs-icon-bg: var(--ds-icon-orange-bg);
-  --obs-icon-color: var(--ds-icon-orange-fg);
+  --obs-icon-bg: rgb(249 115 22 / 12%);
+  --obs-icon-color: #c2410c;
 }
 
 .observationToneTeal {
-  --obs-icon-bg: var(--ds-icon-teal-bg);
-  --obs-icon-color: var(--ds-icon-teal-fg);
+  --obs-icon-bg: rgb(13 148 136 / 12%);
+  --obs-icon-color: #0f766e;
 }
 
 .observationToneRose {
-  --obs-icon-bg: var(--ds-icon-rose-bg);
-  --obs-icon-color: var(--ds-icon-rose-fg);
+  --obs-icon-bg: rgb(225 29 72 / 11%);
+  --obs-icon-color: #be185d;
 }
 
 .observationMain {
@@ -2221,7 +2057,7 @@
 }
 
 .observationTitle {
-  color: var(--color-card-title, var(--ds-text-primary));
+  color: #4a5a53;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: 14px;
   font-weight: 500;
@@ -2255,29 +2091,23 @@
 }
 
 .observationStatusDone {
-  background: var(--ds-status-done-bg);
-  color: var(--ds-status-done-text);
+  background: rgb(1 163 98 / 14%);
+  color: #0a8b55;
 }
 
 .observationStatusNotStarted {
-  background: var(--ds-status-not-started-bg);
-  color: var(--ds-status-not-started-text);
-}
-
-.observationStatusNotStartedForm {
-  background: var(--ds-status-not-started-bg);
-  border: 1px solid var(--ds-status-not-started-border);
-  color: var(--ds-status-not-started-text);
+  background: #f3f4f6;
+  color: #6b7280;
 }
 
 .observationStatusInProgress {
-  background: var(--ds-status-in-progress-bg);
-  color: var(--ds-status-in-progress-text);
+  background: #dbeafe;
+  color: #1d4ed8;
 }
 
 .detailContent {
   height: calc(100% - 48px - 24px);
-  background: var(--ds-surface);
+  background: #f3f5f7;
   padding: var(--screen-margin);
 }
 
@@ -2311,7 +2141,7 @@
 }
 
 .pageTopTitle {
-  color: var(--ds-text-primary);
+  color: #17211f;
   font-size: 24px;
   font-weight: 700;
   line-height: 1.2;
@@ -2338,7 +2168,7 @@
   width: 36px;
   height: 36px;
   border-radius: 12px;
-  background: var(--ds-icon-green-bg);
+  background: rgb(1 163 98 / 12%);
   color: var(--brand);
 }
 
@@ -2349,7 +2179,7 @@
 }
 
 .brandName {
-  color: var(--ds-text-primary);
+  color: #102317;
   font-size: 19px;
   font-weight: 700;
   letter-spacing: -0.01em;
@@ -2358,21 +2188,21 @@
 .imagePlaceholder {
   width: 100%;
   height: 280px;
-  border: 1px dashed color-mix(in srgb, var(--ds-brand) 32%, var(--ds-border));
+  border: 1px dashed #9fd0bd;
   border-radius: 18px;
-  background: color-mix(in srgb, var(--ds-card) 70%, transparent);
+  background: rgb(255 255 255 / 70%);
   display: grid;
   place-items: center;
 }
 
 .imagePlaceholder span {
-  color: var(--ds-text-secondary);
+  color: #5e7f73;
   font-size: 14px;
   font-weight: 600;
 }
 
 .getStartedTitle {
-  color: var(--ds-text-primary);
+  color: #121618;
   font-size: 32px;
   font-weight: 700;
   line-height: 1.12;
@@ -2389,7 +2219,7 @@
 
 .getStartedText {
   max-width: 320px;
-  color: var(--ds-text-secondary);
+  color: #4c5a58;
   font-size: 16px;
   line-height: 1.56;
   text-align: left;
@@ -2401,7 +2231,7 @@
   flex-direction: column;
   gap: 12px;
   padding-left: 18px;
-  color: var(--ds-text-primary);
+  color: #23312f;
   font-size: 15px;
   line-height: 1.5;
 }
@@ -2421,7 +2251,7 @@
   border: none;
   border-radius: 16px;
   background: var(--brand);
-  color: var(--ds-text-inverse);
+  color: #fff;
   font-size: 17px;
   font-weight: 700;
   letter-spacing: 0.01em;
@@ -2437,7 +2267,7 @@
 }
 
 .navigationBarPageSurface {
-  background: var(--ds-surface);
+  background: #f3f5f7;
 }
 
 .homeBottomBar {
@@ -2445,7 +2275,7 @@
   align-items: center;
   height: 80px;
   padding: 12px 0 16px;
-  border-top: 1px solid var(--ds-border);
+  border-top: 1px solid #edf1f5;
   background: var(--nav-surface);
 }
 
@@ -2514,11 +2344,11 @@
 }
 
 .homeNavItem:not(:disabled):hover .homeNavIconContainer {
-  background: color-mix(in srgb, var(--ds-brand) 10%, transparent);
+  background: rgb(1 163 98 / 10%);
 }
 
 .homeNavItem:not(:disabled):active .homeNavIconContainer {
-  background: color-mix(in srgb, var(--ds-brand) 18%, transparent);
+  background: rgb(1 163 98 / 18%);
 }
 
 .homeNavItemActive.homeNavItem:not(:disabled):hover .homeNavIconContainer,
@@ -2527,7 +2357,7 @@
 }
 
 .homeNavItem:not(:disabled):focus-visible .homeNavIconContainer {
-  outline: 2px solid color-mix(in srgb, var(--ds-brand) 32%, transparent);
+  outline: 2px solid rgb(1 163 98 / 32%);
   outline-offset: 1px;
 }
 
@@ -2575,7 +2405,7 @@
   width: 108px;
   height: 4px;
   border-radius: 12px;
-  background: color-mix(in srgb, var(--ds-text-primary) 72%, transparent);
+  background: #1d1b20;
 }
 
 @media (max-width: 900px) {

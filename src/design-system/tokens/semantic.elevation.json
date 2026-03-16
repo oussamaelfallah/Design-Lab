@@ -1,0 +1,60 @@
+{
+  "elevation": {
+    "flat": {
+      "$type": "string",
+      "$value": "{shadow.none}",
+      "$description": "No elevation. Inline elements, disabled states, flat table rows, background fills."
+    },
+    "raised": {
+      "xs": {
+        "$type": "shadow",
+        "$value": "{shadow.xs}",
+        "$description": "Barely lifted. Input fields on hover, subtle chip surfaces, table row hover state."
+      },
+      "sm": {
+        "$type": "shadow",
+        "$value": "{shadow.sm}",
+        "$description": "Resting card. Default card, list container, form group — the most-used elevation in CropLens dashboard."
+      },
+      "md": {
+        "$type": "shadow",
+        "$value": "{shadow.md}",
+        "$description": "Raised card. Hovered card state, active panel, open accordion."
+      }
+    },
+    "overlay": {
+      "sm": {
+        "$type": "shadow",
+        "$value": "{shadow.lg}",
+        "$description": "Small floating UI. Tooltips, popovers, select dropdowns, date pickers, context menus."
+      },
+      "md": {
+        "$type": "shadow",
+        "$value": "{shadow.xl}",
+        "$description": "Modal-level. Dialogs, confirmation modals, side sheets, image lightbox."
+      },
+      "lg": {
+        "$type": "shadow",
+        "$value": "{shadow.2xl}",
+        "$description": "Maximum. Full-screen overlays, command palette, global search, critical alert dialogs."
+      }
+    },
+    "inset": {
+      "$type": "shadow",
+      "$value": "{shadow.inner}",
+      "$description": "Sunken surface. Input fields in focus/filled state, pressed button active state, well containers, map overlays in field view."
+    },
+    "focus": {
+      "default": {
+        "$type": "shadow",
+        "$value": "{shadow.focus}",
+        "$description": "Brand focus ring. Apply to ALL interactive elements on keyboard focus: buttons, inputs, links, select, checkbox, radio, switch, tab. Required for WCAG 2.4.7."
+      },
+      "error": {
+        "$type": "shadow",
+        "$value": "{shadow.focus-error}",
+        "$description": "Error focus ring. Replace default focus ring on invalid form fields. Signals both focus AND error state simultaneously."
+      }
+    }
+  }
+}

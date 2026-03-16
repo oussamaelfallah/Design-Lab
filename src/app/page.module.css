@@ -21,9 +21,20 @@
   --canvas-title: #dbe4f6;
   --canvas-bg: #17191f;
   --canvas-border: #252a36;
+  --elevation-showcase-bg: #1b1f28;
+  --elevation-card-bg: #1f2430;
+  --elevation-preview-bg: #171c26;
+  --elevation-surface-bg: #222936;
+  --elevation-depth-bg: #141923;
+  --elevation-depth-layer-bg: #232b38;
+  --elevation-focus-bg: #202837;
+  --elevation-value-bg: #18202d;
+  --elevation-value-border: #2f3a4e;
 
   display: flex;
   min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   font-family: var(--font-geist-sans);
   background: var(--page-bg);
 }
@@ -58,6 +69,15 @@
   --canvas-bg: #f8f8f8;
   --canvas-border: #d3dde9;
   --canvas-shadow: none;
+  --elevation-showcase-bg: #f4f7fb;
+  --elevation-card-bg: #ffffff;
+  --elevation-preview-bg: #eef3f9;
+  --elevation-surface-bg: #ffffff;
+  --elevation-depth-bg: #edf2f8;
+  --elevation-depth-layer-bg: #ffffff;
+  --elevation-focus-bg: #ffffff;
+  --elevation-value-bg: #f5f8fc;
+  --elevation-value-border: #d8e2ee;
 }
 
 .sidebar {
@@ -65,12 +85,20 @@
   flex: 0 0 auto;
   min-width: 240px;
   max-width: 560px;
+  height: 100vh;
   flex-direction: column;
   gap: 20px;
   border-right: 1px solid var(--sidebar-border);
   background: var(--sidebar-bg);
   color: var(--sidebar-text);
   padding: 24px;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.sidebar::-webkit-scrollbar {
+  display: none;
 }
 
 .sidebarResizer {
@@ -176,6 +204,12 @@
   padding: 4px 0;
 }
 
+.sidebarBottom {
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid var(--sidebar-border);
+}
+
 .canvasTabs {
   display: flex;
   flex-direction: column;
@@ -226,6 +260,11 @@
   font-size: 18px;
   line-height: 1;
   color: var(--tabs-label);
+  transition: transform 0.2s ease;
+}
+
+.parentTabArrowExpanded {
+  transform: rotate(180deg);
 }
 
 .subTabs {
@@ -299,8 +338,18 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  background: var(--canvas-bg);
   padding: 0;
   gap: 0;
+}
+
+.canvasArea::-webkit-scrollbar {
+  display: none;
 }
 
 .canvasHeaderRow {
@@ -335,12 +384,74 @@
 }
 
 .canvasSubHeader {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  z-index: 3;
   display: flex;
   justify-content: flex-end;
+}
+
+.canvasTopBar {
+  position: sticky;
+  top: 0;
+  z-index: 8;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  margin: 0;
+  padding: 14px 0 10px;
+  background: linear-gradient(
+    180deg,
+    var(--canvas-bg) 0%,
+    var(--canvas-bg) 84%,
+    color-mix(in srgb, var(--canvas-bg) 35%, transparent) 100%
+  );
+}
+
+.canvasTopLeft {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.canvasPageTitle {
+  margin: 0;
+  color: var(--canvas-title);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.canvasViewSwitch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px;
+  border: 1px solid var(--tab-border);
+  border-radius: 999px;
+  background: var(--tab-bg);
+}
+
+.canvasViewTab {
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--tab-text);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 7px 11px;
+  cursor: pointer;
+}
+
+.canvasViewTab:hover {
+  background: var(--tab-hover-bg);
+}
+
+.canvasViewTabActive {
+  border-color: var(--active-border);
+  background: var(--active-bg);
+  color: var(--active-text);
 }
 
 .frameViewTabs {
@@ -367,29 +478,2384 @@
 
 .canvasPage {
   position: relative;
-  flex: 1;
-  display: grid;
-  place-items: center;
+  flex: 0 0 auto;
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   border-radius: 0;
   background: var(--canvas-bg);
   box-shadow:
     inset 0 0 0 1px var(--canvas-border),
     var(--canvas-shadow, 0 20px 50px rgb(0 0 0 / 25%));
-  padding: 28px;
+  padding: 0 28px 28px;
+}
+
+.canvasPageComponents {
+  flex: 0 0 auto;
+  min-height: auto;
+  align-items: stretch;
+}
+
+.canvasModeEmptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  border: 1px dashed var(--tab-border);
+  border-radius: 16px;
+  background: var(--tab-bg);
+  padding: 26px 30px;
+  text-align: center;
+}
+
+.canvasModeEmptyIcon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 28px;
+  color: var(--tabs-label);
+  line-height: 1;
+}
+
+.canvasModeEmptyState h3 {
+  margin: 0;
+  color: var(--canvas-title);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.canvasModeEmptyState p {
+  margin: 0;
+  color: var(--tabs-label);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.componentsCanvas {
+  --components-preview-width: 412px;
+  width: 100%;
+  max-width: none;
+  min-height: auto;
+  padding-top: 8px;
+  padding-bottom: 4px;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.designSystemCanvas {
+  width: 100%;
+  max-width: none;
+  min-height: auto;
+  padding-top: 8px;
+  padding-bottom: 4px;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.designSystemTopTabs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+  border: 1px solid var(--canvas-border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--canvas-bg) 94%, #fff 6%);
+  padding: 4px;
+}
+
+.designSystemTopTab {
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--tab-text);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.designSystemTopTabActive {
+  border-color: var(--active-border);
+  background: var(--active-bg);
+  color: var(--active-text);
+}
+
+.designSystemSubTabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--canvas-border);
+  padding-bottom: 10px;
+}
+
+.designSystemSubTab {
+  border: 1px solid var(--tab-border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--canvas-bg) 92%, #fff 8%);
+  color: var(--tab-text);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 7px 12px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.designSystemSubTabActive {
+  border-color: #01a362;
+  background: color-mix(in srgb, #01a362 18%, var(--canvas-bg) 82%);
+  color: #01a362;
+}
+
+.designSystemPanel {
+  border: 1px solid var(--canvas-border);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--canvas-bg) 95%, #fff 5%);
+  padding: 20px;
+}
+
+.designSystemRoleGrid {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.designSystemRoleCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--canvas-border);
+  background: color-mix(in srgb, var(--canvas-bg) 88%, #fff 12%);
+  padding: 12px;
+}
+
+.designSystemRoleSwatch {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  border: 1px solid rgb(23 33 31 / 12%);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 35%);
+  flex-shrink: 0;
+}
+
+.designSystemRoleMeta {
+  min-width: 0;
+  flex: 1;
+}
+
+.designSystemRoleName {
+  margin: 0;
+  color: var(--canvas-title);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.designSystemRoleToken {
+  margin: 2px 0 0;
+  color: var(--tab-text);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    "Liberation Mono",
+    "Courier New",
+    monospace;
+}
+
+.designSystemRoleUsage {
+  margin: 3px 0 0;
+  color: var(--tabs-label);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.designSystemRoleHex {
+  color: var(--active-text);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    "Liberation Mono",
+    "Courier New",
+    monospace;
+}
+
+.designSystemSemanticHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.designSystemSemanticModeSwitch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--canvas-border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--canvas-bg) 90%, #fff 10%);
+  padding: 4px;
+  flex-shrink: 0;
+}
+
+.designSystemSemanticModeButton {
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--tab-text);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.designSystemSemanticModeButtonActive {
+  border-color: #01a362;
+  background: color-mix(in srgb, #01a362 18%, var(--canvas-bg) 82%);
+  color: #01a362;
+}
+
+.designSystemSemanticGroups {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.designSystemFoundationSets {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.designSystemFoundationSet {
+  border: 1px solid var(--canvas-border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--canvas-bg) 91%, #fff 9%);
+  padding: 14px;
+}
+
+.designSystemFoundationSetHeader h4 {
+  margin: 0;
+  color: var(--canvas-title);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.designSystemFoundationSetHeader p {
+  margin: 4px 0 0;
+  color: var(--tabs-label);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.iconInventoryGroups {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.iconInventoryGroup {
+  border: 1px solid var(--canvas-border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--canvas-bg) 91%, #fff 9%);
+  padding: 14px;
+}
+
+.iconInventoryGroupHeader h4 {
+  margin: 0;
+  color: var(--canvas-title);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.iconInventoryGroupHeader p {
+  margin: 4px 0 0;
+  color: var(--tabs-label);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.iconInventoryGrid {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.iconInventoryCard {
+  border: 1px solid var(--canvas-border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--canvas-bg) 95%, #fff 5%);
+  padding: 12px;
+}
+
+.iconInventoryPreview {
+  display: grid;
+  place-items: center;
+  min-height: 82px;
+  border: 1px dashed var(--canvas-border);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--canvas-bg) 88%, #fff 12%);
+}
+
+.iconInventoryGlyph {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: color-mix(in srgb, #01a362 14%, var(--canvas-bg) 86%);
+  color: #01a362;
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 24px;
+  line-height: 1;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+.iconInventoryAsset {
+  width: 48px;
+  height: 48px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.iconInventoryName {
+  margin: 10px 0 0;
+  color: var(--canvas-title);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.iconInventoryMeta {
+  margin: 4px 0 0;
+  color: var(--active-text);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.iconInventoryUsage {
+  margin: 6px 0 0;
+  color: var(--tab-text);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.spacingShowcase {
+  margin-top: 14px;
+  border: 1px solid var(--canvas-border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--canvas-bg) 91%, #fff 9%);
+  padding: 14px;
+}
+
+.spacingShowcaseHeader h4 {
+  margin: 0;
+  color: var(--canvas-title);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.spacingShowcaseHeader p {
+  margin: 4px 0 0;
+  color: var(--tabs-label);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.spacingShowcaseTableWrap {
+  margin-top: 12px;
+  overflow-x: auto;
+}
+
+.spacingShowcaseTable {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.spacingShowcaseTable th,
+.spacingShowcaseTable td {
+  text-align: left;
+  border-bottom: 1px dashed var(--canvas-border);
+  padding: 11px 10px;
+}
+
+.spacingShowcaseTable th {
+  color: var(--canvas-title);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.spacingShowcaseTable td {
+  color: var(--tab-text);
+  font-size: 12px;
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+.spacingShowcaseTable td:first-child {
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    "Liberation Mono",
+    "Courier New",
+    monospace;
+}
+
+.spacingShowcaseSwatch {
+  display: inline-block;
+  border-radius: 4px;
+  background: var(--color-brand-primary, #01a362);
+}
+
+.elevationShowcase {
+  margin-top: 14px;
+  border: 1px solid var(--canvas-border);
+  border-radius: 14px;
+  background: var(--elevation-showcase-bg);
+  padding: 14px;
+}
+
+.elevationShowcaseHeader h4 {
+  margin: 0;
+  color: var(--canvas-title);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.elevationShowcaseHeader p {
+  margin: 4px 0 0;
+  color: var(--tabs-label);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.elevationShowcaseGrid {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 10px;
+}
+
+.elevationShowcaseCard {
+  border: 1px solid var(--canvas-border);
+  border-radius: 12px;
+  background: var(--elevation-card-bg);
+  padding: 10px;
+}
+
+.elevationShowcaseTop {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.elevationShowcaseName {
+  margin: 0;
+  color: var(--canvas-title);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.elevationShowcaseToken {
+  margin: 0;
+  color: var(--tabs-label);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    "Liberation Mono",
+    "Courier New",
+    monospace;
+}
+
+.elevationShowcasePreviewWrap {
+  margin-top: 10px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--canvas-border) 75%, transparent 25%);
+  background: var(--elevation-preview-bg);
+  padding: 14px;
+  display: grid;
+  place-items: center;
+  min-height: 84px;
+}
+
+.elevationSampleSurface {
+  width: 110px;
+  height: 56px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--canvas-border) 70%, transparent 30%);
+  background: var(--elevation-surface-bg);
+}
+
+.elevationSampleInset {
+  background: color-mix(in srgb, var(--elevation-surface-bg) 82%, var(--canvas-bg) 18%);
+}
+
+.elevationFocusPreview {
+  border: 1px solid var(--canvas-border);
+  border-radius: 10px;
+  background: var(--elevation-focus-bg);
+  color: var(--canvas-title);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 10px 14px;
+}
+
+.elevationShowcaseUsage {
+  margin: 10px 0 0;
+  color: var(--tab-text);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.elevationShowcaseValue {
+  margin: 6px 0 0;
+  color: var(--active-text);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.35;
+  border: 1px solid var(--elevation-value-border);
+  border-radius: 8px;
+  background: var(--elevation-value-bg);
+  padding: 6px 8px;
+  overflow-wrap: anywhere;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    "Liberation Mono",
+    "Courier New",
+    monospace;
+}
+
+.elevationShowcaseSource {
+  margin: 3px 0 0;
+  color: var(--tabs-label);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    "Liberation Mono",
+    "Courier New",
+    monospace;
+}
+
+.elevationDepthDemo {
+  margin-top: 12px;
+  border: 1px solid var(--canvas-border);
+  border-radius: 12px;
+  background: var(--elevation-card-bg);
+  padding: 12px;
+}
+
+.elevationDepthTitle {
+  margin: 0;
+  color: var(--canvas-title);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.elevationDepthScene {
+  margin-top: 10px;
+  position: relative;
+  min-height: 140px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--canvas-border) 78%, transparent 22%);
+  background: var(--elevation-depth-bg);
+  overflow: hidden;
+}
+
+.elevationDepthLayerBase,
+.elevationDepthLayerCard,
+.elevationDepthLayerPopover,
+.elevationDepthLayerModal {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--canvas-border) 70%, transparent 30%);
+  background: var(--elevation-depth-layer-bg);
+  color: var(--tab-text);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.elevationDepthLayerBase {
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  height: 80px;
+}
+
+.elevationDepthLayerCard {
+  left: 24px;
+  bottom: 22px;
+  width: 140px;
+  height: 56px;
+}
+
+.elevationDepthLayerPopover {
+  left: 120px;
+  bottom: 44px;
+  width: 120px;
+  height: 44px;
+}
+
+.elevationDepthLayerModal {
+  right: 20px;
+  bottom: 30px;
+  width: 130px;
+  height: 64px;
+}
+
+.designSystemSemanticGroup {
+  border-radius: 14px;
+  border: 1px solid var(--canvas-border);
+  background: color-mix(in srgb, var(--canvas-bg) 88%, #fff 12%);
+  padding: 16px;
+  min-width: 0;
+}
+
+.designSystemSemanticGroupTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.designSystemSemanticGroupHeader h4 {
+  margin: 0;
+  color: var(--canvas-title);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.designSystemSemanticGroupCount {
+  display: inline-grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: 1px solid var(--tab-border);
+  background: color-mix(in srgb, var(--canvas-bg) 84%, #fff 16%);
+  color: var(--tab-text);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0 7px;
+}
+
+.designSystemSemanticGroupHeader p {
+  margin: 4px 0 0;
+  color: var(--tabs-label);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.designSystemSemanticList {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.designSystemSemanticRow {
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) minmax(220px, auto);
+  gap: 14px;
+  align-items: flex-start;
+  border-radius: 10px;
+  border: 1px solid var(--canvas-border);
+  background: color-mix(in srgb, var(--canvas-bg) 92%, #fff 8%);
+  padding: 12px 14px;
+}
+
+.designSystemSemanticTokenBlock {
+  min-width: 0;
+}
+
+.designSystemSemanticTokenName {
+  margin: 0;
+  color: var(--canvas-title);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.designSystemSemanticTokenCode {
+  margin: 3px 0 0;
+  color: var(--tab-text);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    "Liberation Mono",
+    "Courier New",
+    monospace;
+}
+
+.designSystemSemanticUsage {
+  margin: 5px 0 0;
+  color: var(--tabs-label);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.designSystemSemanticValue {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 10px;
+  justify-self: end;
+  border: 1px solid var(--canvas-border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--canvas-bg) 86%, #fff 14%);
+  padding: 8px 10px;
+  min-width: 220px;
+}
+
+.designSystemTypographyValue {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.designSystemTypographyValueMain {
+  color: var(--active-text);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    "Liberation Mono",
+    "Courier New",
+    monospace;
+}
+
+.designSystemTypographyValueSource {
+  color: var(--tabs-label);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    "Liberation Mono",
+    "Courier New",
+    monospace;
+}
+
+.designSystemSemanticSwatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid rgb(23 33 31 / 16%);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 28%);
+  flex-shrink: 0;
+}
+
+.designSystemSemanticHex {
+  color: var(--active-text);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  overflow-wrap: anywhere;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    "Liberation Mono",
+    "Courier New",
+    monospace;
+}
+
+.designSystemPaletteGrid {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.designSystemPaletteCard {
+  border-radius: 14px;
+  border: 1px solid var(--canvas-border);
+  background: color-mix(in srgb, var(--canvas-bg) 88%, #fff 12%);
+  padding: 16px;
+}
+
+.designSystemPaletteHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.designSystemPaletteHeader h4 {
+  margin: 0;
+  color: var(--canvas-title);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.designSystemPaletteHeader p {
+  margin: 3px 0 0;
+  color: var(--tabs-label);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.designSystemPaletteCount {
+  border: 1px solid var(--canvas-border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--canvas-bg) 84%, #fff 16%);
+  color: var(--tab-text);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  padding: 6px 9px;
+}
+
+.designSystemShadeScale {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.designSystemShadeScaleItem {
+  border: 1px solid var(--canvas-border);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--canvas-bg) 94%, #fff 6%);
+  padding: 9px;
+  min-width: 0;
+}
+
+.designSystemShadeScaleStep {
+  margin-top: 7px;
+  display: block;
+  color: var(--tab-text);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    "Liberation Mono",
+    "Courier New",
+    monospace;
+}
+
+.designSystemShadeSwatch {
+  display: block;
+  width: 100%;
+  height: 52px;
+  border-radius: 6px;
+  border: 1px solid rgb(23 33 31 / 12%);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 30%);
+}
+
+.designSystemShadeScaleHex {
+  margin-top: 4px;
+  display: block;
+  color: var(--active-text);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    "Liberation Mono",
+    "Courier New",
+    monospace;
+}
+
+.componentsPanel {
+  border: 1px solid var(--canvas-border);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--canvas-bg) 92%, #fff 8%);
+  padding: 18px;
+}
+
+.componentsPanelHeader h3 {
+  margin: 0;
+  color: var(--canvas-title);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.componentsPanelHeader p {
+  margin: 4px 0 0;
+  color: var(--tabs-label);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.componentSectionTopRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.componentDevSwitch {
+  border: 1px solid var(--active-border);
+  border-radius: 999px;
+  background: var(--active-bg);
+  color: var(--active-text);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.componentsMetaRow {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.componentsMetaChip {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--tab-border);
+  border-radius: 999px;
+  background: var(--tab-bg);
+  color: var(--tab-text);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 6px 10px;
+}
+
+.componentsCardsGrid {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-start;
+}
+
+.framesGroups {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.framesGroup {
+  border: 1px solid var(--canvas-border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--canvas-bg) 94%, #fff 6%);
+  padding: 14px;
+}
+
+.framesGroup .componentsCardsGrid {
+  margin-top: 12px;
+}
+
+.framesGroupHeader h4 {
+  margin: 0;
+  color: var(--canvas-title);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.framesGroupHeader p {
+  margin: 3px 0 0;
+  color: var(--tabs-label);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.componentCardItem {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  width: min(100%, var(--components-preview-width));
+}
+
+.annotationNotes {
+  width: min(100%, 920px);
+  border: 1px solid var(--canvas-border);
+  border-radius: 12px;
+  background: #fff;
+  padding: 12px;
+}
+
+.annotationNotesGrid {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.annotationNotesColumn {
+  min-width: 0;
+}
+
+.annotationLegendTitle {
+  margin: 0;
+  color: #364a65;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.annotationLegendList {
+  margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.annotationLegendRow {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #4b5f79;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.annotationLegendIndex {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  border: 1px solid #9eb1cc;
+  background: #f3f7fd;
+  color: #3d5374;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.annotationTable {
+  width: 100%;
+  margin-top: 12px;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #d9e0ea;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.annotationTable th,
+.annotationTable td {
+  text-align: left;
+  font-size: 12px;
+  line-height: 1.35;
+  padding: 9px 10px;
+}
+
+.annotationTable thead th {
+  background: #f5f8fc;
+  color: #42556e;
+  font-weight: 700;
+}
+
+.annotationTable tbody td {
+  color: #4b5f79;
+  font-weight: 500;
+  border-top: 1px solid #e3e8f0;
+}
+
+.annotationSubTitle {
+  margin: 12px 0 0;
+  color: #364a65;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.annotationTokenGrid,
+.annotationBehaviorGrid {
+  margin-top: 8px;
+  border: 1px solid #d9e0ea;
+  border-radius: 10px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.annotationTokenRow,
+.annotationBehaviorRow {
+  margin: 0;
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) minmax(0, 1fr);
+  gap: 8px;
+  padding: 9px 10px;
+  border-top: 1px solid #e3e8f0;
+}
+
+.annotationTokenRow:first-child,
+.annotationBehaviorRow:first-child {
+  border-top: none;
+}
+
+.annotationTokenName,
+.annotationBehaviorKey {
+  color: #42556e;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.annotationTokenValue,
+.annotationBehaviorValue {
+  color: #4b5f79;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.annotationTokenValue {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.annotationColorSwatch {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  border: 1px solid #c5cfdd;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 32%);
+}
+
+.annotationColorCode {
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    "Liberation Mono",
+    "Courier New",
+    monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+@media (max-width: 520px) {
+  .annotationTokenRow,
+  .annotationBehaviorRow {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .annotationNotes {
+    width: min(100%, 420px);
+  }
+
+  .annotationNotesGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+.componentCardStateLabel {
+  margin: 0;
+  color: var(--tabs-label);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.componentShellGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.componentShellCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.componentStatusBarPreview {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px #e4eaf1;
+  padding: 12px 14px;
+  color: #1f2937;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.componentStatusCutout {
+  position: absolute;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: #111;
+  transform: translateX(-50%);
+}
+
+.componentStatusIcons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.componentStatusWifi,
+.componentStatusSignal,
+.componentStatusBattery {
+  display: inline-block;
+  background: currentcolor;
+  opacity: 0.9;
+}
+
+.componentStatusWifi {
+  width: 14px;
+  height: 10px;
+  border-radius: 10px 10px 0 0;
+  clip-path: polygon(0 100%, 50% 0, 100% 100%, 78% 100%, 50% 34%, 22% 100%);
+}
+
+.componentStatusSignal {
+  width: 12px;
+  height: 12px;
+  clip-path: polygon(0 100%, 0 70%, 20% 70%, 20% 55%, 45% 55%, 45% 35%, 70% 35%, 70% 15%, 100% 15%, 100% 100%);
+}
+
+.componentStatusBattery {
+  position: relative;
+  width: 16px;
+  height: 10px;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1.5px currentcolor;
+  background: transparent;
+}
+
+.componentStatusBattery::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  right: -3px;
+  width: 2px;
+  height: 4px;
+  border-radius: 1px;
+  background: currentcolor;
+}
+
+.componentBottomNavPreview {
+  display: flex;
+  align-items: center;
+  height: 80px;
+  width: min(100%, 412px);
+  border-radius: 0;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px #e4eaf1;
+  padding: 12px 0 16px;
+  margin: 0 auto;
+}
+
+.componentBottomNavItem {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: #7b8490;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.333;
+}
+
+.componentBottomNavItemActive {
+  color: #01a362;
+  font-weight: 600;
+}
+
+.componentBottomNavIconContainer {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 32px;
+  border-radius: 16px;
+  background: transparent;
+}
+
+.componentBottomNavIcon {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 24px;
+  line-height: 1;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+.componentBottomNavItemActive .componentBottomNavIconContainer {
+  background: #e6f7f1;
+}
+
+.componentBottomNavItemActive .componentBottomNavIcon {
+  font-variation-settings:
+    "FILL" 1,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+.componentPosteCard {
+  border-radius: 14px;
+  background: #fff;
+  padding: 12px;
+  box-shadow: inset 0 0 0 1px #e4eaf1;
+  width: 100%;
+}
+
+.componentPosteCard h4 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.componentPosteCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.componentPosteCardHeader h4 {
+  margin: 0;
+  color: #1a2623;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.componentChevron {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 18px;
+  color: #6f807b;
+  line-height: 1;
+}
+
+.componentPosteCardSector {
+  margin: 4px 0 0;
+  color: #667774;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.componentPosteCardMeta {
+  margin: 6px 0 0;
+  color: #4b5563;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.componentPosteCardProgressText {
+  margin: 8px 0 0;
+  color: #6f7a87;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.componentsProgressTrack {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.componentsProgressSegment {
+  height: 6px;
+  border-radius: 999px;
+  background: #e2e8e6;
+}
+
+.componentsProgressSegmentDone {
+  background: #01a362;
+}
+
+.componentPosteCardLoading {
+  pointer-events: none;
+}
+
+.componentSkeletonTitle,
+.componentSkeletonSub,
+.componentSkeletonMeta,
+.componentSkeletonMetaWide,
+.componentSkeletonSegment {
+  display: block;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgb(206 212 211 / 65%) 18%,
+    rgb(224 229 228 / 85%) 48%,
+    rgb(206 212 211 / 65%) 82%
+  );
+  background-size: 220% 100%;
+  animation: componentSkeletonShimmer 1.15s ease-in-out infinite;
+}
+
+.componentSkeletonTitle {
+  width: 58%;
+  height: 18px;
+}
+
+.componentSkeletonSub {
+  width: 45%;
+  height: 12px;
+  margin-top: 8px;
+}
+
+.componentSkeletonMeta {
+  width: 70%;
+  height: 10px;
+  margin-top: 10px;
+}
+
+.componentSkeletonMetaWide {
+  width: 82%;
+  height: 10px;
+  margin-top: 8px;
+}
+
+.componentSkeletonSegment {
+  height: 6px;
+}
+
+.detailComponentRows {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.detailComponentRow {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detailPreviewWidth {
+  width: min(100%, var(--components-preview-width));
+}
+
+.detailHeaderPreview {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px #e4eaf1;
+  padding: 12px;
+}
+
+.detailBackButton {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 20px;
+  line-height: 1;
+  color: #2f3f39;
+}
+
+.detailHeaderText {
+  min-width: 0;
+}
+
+.detailHeaderTitle {
+  margin: 0;
+  color: #1a2623;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.detailHeaderSubtitle {
+  margin: 2px 0 0;
+  color: #7b8899;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.detailCampaignTitle {
+  margin: 0;
+  color: #1a2623;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.detailCampaignMeta {
+  margin: 6px 0 0;
+  color: #808a90;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.detailObservationsSection {
+  margin-top: 14px;
+}
+
+.detailObservationsGrid {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.componentConfigCard {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px #e4eaf1;
+  padding: 16px;
+}
+
+.componentConfigRows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.componentConfigLine {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  color: #5f6f68;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.componentConfigIcon {
+  color: #01a362;
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.componentConfigFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #8e98a5;
+  font-size: 12px;
+}
+
+.componentConfigActionButton {
+  border: none;
+  background: transparent;
+  color: #8e98a5;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.detailObservationVariant {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detailObservationVariantTitle {
+  margin: 0;
+  color: #6f7a87;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.detailObservationsList {
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px #e4eaf1;
+  overflow: hidden;
+}
+
+.detailObservationMockRow,
+.detailObservationItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+}
+
+.detailObservationMockRow + .detailObservationMockRow,
+.detailObservationItem + .detailObservationItem {
+  border-top: none;
+}
+
+.detailObservationMockRow + .detailObservationMockRow::before,
+.detailObservationItem + .detailObservationItem::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 14px;
+  left: 14px;
+  height: 1px;
+  background: rgb(227 232 238 / 55%);
+}
+
+.detailObservationIconWrap {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgb(1 163 98 / 10%);
+  flex-shrink: 0;
+}
+
+.detailObservationIconWrapMock {
+  background: #edf1f5;
+}
+
+.detailObservationIconWrapMock .detailObservationIcon {
+  color: #9aa5b1;
+}
+
+.detailObservationToneViolet {
+  background: rgb(123 97 255 / 12%);
+}
+
+.detailObservationToneBlue {
+  background: rgb(37 99 235 / 11%);
+}
+
+.detailObservationToneOrange {
+  background: rgb(249 115 22 / 12%);
+}
+
+.detailObservationToneTeal {
+  background: rgb(13 148 136 / 12%);
+}
+
+.detailObservationToneRose {
+  background: rgb(225 29 72 / 11%);
+}
+
+.detailObservationIcon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 20px;
+  line-height: 1;
+  color: #01a362;
+}
+
+.detailObservationToneViolet .detailObservationIcon {
+  color: #6e56cf;
+}
+
+.detailObservationToneBlue .detailObservationIcon {
+  color: #1d4ed8;
+}
+
+.detailObservationToneOrange .detailObservationIcon {
+  color: #c2410c;
+}
+
+.detailObservationToneTeal .detailObservationIcon {
+  color: #0f766e;
+}
+
+.detailObservationToneRose .detailObservationIcon {
+  color: #be185d;
+}
+
+.detailObservationText {
+  min-width: 0;
+  flex: 1;
+}
+
+.detailObservationTitle {
+  margin: 0;
+  color: #4a5a53;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+.detailObservationSubtitle {
+  margin: 4px 0 0;
+  color: #7f8996;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.detailObservationStatus {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  height: 22px;
+  padding: 0 8px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.detailObservationStatusNotStarted {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.detailObservationStatusInProgress {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.detailObservationStatusDone {
+  background: rgb(1 163 98 / 14%);
+  color: #0a8b55;
+}
+
+.detailObservationStatusPlaceholder {
+  background: #eef2f6;
+  color: #7a8594;
+}
+
+.detailObservationNavButton {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.detailIconsSection {
+  margin-top: 14px;
+}
+
+.detailIconsHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.detailIconsLibrary {
+  margin: 0;
+  color: var(--tabs-label);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.detailIconsGrid {
+  margin-top: 8px;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.detailIconItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px #e4eaf1;
+  padding: 10px 12px;
+}
+
+.detailIconGlyph {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: #edf2f6;
+  color: #556370;
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 20px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.detailIconMeta {
+  min-width: 0;
+}
+
+.detailIconName {
+  margin: 0;
+  color: #263548;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.detailIconUsage {
+  margin: 3px 0 0;
+  color: #6e7d8f;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.detailIconLibraryName {
+  margin: 2px 0 0;
+  color: #8a97a7;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.componentSymbol {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.componentListHeaderPreview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px #e4eaf1;
+  padding: 12px 14px;
+}
+
+.componentListHeaderSurface {
+  border-radius: 14px;
+  background: #f3f5f7;
+  box-shadow: inset 0 0 0 1px #e2e8e6;
+  padding: 8px 12px;
+}
+
+.componentListHeaderTitleBlock {
+  min-width: 0;
+}
+
+.componentListHeaderTitle {
+  margin: 0;
+  color: #1a2623;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.componentListHeaderSubtitle {
+  margin: 4px 0 0;
+  color: #616161;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.componentListHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.componentSyncBadgePreview {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: #f8fbfa;
+  box-shadow: inset 0 0 0 1px #e4eaf1;
+  color: #9e9e9e;
+}
+
+.componentAvatarPreview {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: #e6f7f1;
+  color: #01a362;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.componentEmptyStatePreview {
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px #e4eaf1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 24px 18px;
+}
+
+.componentEmptyStateIconWrap {
+  display: inline-grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: #eef2f4;
+  color: #9aa6b2;
+}
+
+.componentEmptyStateTitle {
+  margin: 12px 0 0;
+  color: #3d4c5c;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.componentEmptyStateText {
+  margin: 6px 0 0;
+  color: #7b8899;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.35;
+  max-width: 260px;
+}
+
+.componentObservationFormPreview {
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px #e4eaf1;
+  padding: 14px;
+}
+
+.componentFormHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.componentFormHeaderTitle {
+  margin: 0;
+  color: #1a2623;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.componentFormCard {
+  margin-top: 12px;
+  border-radius: 14px;
+  background: #f9fbfd;
+  box-shadow: inset 0 0 0 1px #e4eaf1;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.componentFormField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.componentFormLabel {
+  margin: 0;
+  color: #596a67;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.componentChipsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.componentChoiceChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid #c8d2dd;
+  background: #fff;
+  color: #5f6f82;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 0 12px;
+  white-space: nowrap;
+}
+
+.componentChoiceChipActive {
+  border-color: #01a362;
+  background: #01a362;
+  color: #fff;
+}
+
+.componentChoiceChipCheck {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.componentDateGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.componentInputMock {
+  min-height: 52px;
+  border-radius: 12px;
+  background: #eef2f6;
+  color: #556370;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 12px;
+}
+
+.componentImagesGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.componentImageThumb,
+.componentImagePlaceholder {
+  display: inline-grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.componentImageThumb {
+  background: #e3eaf1;
+  color: #7c8794;
+}
+
+.componentImagePlaceholder {
+  border: 1px dashed #b9c6d4;
+  background: #f6f9fc;
+  color: #8d9aab;
+}
+
+.componentTextAreaMock {
+  min-height: 92px;
+  border-radius: 12px;
+  background: #eef2f6;
+  color: #96a3af;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+  padding: 12px;
+}
+
+.componentFormActionsRow {
+  margin-top: 10px;
+  width: min(100%, var(--components-preview-width));
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.componentPrimaryButton,
+.componentSecondaryButton,
+.componentGhostButton {
+  border: none;
+  border-radius: 999px;
+  min-height: 40px;
+  padding: 0 16px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.componentPrimaryButton {
+  flex: 1;
+  background: #01a362;
+  color: #fff;
+}
+
+.componentSecondaryButton {
+  flex: 1;
+  background: #eef2f6;
+  color: #3d4c5c;
+}
+
+.componentGhostButton {
+  min-width: 112px;
+  background: #f5f8fb;
+  box-shadow: inset 0 0 0 1px #d5dfe9;
+  color: #3d4c5c;
+}
+
+.componentModalPreview {
+  border-radius: 16px;
+  background: rgb(16 24 39 / 60%);
+  min-height: 220px;
+  display: grid;
+  place-items: center;
+  padding: 20px 12px;
+}
+
+.componentModalCard {
+  width: min(100%, 360px);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 10px 26px rgb(15 23 42 / 18%);
+  padding: 16px;
+}
+
+.componentModalTitle {
+  margin: 0;
+  color: #1f2f43;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.componentModalText {
+  margin: 8px 0 0;
+  color: #68788d;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.componentModalActions {
+  margin-top: 14px;
+  display: flex;
+  gap: 8px;
+}
+
+@keyframes componentSkeletonShimmer {
+  0% {
+    background-position: 100% 0;
+  }
+
+  100% {
+    background-position: -100% 0;
+  }
 }
 
 @media (max-width: 900px) {
   .page {
     flex-direction: column;
+    height: auto;
+    overflow: visible;
   }
 
   .sidebar {
     width: 100%;
+    height: auto;
     border-right: 0;
     border-bottom: 1px solid var(--sidebar-border);
+    overflow: visible;
   }
 
   .canvasArea {
+    height: auto;
+    overflow: visible;
     padding: 16px;
+  }
+
+  .componentsCardsGrid {
+    justify-content: flex-start;
+  }
+
+  .componentsCanvas {
+    --components-preview-width: 100%;
+  }
+
+  .designSystemPaletteGrid {
+    gap: 12px;
+  }
+
+  .designSystemShadeScale {
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  }
+
+  .designSystemSemanticGroups {
+    gap: 12px;
+  }
+
+  .designSystemSemanticHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .designSystemSemanticRow {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .designSystemSemanticValue {
+    justify-self: start;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .designSystemTypographyValue {
+    align-items: flex-start;
+  }
+
+  .componentCardItem {
+    width: 100%;
+  }
+
+  .componentSectionTopRow {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

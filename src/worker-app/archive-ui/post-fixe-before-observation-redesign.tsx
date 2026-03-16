@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import styles from "./worker-app.module.css";
 import { WorkerAppHomeBottomBarScreen } from "./screens/home-bottom-bar-screen";
 import { WorkerAppNavigationScreen } from "./screens/navigation-screen";
@@ -17,31 +17,10 @@ const syncStatusIconMap: Record<SyncStatus, string> = {
 type WorkerAppPostFixePageProps = {
   showDeviceFrame: boolean;
   theme: "dark" | "light";
-  frameTheme?: "dark" | "light";
   frameView: SecteursFrameView;
-  previewState?: PostFixePreviewState;
-  previewObservationPhase?: "Fleuraison" | "Nouaison" | "Chute physiologique";
-  isInteractive?: boolean;
-  embedded?: boolean;
-  onLayoutModeChange?: (mode: "default" | "fullScreen") => void;
 };
 
 export type SecteursFrameView = "data" | "loading" | "empty";
-export type PostFixePreviewState =
-  | "list-data"
-  | "list-loading"
-  | "list-empty"
-  | "detail-overview"
-  | "detail-loading"
-  | "observation-edit"
-  | "observation-edit-fleuraison"
-  | "observation-edit-nouaison"
-  | "observation-edit-chute"
-  | "observation-status-not-started"
-  | "observation-status-in-progress"
-  | "observation-status-done"
-  | "observation-readonly"
-  | "observation-unsaved-modal";
 
 type PosteFixeItem = {
   name: string;
@@ -66,17 +45,6 @@ type ObservationPhaseName = "Fleuraison" | "Nouaison" | "Chute physiologique";
 type ObservationSecondaryMode = "input" | "chips";
 
 type FleuraisonFormState = {
-  startDate: string;
-  endDate: string;
-  densityValue: string;
-  secondaryValue: string;
-  notes: string;
-  images: string[];
-};
-
-type FleuraisonSeedNote = {
-  id: string;
-  savedAt: string;
   noteType: FleuraisonNoteType;
   observationDate: string;
   densityValue: string;
@@ -85,11 +53,17 @@ type FleuraisonSeedNote = {
   images: string[];
 };
 
-function getCurrentIsoDate(): string {
+type FleuraisonNote = FleuraisonFormState & {
+  id: string;
+  savedAt: string;
+};
+
+function getTodayIsoDate(): string {
   const now = new Date();
   const year = now.getFullYear();
   const month = `${now.getMonth() + 1}`.padStart(2, "0");
   const day = `${now.getDate()}`.padStart(2, "0");
+
   return `${year}-${month}-${day}`;
 }
 
@@ -133,6 +107,12 @@ const observationPhaseConfigs: Record<
   },
 };
 
+const observationNoteTypeOrder: Record<FleuraisonNoteType, number> = {
+  Finale: 0,
+  Suivi: 1,
+  "Début": 2,
+};
+
 function isObservationPhaseName(value: string): value is ObservationPhaseName {
   return value in observationPhaseConfigs;
 }
@@ -142,12 +122,13 @@ function getObservationNotesKey(posteName: string, phaseName: ObservationPhaseNa
 }
 
 function createDefaultFleuraisonForm(
-  phaseName: ObservationPhaseName
+  phaseName: ObservationPhaseName,
+  noteType: FleuraisonNoteType = "Suivi"
 ): FleuraisonFormState {
   const phaseConfig = observationPhaseConfigs[phaseName];
   return {
-    startDate: getCurrentIsoDate(),
-    endDate: "",
+    noteType,
+    observationDate: getTodayIsoDate(),
     densityValue: phaseConfig.densityOptions[0] ?? "",
     secondaryValue:
       phaseConfig.secondaryMode === "input"
@@ -158,10 +139,13 @@ function createDefaultFleuraisonForm(
   };
 }
 
-const defaultFleuraisonForm: FleuraisonFormState = createDefaultFleuraisonForm("Fleuraison");
+const defaultFleuraisonForm: FleuraisonFormState = createDefaultFleuraisonForm(
+  "Fleuraison",
+  "Suivi"
+);
 const fleuraisonSeedImage = "/notesimages/istockphoto-1147544807-612x612.jpg";
 
-function createSeedFleuraisonNotes(posteId: string): FleuraisonSeedNote[] {
+function createSeedFleuraisonNotes(posteId: string): FleuraisonNote[] {
   return [
     {
       id: `${posteId}-fleuraison-1`,
@@ -219,12 +203,12 @@ function createSeedFleuraisonNotes(posteId: string): FleuraisonSeedNote[] {
 function createSeedNouaisonNotes(
   posteId: string,
   status: ObservationItem["status"]
-): FleuraisonSeedNote[] {
+): FleuraisonNote[] {
   if (status === "Pas commencé") {
     return [];
   }
 
-  const baseNotes: FleuraisonSeedNote[] = [
+  const baseNotes: FleuraisonNote[] = [
     {
       id: `${posteId}-nouaison-1`,
       savedAt: "03 avr. 2026",
@@ -269,12 +253,12 @@ function createSeedNouaisonNotes(
 function createSeedChuteNotes(
   posteId: string,
   status: ObservationItem["status"]
-): FleuraisonSeedNote[] {
+): FleuraisonNote[] {
   if (status === "Pas commencé") {
     return [];
   }
 
-  const baseNotes: FleuraisonSeedNote[] = [
+  const baseNotes: FleuraisonNote[] = [
     {
       id: `${posteId}-chute-1`,
       savedAt: "05 mai 2026",
@@ -316,7 +300,7 @@ function createSeedChuteNotes(
   ];
 }
 
-const initialObservationNotesByKey: Record<string, FleuraisonSeedNote[]> = {
+const initialObservationNotesByKey: Record<string, FleuraisonNote[]> = {
   [getObservationNotesKey("Poste Fixe 2381", "Fleuraison")]: createSeedFleuraisonNotes("2381"),
   [getObservationNotesKey("Poste Fixe 7642", "Fleuraison")]: createSeedFleuraisonNotes("7642"),
   [getObservationNotesKey("Poste Fixe 5097", "Fleuraison")]: createSeedFleuraisonNotes("5097"),
@@ -356,59 +340,6 @@ const initialObservationNotesByKey: Record<string, FleuraisonSeedNote[]> = {
     "Terminé"
   ),
 };
-
-function getObservationPhaseNameFromKey(observationKey: string): ObservationPhaseName | null {
-  const phaseName = observationKey.split("::")[1];
-  if (!phaseName || !isObservationPhaseName(phaseName)) {
-    return null;
-  }
-
-  return phaseName;
-}
-
-function buildObservationFormFromNotes(
-  phaseName: ObservationPhaseName,
-  notes: FleuraisonSeedNote[]
-): FleuraisonFormState | null {
-  if (notes.length === 0) {
-    return null;
-  }
-
-  const sortedByDate = [...notes].sort(
-    (first, second) =>
-      parseIsoDateToTime(first.observationDate) - parseIsoDateToTime(second.observationDate)
-  );
-  const startNote = notes.find((note) => note.noteType === "Début") ?? sortedByDate[0];
-  const endNote = notes.find((note) => note.noteType === "Finale") ?? null;
-  const latestNote = sortedByDate[sortedByDate.length - 1];
-  const nextForm = createDefaultFleuraisonForm(phaseName);
-
-  return {
-    ...nextForm,
-    startDate: startNote?.observationDate ?? "",
-    endDate: endNote?.observationDate ?? "",
-    densityValue: latestNote?.densityValue ?? nextForm.densityValue,
-    secondaryValue: latestNote?.secondaryValue ?? nextForm.secondaryValue,
-    notes: latestNote?.notes ?? "",
-    images: latestNote?.images ? [...latestNote.images] : [],
-  };
-}
-
-const initialObservationFormsByKey: Record<string, FleuraisonFormState> = Object.entries(
-  initialObservationNotesByKey
-).reduce<Record<string, FleuraisonFormState>>((acc, [observationKey, notes]) => {
-  const phaseName = getObservationPhaseNameFromKey(observationKey);
-  if (!phaseName) {
-    return acc;
-  }
-
-  const initialForm = buildObservationFormFromNotes(phaseName, notes);
-  if (initialForm) {
-    acc[observationKey] = initialForm;
-  }
-
-  return acc;
-}, {});
 
 type PosteConfig = {
   irrigationType: string;
@@ -806,35 +737,23 @@ function formatDateLongFr(dateIso: string): string {
   }).format(new Date(`${dateIso}T00:00:00`));
 }
 
-function getObservationDerivedStatus(
-  observationForm: FleuraisonFormState | null
-): ObservationItem["status"] {
-  if (!observationForm || !observationForm.startDate) {
+function getObservationDerivedStatus(notes: FleuraisonNote[]): ObservationItem["status"] {
+  if (notes.length === 0) {
     return "Pas commencé";
   }
-  if (observationForm.endDate) {
+  if (notes.some((note) => note.noteType === "Finale")) {
     return "Terminé";
   }
 
   return "En cours";
 }
 
-function areObservationFormsEqual(
-  firstForm: FleuraisonFormState,
-  secondForm: FleuraisonFormState
-): boolean {
-  if (firstForm.startDate !== secondForm.startDate) return false;
-  if (firstForm.endDate !== secondForm.endDate) return false;
-  if (firstForm.densityValue !== secondForm.densityValue) return false;
-  if (firstForm.secondaryValue !== secondForm.secondaryValue) return false;
-  if (firstForm.notes !== secondForm.notes) return false;
-  if (firstForm.images.length !== secondForm.images.length) return false;
-
-  for (let index = 0; index < firstForm.images.length; index += 1) {
-    if (firstForm.images[index] !== secondForm.images[index]) return false;
+function getNextObservationNoteType(notes: FleuraisonNote[]): FleuraisonNoteType {
+  if (!notes.some((note) => note.noteType === "Début")) {
+    return "Début";
   }
 
-  return true;
+  return "Suivi";
 }
 
 const observationToneClasses = {
@@ -869,7 +788,6 @@ const defaultPosteConfig: PosteConfig = {
   waterSource: "Forage",
   waterQuality: "Bonne",
 };
-const posteProgressSteps = 5;
 const initialPosteConfigs: Record<string, PosteConfig> = {
   "Poste Fixe 1254": {
     irrigationType: "Goutte-à-goutte en surface",
@@ -883,252 +801,30 @@ const initialPosteConfigs: Record<string, PosteConfig> = {
   },
 };
 
-type PostFixePreviewSetup = {
-  selectedPoste: PosteFixeItem | null;
-  selectedObservation: ObservationItem | null;
-  isEditingConfig: boolean;
-  configDraft: PosteConfig;
-  showUnsavedModal: boolean;
-  showObservationUnsavedModal: boolean;
-  isObservationEditMode: boolean;
-  observationFormsByKey: Record<string, FleuraisonFormState>;
-  fleuraisonForm: FleuraisonFormState;
-};
-
-function cloneObservationForms(
-  forms: Record<string, FleuraisonFormState>
-): Record<string, FleuraisonFormState> {
-  return Object.fromEntries(
-    Object.entries(forms).map(([key, form]) => [
-      key,
-      {
-        ...form,
-        images: [...form.images],
-      },
-    ])
-  );
-}
-
-function buildPostFixePreviewSetup(
-  previewState?: PostFixePreviewState,
-  previewObservationPhase: "Fleuraison" | "Nouaison" | "Chute physiologique" = "Fleuraison"
-): PostFixePreviewSetup | null {
-  if (!previewState) {
-    return null;
-  }
-
-  const effectiveObservationPhase =
-    previewState === "observation-edit-fleuraison"
-      ? "Fleuraison"
-      : previewState === "observation-edit-nouaison"
-        ? "Nouaison"
-        : previewState === "observation-edit-chute"
-          ? "Chute physiologique"
-          : previewObservationPhase;
-
-  const overviewPoste = postesFixes.find((poste) => poste.name === "Poste Fixe 5097") ?? postesFixes[0];
-  const editPoste = postesFixes.find((poste) => poste.name === "Poste Fixe 1254") ?? postesFixes[0];
-  const readonlyPoste = postesFixes.find((poste) => poste.name === "Poste Fixe 5097") ?? postesFixes[0];
-  const editObservation =
-    getPosteObservations(editPoste.name).find(
-      (observation) => observation.name === effectiveObservationPhase
-    ) ??
-    getPosteObservations(editPoste.name)[0] ??
-    null;
-  const readonlyObservation =
-    getPosteObservations(readonlyPoste.name).find((observation) => observation.name === "Fleuraison") ??
-    getPosteObservations(readonlyPoste.name)[0] ??
-    null;
-  const observationForms = cloneObservationForms(initialObservationFormsByKey);
-  const overviewObservationKey = getObservationNotesKey(overviewPoste.name, "Nouaison");
-  const overviewForm = observationForms[overviewObservationKey] ?? createDefaultFleuraisonForm("Nouaison");
-  observationForms[overviewObservationKey] = {
-    ...overviewForm,
-    startDate: overviewForm.startDate || getCurrentIsoDate(),
-    endDate: "",
-    images: [...overviewForm.images],
-  };
-  const editObservationKey = getObservationNotesKey(editPoste.name, effectiveObservationPhase);
-  const readonlyObservationKey = getObservationNotesKey(readonlyPoste.name, "Fleuraison");
-  const editFormSource =
-    observationForms[editObservationKey] ?? createDefaultFleuraisonForm(effectiveObservationPhase);
-  const editForm: FleuraisonFormState = {
-    ...editFormSource,
-    endDate: "",
-    images: [...editFormSource.images],
-  };
-  const readonlyFormSource =
-    observationForms[readonlyObservationKey] ?? createDefaultFleuraisonForm("Fleuraison");
-  const readonlyForm: FleuraisonFormState = {
-    ...readonlyFormSource,
-    startDate: readonlyFormSource.startDate || getCurrentIsoDate(),
-    endDate: readonlyFormSource.endDate || readonlyFormSource.startDate || getCurrentIsoDate(),
-    images: [...readonlyFormSource.images],
-  };
-  observationForms[readonlyObservationKey] = readonlyForm;
-
-  const baseSetup: PostFixePreviewSetup = {
-    selectedPoste: null,
-    selectedObservation: null,
-    isEditingConfig: false,
-    configDraft: defaultPosteConfig,
-    showUnsavedModal: false,
-    showObservationUnsavedModal: false,
-    isObservationEditMode: true,
-    observationFormsByKey: observationForms,
-    fleuraisonForm: defaultFleuraisonForm,
-  };
-
-  switch (previewState) {
-    case "list-loading":
-    case "list-empty":
-    case "list-data":
-      return baseSetup;
-    case "detail-loading":
-    case "detail-overview":
-      return {
-        ...baseSetup,
-        selectedPoste: overviewPoste,
-      };
-    case "observation-readonly":
-      return {
-        ...baseSetup,
-        selectedPoste: readonlyPoste,
-        selectedObservation: readonlyObservation,
-        isObservationEditMode: false,
-        fleuraisonForm: readonlyForm,
-      };
-    case "observation-unsaved-modal":
-      return {
-        ...baseSetup,
-        selectedPoste: editPoste,
-        selectedObservation: editObservation,
-        showObservationUnsavedModal: true,
-        fleuraisonForm: editForm,
-      };
-    case "observation-edit":
-    case "observation-edit-fleuraison":
-    case "observation-edit-nouaison":
-    case "observation-edit-chute":
-      return {
-        ...baseSetup,
-        selectedPoste: editPoste,
-        selectedObservation: editObservation,
-        fleuraisonForm: editForm,
-      };
-    case "observation-status-not-started": {
-      const statusPoste = postesFixes.find((poste) => poste.name === "Poste Fixe 6880") ?? postesFixes[0];
-      const statusObservation =
-        getPosteObservations(statusPoste.name).find((observation) => observation.name === "Fleuraison") ??
-        getPosteObservations(statusPoste.name)[0] ??
-        null;
-
-      return {
-        ...baseSetup,
-        selectedPoste: statusPoste,
-        selectedObservation: statusObservation,
-        isObservationEditMode: true,
-        fleuraisonForm: createDefaultFleuraisonForm("Fleuraison"),
-      };
-    }
-    case "observation-status-in-progress": {
-      const statusPoste = postesFixes.find((poste) => poste.name === "Poste Fixe 6880") ?? postesFixes[0];
-      const statusObservation =
-        getPosteObservations(statusPoste.name).find((observation) => observation.name === "Fleuraison") ??
-        getPosteObservations(statusPoste.name)[0] ??
-        null;
-      const inProgressKey = getObservationNotesKey(statusPoste.name, "Fleuraison");
-      const inProgressForm: FleuraisonFormState = {
-        ...createDefaultFleuraisonForm("Fleuraison"),
-        startDate: getCurrentIsoDate(),
-        endDate: "",
-        secondaryValue: "2",
-        notes: "Observation en cours avec progression visible sur la parcelle.",
-        images: [fleuraisonSeedImage],
-      };
-      observationForms[inProgressKey] = inProgressForm;
-
-      return {
-        ...baseSetup,
-        selectedPoste: statusPoste,
-        selectedObservation: statusObservation,
-        isObservationEditMode: true,
-        observationFormsByKey: observationForms,
-        fleuraisonForm: inProgressForm,
-      };
-    }
-    case "observation-status-done": {
-      const statusPoste = postesFixes.find((poste) => poste.name === "Poste Fixe 5097") ?? postesFixes[0];
-      const statusObservation =
-        getPosteObservations(statusPoste.name).find((observation) => observation.name === "Fleuraison") ??
-        getPosteObservations(statusPoste.name)[0] ??
-        null;
-      const doneKey = getObservationNotesKey(statusPoste.name, "Fleuraison");
-      const doneFormSource = observationForms[doneKey] ?? createDefaultFleuraisonForm("Fleuraison");
-      const doneForm: FleuraisonFormState = {
-        ...doneFormSource,
-        startDate: doneFormSource.startDate || getCurrentIsoDate(),
-        endDate: doneFormSource.endDate || doneFormSource.startDate || getCurrentIsoDate(),
-        images: [...doneFormSource.images],
-      };
-      observationForms[doneKey] = doneForm;
-
-      return {
-        ...baseSetup,
-        selectedPoste: statusPoste,
-        selectedObservation: statusObservation,
-        isObservationEditMode: true,
-        observationFormsByKey: observationForms,
-        fleuraisonForm: doneForm,
-      };
-    }
-    default:
-      return baseSetup;
-  }
-}
-
 export function WorkerAppPostFixePage({
   showDeviceFrame,
   theme,
-  frameTheme,
   frameView,
-  previewState,
-  previewObservationPhase,
-  isInteractive = true,
-  embedded = false,
-  onLayoutModeChange,
 }: WorkerAppPostFixePageProps) {
   const syncStatus: SyncStatus = "idle";
-  const previewSetup = buildPostFixePreviewSetup(
-    previewState,
-    previewObservationPhase ?? "Fleuraison"
-  );
-  const [selectedPoste, setSelectedPoste] = useState<PosteFixeItem | null>(
-    previewSetup?.selectedPoste ?? null
-  );
-  const [isEditingConfig, setIsEditingConfig] = useState(previewSetup?.isEditingConfig ?? false);
+  const [selectedPoste, setSelectedPoste] = useState<PosteFixeItem | null>(null);
+  const [isEditingConfig, setIsEditingConfig] = useState(false);
   const [posteConfigs, setPosteConfigs] =
     useState<Record<string, PosteConfig>>(initialPosteConfigs);
-  const [configDraft, setConfigDraft] = useState<PosteConfig>(
-    previewSetup?.configDraft ?? defaultPosteConfig
-  );
-  const [showUnsavedModal, setShowUnsavedModal] = useState(previewSetup?.showUnsavedModal ?? false);
-  const [showObservationUnsavedModal, setShowObservationUnsavedModal] = useState(
-    previewSetup?.showObservationUnsavedModal ?? false
-  );
-  const [isObservationEditMode, setIsObservationEditMode] = useState(
-    previewSetup?.isObservationEditMode ?? true
-  );
-  const [selectedObservation, setSelectedObservation] = useState<ObservationItem | null>(
-    previewSetup?.selectedObservation ?? null
-  );
+  const [configDraft, setConfigDraft] = useState<PosteConfig>(defaultPosteConfig);
+  const [showUnsavedModal, setShowUnsavedModal] = useState(false);
+  const [selectedObservation, setSelectedObservation] = useState<ObservationItem | null>(null);
+  const [isAddingFleuraisonNote, setIsAddingFleuraisonNote] = useState(true);
+  const [editingFleuraisonNoteId, setEditingFleuraisonNoteId] = useState<string | null>(null);
+  const [selectedFleuraisonNoteId, setSelectedFleuraisonNoteId] = useState<string | null>(null);
+  const [deleteConfirmNoteId, setDeleteConfirmNoteId] = useState<string | null>(null);
+  const [imageViewer, setImageViewer] = useState<{ images: string[]; index: number } | null>(null);
   const fleuraisonImageInputRef = useRef<HTMLInputElement | null>(null);
-  const [observationFormsByKey, setObservationFormsByKey] = useState<
-    Record<string, FleuraisonFormState>
-  >(previewSetup?.observationFormsByKey ?? initialObservationFormsByKey);
-  const [fleuraisonForm, setFleuraisonForm] = useState<FleuraisonFormState>(
-    previewSetup?.fleuraisonForm ?? defaultFleuraisonForm
-  );
+  const imageViewerTouchStartXRef = useRef<number | null>(null);
+  const [observationNotesByKey, setObservationNotesByKey] = useState<
+    Record<string, FleuraisonNote[]>
+  >(initialObservationNotesByKey);
+  const [fleuraisonForm, setFleuraisonForm] = useState<FleuraisonFormState>(defaultFleuraisonForm);
   const syncBadgeStateClass = styles.syncBadgeIdle;
   const syncIcon = syncStatusIconMap[syncStatus];
   const renderSyncBadge = () => (
@@ -1138,9 +834,7 @@ export function WorkerAppPostFixePage({
       </span>
     </div>
   );
-  const resolvedFrameTheme = frameTheme ?? theme;
-  const frameClass =
-    resolvedFrameTheme === "light" ? styles.androidCanvasLightFrame : styles.androidCanvas;
+  const frameClass = theme === "light" ? styles.androidCanvasLightFrame : styles.androidCanvas;
   const isConfigEditScreen = Boolean(selectedPoste && isEditingConfig);
   const selectedObservationPhaseName: ObservationPhaseName | null =
     selectedObservation != null && isObservationPhaseName(selectedObservation.name)
@@ -1150,56 +844,67 @@ export function WorkerAppPostFixePage({
   const activeObservationPhaseConfig = observationPhaseConfigs[activeObservationPhaseName];
   const isObservationScreen = Boolean(selectedPoste && selectedObservationPhaseName);
   const isFullScreenFlow = isConfigEditScreen || isObservationScreen;
-  useEffect(() => {
-    onLayoutModeChange?.(isFullScreenFlow ? "fullScreen" : "default");
-  }, [isFullScreenFlow, onLayoutModeChange]);
-
   const selectedObservationNotesKey =
     selectedPoste != null && selectedObservationPhaseName != null
       ? getObservationNotesKey(selectedPoste.name, selectedObservationPhaseName)
       : null;
-  const savedObservationFormForPhase =
-    selectedObservationNotesKey != null ? observationFormsByKey[selectedObservationNotesKey] : undefined;
-  const initialObservationFormForPhase =
-    savedObservationFormForPhase != null
-      ? savedObservationFormForPhase
-      : createDefaultFleuraisonForm(activeObservationPhaseName);
-  const observationFormStatus = getObservationDerivedStatus(savedObservationFormForPhase ?? null);
-  const isObservationReadOnly = observationFormStatus === "Terminé" && !isObservationEditMode;
-  const hasObservationChanges = isObservationScreen && isObservationEditMode
-    ? !areObservationFormsEqual(fleuraisonForm, initialObservationFormForPhase)
-    : false;
+  const selectedPosteFleuraisonNotes =
+    selectedObservationNotesKey != null ? (observationNotesByKey[selectedObservationNotesKey] ?? []) : [];
+  const selectedPosteFleuraisonNotesSorted = [...selectedPosteFleuraisonNotes].sort(
+    (firstNote, secondNote) => {
+      const typeOrderDelta =
+        observationNoteTypeOrder[firstNote.noteType] - observationNoteTypeOrder[secondNote.noteType];
+
+      if (typeOrderDelta !== 0) {
+        return typeOrderDelta;
+      }
+
+      return (
+        parseIsoDateToTime(secondNote.observationDate) - parseIsoDateToTime(firstNote.observationDate)
+      );
+    }
+  );
+  const shouldShowFleuraisonForm = isAddingFleuraisonNote;
+  const shouldShowFleuraisonEmptyState =
+    !shouldShowFleuraisonForm && selectedPosteFleuraisonNotes.length === 0;
+  const selectedSheetNote =
+    selectedPosteFleuraisonNotes.find((note) => note.id === selectedFleuraisonNoteId) ?? null;
+  const deleteConfirmNote =
+    selectedPosteFleuraisonNotes.find((note) => note.id === deleteConfirmNoteId) ?? null;
+  const notesExcludingEditedOne = selectedPosteFleuraisonNotes.filter(
+    (note) => note.id !== editingFleuraisonNoteId
+  );
+  const existingDebutNote = notesExcludingEditedOne.find((note) => note.noteType === "Début");
+  const existingFinaleNote = notesExcludingEditedOne.find((note) => note.noteType === "Finale");
   let fleuraisonValidationError: string | null = null;
-  if (!fleuraisonForm.startDate) {
-    fleuraisonValidationError = "La date de début est requise.";
+  if (fleuraisonForm.noteType === "Début" && existingDebutNote) {
+    fleuraisonValidationError = "Une observation de début existe déjà.";
+  } else if (fleuraisonForm.noteType === "Finale" && existingFinaleNote) {
+    fleuraisonValidationError = "Une observation finale existe déjà.";
+  } else if (fleuraisonForm.noteType === "Finale" && !existingDebutNote) {
+    fleuraisonValidationError = "Ajoutez d'abord une observation de début.";
   } else if (
-    fleuraisonForm.endDate &&
-    parseIsoDateToTime(fleuraisonForm.endDate) < parseIsoDateToTime(fleuraisonForm.startDate)
+    fleuraisonForm.noteType === "Finale" &&
+    existingDebutNote &&
+    parseIsoDateToTime(fleuraisonForm.observationDate) <
+      parseIsoDateToTime(existingDebutNote.observationDate)
   ) {
     fleuraisonValidationError =
       "La date finale doit être postérieure ou égale à la date de début.";
+  } else if (
+    fleuraisonForm.noteType === "Début" &&
+    existingFinaleNote &&
+    parseIsoDateToTime(fleuraisonForm.observationDate) >
+      parseIsoDateToTime(existingFinaleNote.observationDate)
+  ) {
+    fleuraisonValidationError =
+      "La date de début doit être antérieure ou égale à la date finale.";
   }
   const hasFleuraisonValidationError = fleuraisonValidationError != null;
   const hasSavedConfig = selectedPoste != null ? Boolean(posteConfigs[selectedPoste.name]) : false;
   const shouldShowPosteDetailLoading = Boolean(
     selectedPoste && frameView === "loading" && !isEditingConfig && !isObservationScreen
   );
-  const renderPosteProgressMilestones = (completedSteps: number) => {
-    const normalizedCompletedSteps = Math.max(0, Math.min(posteProgressSteps, completedSteps));
-
-    return (
-      <div className={styles.posteProgressTrack} aria-hidden="true">
-        {Array.from({ length: posteProgressSteps }).map((_, index) => (
-          <span
-            key={index}
-            className={`${styles.posteProgressSegment} ${
-              index < normalizedCompletedSteps ? styles.posteProgressSegmentDone : ""
-            }`}
-          />
-        ))}
-      </div>
-    );
-  };
   const getPosteObservationsWithFleuraisonState = (posteName: string): ObservationItem[] => {
     const baseObservations = getPosteObservations(posteName);
     return baseObservations.map((observation) => {
@@ -1207,15 +912,23 @@ export function WorkerAppPostFixePage({
         return observation;
       }
 
-      const phaseForm =
-        observationFormsByKey[getObservationNotesKey(posteName, observation.name)] ?? null;
-      const phaseStatus = getObservationDerivedStatus(phaseForm);
-      const lastUpdateDate = phaseForm?.endDate || phaseForm?.startDate;
+      const phaseNotes =
+        observationNotesByKey[getObservationNotesKey(posteName, observation.name)] ?? [];
+      if (phaseNotes.length === 0) {
+        return observation;
+      }
+
+      const latestNote = phaseNotes.reduce((latest, current) =>
+        parseIsoDateToTime(current.observationDate) > parseIsoDateToTime(latest.observationDate)
+          ? current
+          : latest
+      );
+      const phaseStatus = getObservationDerivedStatus(phaseNotes);
 
       return {
         ...observation,
         status: phaseStatus,
-        lastUpdate: lastUpdateDate ? formatDateShortFr(lastUpdateDate) : observation.lastUpdate,
+        lastUpdate: formatDateShortFr(latestNote.observationDate),
       };
     });
   };
@@ -1242,31 +955,107 @@ export function WorkerAppPostFixePage({
     configDraft.irrigationType !== selectedPosteConfig.irrigationType ||
     configDraft.waterSource !== selectedPosteConfig.waterSource ||
     configDraft.waterQuality !== selectedPosteConfig.waterQuality;
-  const saveFleuraisonNote = () => {
-    if (!selectedObservationNotesKey || hasFleuraisonValidationError) {
-      return false;
+  const resetFleuraisonForm = (
+    phaseName: ObservationPhaseName,
+    nextType: FleuraisonNoteType = "Suivi"
+  ) => setFleuraisonForm(createDefaultFleuraisonForm(phaseName, nextType));
+  const openFleuraisonForm = () => {
+    if (!selectedObservationPhaseName) {
+      return;
     }
 
-    setObservationFormsByKey((prev) => ({
-      ...prev,
-      [selectedObservationNotesKey]: {
-        ...fleuraisonForm,
-        images: [...fleuraisonForm.images],
-      },
-    }));
-    setShowObservationUnsavedModal(false);
-    setIsObservationEditMode(true);
-    setSelectedObservation(null);
+    resetFleuraisonForm(
+      selectedObservationPhaseName,
+      getNextObservationNoteType(selectedPosteFleuraisonNotes)
+    );
+    setIsAddingFleuraisonNote(true);
+    setEditingFleuraisonNoteId(null);
+    setSelectedFleuraisonNoteId(null);
+    setDeleteConfirmNoteId(null);
+    setImageViewer(null);
+  };
+  const startEditingFleuraisonNote = (note: FleuraisonNote) => {
+    setFleuraisonForm({
+      noteType: note.noteType,
+      observationDate: note.observationDate,
+      densityValue: note.densityValue,
+      secondaryValue: note.secondaryValue,
+      notes: note.notes,
+      images: [...note.images],
+    });
+    setEditingFleuraisonNoteId(note.id);
+    setIsAddingFleuraisonNote(true);
+    setSelectedFleuraisonNoteId(null);
+  };
+  const confirmDeleteFleuraisonNote = (noteId: string) => {
+    if (!selectedObservationNotesKey) {
+      return;
+    }
 
-    return true;
+    setObservationNotesByKey((prev) => ({
+      ...prev,
+      [selectedObservationNotesKey]: (prev[selectedObservationNotesKey] ?? []).filter(
+        (note) => note.id !== noteId
+      ),
+    }));
+
+    if (editingFleuraisonNoteId === noteId) {
+      const remainingNotes = notesExcludingEditedOne.filter((note) => note.id !== noteId);
+      setEditingFleuraisonNoteId(null);
+      if (selectedObservationPhaseName) {
+        resetFleuraisonForm(
+          selectedObservationPhaseName,
+          getNextObservationNoteType(remainingNotes)
+        );
+      }
+      setIsAddingFleuraisonNote(true);
+    }
+  };
+  const saveFleuraisonNote = () => {
+    if (
+      !selectedObservationNotesKey ||
+      hasFleuraisonValidationError ||
+      !fleuraisonForm.observationDate
+    ) {
+      return;
+    }
+
+    const savedAt = new Intl.DateTimeFormat("fr-FR", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    }).format(new Date());
+
+    const newNote: FleuraisonNote = {
+      ...fleuraisonForm,
+      id: editingFleuraisonNoteId ?? `${Date.now()}`,
+      savedAt,
+    };
+
+    setObservationNotesByKey((prev) => {
+      const currentNotes = prev[selectedObservationNotesKey] ?? [];
+      const nextNotes = editingFleuraisonNoteId
+        ? currentNotes.map((note) => (note.id === editingFleuraisonNoteId ? newNote : note))
+        : [...currentNotes, newNote];
+
+      return {
+        ...prev,
+        [selectedObservationNotesKey]: nextNotes,
+      };
+    });
+    setEditingFleuraisonNoteId(null);
+    setIsAddingFleuraisonNote(false);
   };
 
-  const content = (
-    <div
-      className={`${styles.secteursContent} ${
-        isFullScreenFlow ? styles.secteursContentNoBottomBar : ""
-      } ${styles.posteFixeContent}`}
-    >
+  return (
+    <div className={showDeviceFrame ? frameClass : styles.androidCanvasNoFrame}>
+      <div className={styles.androidScreen}>
+        <WorkerAppStatusBar />
+        <div
+          className={`${styles.secteursContent} ${
+            isFullScreenFlow ? styles.secteursContentNoBottomBar : ""
+          } ${styles.posteFixeContent}`}
+        >
           {selectedPoste ? (
             <div
               className={`${styles.posteDetailLayout} ${
@@ -1287,8 +1076,10 @@ export function WorkerAppPostFixePage({
                           setSelectedPoste(null);
                           setIsEditingConfig(false);
                           setSelectedObservation(null);
-                          setIsObservationEditMode(true);
-                          setShowObservationUnsavedModal(false);
+                          setEditingFleuraisonNoteId(null);
+                          setSelectedFleuraisonNoteId(null);
+                          setDeleteConfirmNoteId(null);
+                          setImageViewer(null);
                         }}
                       >
                         <span className={styles.pageBackIcon} aria-hidden="true">
@@ -1357,13 +1148,11 @@ export function WorkerAppPostFixePage({
                       type="button"
                       aria-label="Retour"
                       onClick={() => {
-                        if (hasObservationChanges) {
-                          setShowObservationUnsavedModal(true);
-                          return;
-                        }
-
                         setSelectedObservation(null);
-                        setIsObservationEditMode(true);
+                        setEditingFleuraisonNoteId(null);
+                        setSelectedFleuraisonNoteId(null);
+                        setDeleteConfirmNoteId(null);
+                        setImageViewer(null);
                       }}
                     >
                       <span className={styles.pageBackIcon} aria-hidden="true">
@@ -1379,141 +1168,27 @@ export function WorkerAppPostFixePage({
                       </p>
                     </div>
                   </div>
-                  <div className={styles.fleuraisonSection}>
-                    <div className={styles.fleuraisonSectionHeader}>
-                      <h3 className={styles.fleuraisonSectionTitle}>Observation status</h3>
-                      <span
-                        className={`${styles.observationStatus} ${
-                          observationFormStatus === "En cours"
-                            ? styles.observationStatusInProgress
-                            : observationFormStatus === "Terminé"
-                              ? styles.observationStatusDone
-                              : styles.observationStatusNotStarted
-                        } ${
-                          observationFormStatus === "Pas commencé"
-                            ? styles.observationStatusNotStartedForm
-                            : ""
-                        }`}
-                      >
-                        {observationFormStatus}
-                      </span>
-                    </div>
-                    <div className={styles.fleuraisonCard}>
-                      <div className={styles.fleuraisonField}>
-                        <p className={styles.fleuraisonLabel}>
-                          {activeObservationPhaseConfig.densityLabel}
-                        </p>
-                        <div className={styles.posteEditChips}>
-                          {activeObservationPhaseConfig.densityOptions.map((option) => {
-                            const isActive = fleuraisonForm.densityValue === option;
-
-                            return (
-                              <button
-                                key={option}
-                                className={`${styles.posteEditChip} ${
-                                  isActive ? styles.posteEditChipActive : ""
-                                }`}
-                                type="button"
-                                disabled={isObservationReadOnly}
-                                onClick={() =>
-                                  !isObservationReadOnly &&
-                                  setFleuraisonForm((prev) => ({ ...prev, densityValue: option }))
-                                }
-                              >
-                                {isActive ? (
-                                  <span className={styles.posteEditChipCheck} aria-hidden="true">
-                                    check
-                                  </span>
-                                ) : null}
-                                {option}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-
-                      <div className={styles.fleuraisonDateGrid}>
-                        <label className={styles.fleuraisonField}>
-                          <span className={styles.fleuraisonLabel}>Date début</span>
-                          <span className={styles.fleuraisonTimeField}>
-                            <span className={styles.fleuraisonTimeValue}>
-                              {fleuraisonForm.startDate
-                                ? formatDateLongFr(fleuraisonForm.startDate)
-                                : "Sélectionner"}
-                            </span>
-                            <span className={styles.fleuraisonTimeIcon} aria-hidden="true">
-                              event
-                            </span>
-                            <input
-                              className={styles.fleuraisonTimeNative}
-                              type="date"
-                              aria-label="Date de début"
-                              disabled={isObservationReadOnly}
-                              value={fleuraisonForm.startDate}
-                              onChange={(event) =>
-                                setFleuraisonForm((prev) => ({
-                                  ...prev,
-                                  startDate: event.target.value,
-                                }))
-                              }
-                            />
-                          </span>
-                        </label>
-
-                        <label className={styles.fleuraisonField}>
-                          <span className={styles.fleuraisonLabel}>Date fin</span>
-                          <span className={styles.fleuraisonTimeField}>
-                            <span className={styles.fleuraisonTimeValue}>
-                              {fleuraisonForm.endDate
-                                ? formatDateLongFr(fleuraisonForm.endDate)
-                                : "Non définie"}
-                            </span>
-                            <span className={styles.fleuraisonTimeIcon} aria-hidden="true">
-                              event
-                            </span>
-                            <input
-                              className={styles.fleuraisonTimeNative}
-                              type="date"
-                              aria-label="Date de fin"
-                              disabled={isObservationReadOnly}
-                              value={fleuraisonForm.endDate}
-                              onChange={(event) =>
-                                setFleuraisonForm((prev) => ({
-                                  ...prev,
-                                  endDate: event.target.value,
-                                }))
-                              }
-                            />
-                          </span>
-                        </label>
-                      </div>
-                      {hasFleuraisonValidationError ? (
-                        <p className={styles.fleuraisonInlineError}>{fleuraisonValidationError}</p>
-                      ) : null}
-
-                      {activeObservationPhaseConfig.secondaryMode === "chips" ? (
+                  {shouldShowFleuraisonForm ? (
+                    <div className={styles.fleuraisonSection}>
+                      <h3 className={styles.fleuraisonSectionTitle}>Observation</h3>
+                      <div className={styles.fleuraisonCard}>
                         <div className={styles.fleuraisonField}>
                           <p className={styles.fleuraisonLabel}>
-                            {activeObservationPhaseConfig.secondaryLabel}
+                            {activeObservationPhaseConfig.densityLabel}
                           </p>
                           <div className={styles.posteEditChips}>
-                            {(activeObservationPhaseConfig.secondaryOptions ?? []).map((option) => {
-                              const isActive = fleuraisonForm.secondaryValue === option;
+                            {activeObservationPhaseConfig.densityOptions.map((option) => {
+                              const isActive = fleuraisonForm.densityValue === option;
 
                               return (
                                 <button
                                   key={option}
-                                  type="button"
                                   className={`${styles.posteEditChip} ${
                                     isActive ? styles.posteEditChipActive : ""
                                   }`}
-                                  disabled={isObservationReadOnly}
+                                  type="button"
                                   onClick={() =>
-                                    !isObservationReadOnly &&
-                                    setFleuraisonForm((prev) => ({
-                                      ...prev,
-                                      secondaryValue: option,
-                                    }))
+                                    setFleuraisonForm((prev) => ({ ...prev, densityValue: option }))
                                   }
                                 >
                                   {isActive ? (
@@ -1527,155 +1202,471 @@ export function WorkerAppPostFixePage({
                             })}
                           </div>
                         </div>
-                      ) : (
-                        <label className={styles.fleuraisonField}>
-                          <span className={styles.fleuraisonLabel}>
-                            {activeObservationPhaseConfig.secondaryLabel}
+
+                        <div className={styles.fleuraisonField}>
+                          <p className={styles.fleuraisonLabel}>Type d&apos;observation</p>
+                          <div className={styles.posteEditChips}>
+                            {(["Début", "Suivi", "Finale"] as const).map((option) => {
+                              const isActive = fleuraisonForm.noteType === option;
+
+                              return (
+                                <button
+                                  key={option}
+                                  type="button"
+                                  className={`${styles.posteEditChip} ${
+                                    isActive ? styles.posteEditChipActive : ""
+                                  }`}
+                                  onClick={() =>
+                                    setFleuraisonForm((prev) => ({ ...prev, noteType: option }))
+                                  }
+                                >
+                                  {isActive ? (
+                                    <span className={styles.posteEditChipCheck} aria-hidden="true">
+                                      check
+                                    </span>
+                                  ) : null}
+                                  {option}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        <div className={styles.fleuraisonField}>
+                          <span className={styles.fleuraisonLabel}>Date observation</span>
+                          <span className={styles.fleuraisonTimeField}>
+                            <span className={styles.fleuraisonTimeValue}>
+                              {fleuraisonForm.observationDate
+                                ? formatDateLongFr(fleuraisonForm.observationDate)
+                                : "Sélectionner une date"}
+                            </span>
+                            <span className={styles.fleuraisonTimeIcon} aria-hidden="true">
+                              event
+                            </span>
+                            <input
+                              className={styles.fleuraisonTimeNative}
+                              type="date"
+                              aria-label="Date observation"
+                              value={fleuraisonForm.observationDate}
+                              onChange={(event) =>
+                                setFleuraisonForm((prev) => ({
+                                  ...prev,
+                                  observationDate: event.target.value,
+                                }))
+                              }
+                            />
                           </span>
-                          <input
-                            className={styles.fleuraisonInput}
-                            type="number"
-                            min="0"
-                            disabled={isObservationReadOnly}
-                            value={fleuraisonForm.secondaryValue}
+                        </div>
+                        {hasFleuraisonValidationError ? (
+                          <p className={styles.fleuraisonInlineError}>{fleuraisonValidationError}</p>
+                        ) : null}
+
+                        {activeObservationPhaseConfig.secondaryMode === "chips" ? (
+                          <div className={styles.fleuraisonField}>
+                            <p className={styles.fleuraisonLabel}>
+                              {activeObservationPhaseConfig.secondaryLabel}
+                            </p>
+                            <div className={styles.posteEditChips}>
+                              {(activeObservationPhaseConfig.secondaryOptions ?? []).map((option) => {
+                                const isActive = fleuraisonForm.secondaryValue === option;
+
+                                return (
+                                  <button
+                                    key={option}
+                                    type="button"
+                                    className={`${styles.posteEditChip} ${
+                                      isActive ? styles.posteEditChipActive : ""
+                                    }`}
+                                    onClick={() =>
+                                      setFleuraisonForm((prev) => ({
+                                        ...prev,
+                                        secondaryValue: option,
+                                      }))
+                                    }
+                                  >
+                                    {isActive ? (
+                                      <span className={styles.posteEditChipCheck} aria-hidden="true">
+                                        check
+                                      </span>
+                                    ) : null}
+                                    {option}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ) : (
+                          <label className={styles.fleuraisonField}>
+                            <span className={styles.fleuraisonLabel}>
+                              {activeObservationPhaseConfig.secondaryLabel}
+                            </span>
+                            <input
+                              className={styles.fleuraisonInput}
+                              type="number"
+                              min="0"
+                              value={fleuraisonForm.secondaryValue}
+                              onChange={(event) =>
+                                setFleuraisonForm((prev) => ({
+                                  ...prev,
+                                  secondaryValue: event.target.value,
+                                }))
+                              }
+                            />
+                          </label>
+                        )}
+
+                        <div className={styles.fleuraisonField}>
+                          <p className={styles.fleuraisonLabel}>Images témoins (optionnel)</p>
+                          <div className={styles.fleuraisonImagesGrid}>
+                            {fleuraisonForm.images.map((imageSrc, imageIndex) => (
+                              <div key={`${imageSrc}-${imageIndex}`} className={styles.fleuraisonImageThumb}>
+                                <img src={imageSrc} alt={`Témoin ${imageIndex + 1}`} />
+                                <button
+                                  className={styles.fleuraisonImageRemove}
+                                  type="button"
+                                  aria-label="Supprimer l'image"
+                                  onClick={() =>
+                                    setFleuraisonForm((prev) => ({
+                                      ...prev,
+                                      images: prev.images.filter((_, index) => index !== imageIndex),
+                                    }))
+                                  }
+                                >
+                                  close
+                                </button>
+                              </div>
+                            ))}
+                            <button
+                              className={styles.fleuraisonImagePlaceholder}
+                              type="button"
+                              onClick={() => fleuraisonImageInputRef.current?.click()}
+                            >
+                              <span className={styles.fleuraisonImageIcon} aria-hidden="true">
+                                add_a_photo
+                              </span>
+                            </button>
+                            <input
+                              ref={fleuraisonImageInputRef}
+                              className={styles.fleuraisonImageInput}
+                              type="file"
+                              accept="image/*"
+                              multiple
+                              onChange={(event) => {
+                                const files = event.target.files;
+                                if (!files || files.length === 0) {
+                                  return;
+                                }
+
+                                const imageUrls = Array.from(files).map((file) =>
+                                  URL.createObjectURL(file)
+                                );
+                                setFleuraisonForm((prev) => ({
+                                  ...prev,
+                                  images: [...prev.images, ...imageUrls].slice(0, 6),
+                                }));
+                                event.target.value = "";
+                              }}
+                            />
+                          </div>
+                        </div>
+
+                        <label className={styles.fleuraisonField}>
+                          <span className={styles.fleuraisonLabel}>Notes (optionnel)</span>
+                          <textarea
+                            className={styles.fleuraisonTextarea}
+                            placeholder="Ajouter une note..."
+                            value={fleuraisonForm.notes}
                             onChange={(event) =>
-                              setFleuraisonForm((prev) => ({
-                                ...prev,
-                                secondaryValue: event.target.value,
-                              }))
+                              setFleuraisonForm((prev) => ({ ...prev, notes: event.target.value }))
                             }
                           />
                         </label>
-                      )}
-
-                      <div className={styles.fleuraisonField}>
-                        <p className={styles.fleuraisonLabel}>Images témoins (optionnel)</p>
-                        <div className={styles.fleuraisonImagesGrid}>
-                          {fleuraisonForm.images.map((imageSrc, imageIndex) => (
-                            <div key={`${imageSrc}-${imageIndex}`} className={styles.fleuraisonImageThumb}>
-                              <img src={imageSrc} alt={`Témoin ${imageIndex + 1}`} />
-                              <button
-                                className={styles.fleuraisonImageRemove}
-                                type="button"
-                                disabled={isObservationReadOnly}
-                                aria-label="Supprimer l'image"
-                                onClick={() =>
-                                  !isObservationReadOnly &&
-                                  setFleuraisonForm((prev) => ({
-                                    ...prev,
-                                    images: prev.images.filter((_, index) => index !== imageIndex),
-                                  }))
-                                }
-                              >
-                                close
-                              </button>
-                            </div>
-                          ))}
-                          <button
-                            className={styles.fleuraisonImagePlaceholder}
-                            type="button"
-                            disabled={isObservationReadOnly}
-                            onClick={() => !isObservationReadOnly && fleuraisonImageInputRef.current?.click()}
-                          >
-                            <span className={styles.fleuraisonImageIcon} aria-hidden="true">
-                              add_a_photo
-                            </span>
-                          </button>
-                          <input
-                            ref={fleuraisonImageInputRef}
-                            className={styles.fleuraisonImageInput}
-                            type="file"
-                            accept="image/*"
-                            multiple
-                            disabled={isObservationReadOnly}
-                            onChange={(event) => {
-                              const files = event.target.files;
-                              if (!files || files.length === 0) {
-                                return;
-                              }
-
-                              const imageUrls = Array.from(files).map((file) =>
-                                URL.createObjectURL(file)
-                              );
-                              setFleuraisonForm((prev) => ({
-                                ...prev,
-                                images: [...prev.images, ...imageUrls].slice(0, 6),
-                              }));
-                              event.target.value = "";
-                            }}
-                          />
-                        </div>
                       </div>
-
-                      <label className={styles.fleuraisonField}>
-                        <span className={styles.fleuraisonLabel}>Notes (optionnel)</span>
-                        <textarea
-                          className={styles.fleuraisonTextarea}
-                          placeholder="Ajouter une note..."
-                          readOnly={isObservationReadOnly}
-                          value={fleuraisonForm.notes}
-                          onChange={(event) =>
-                            setFleuraisonForm((prev) => ({ ...prev, notes: event.target.value }))
-                          }
-                        />
-                      </label>
                     </div>
-                  </div>
+                  ) : shouldShowFleuraisonEmptyState ? (
+                    <div className={styles.fleuraisonEmptyWrap}>
+                      <div className={styles.fleuraisonEmptyCard}>
+                        <div className={styles.fleuraisonEmptyIllustration} aria-hidden="true">
+                          <span className={styles.fleuraisonEmptyIcon}>nest_found_savings</span>
+                        </div>
+                        <div className={styles.fleuraisonEmptyText}>
+                          <p className={styles.fleuraisonEmptyTitle}>Aucune observation</p>
+                          <p className={styles.fleuraisonEmptySubTitle}>
+                            {activeObservationPhaseConfig.emptySubtitle}
+                          </p>
+                        </div>
+                        <button
+                          className={`${styles.posteSaveButton} ${styles.fleuraisonEmptyAction}`}
+                          type="button"
+                          onClick={openFleuraisonForm}
+                        >
+                          Ajouter une observation
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className={styles.fleuraisonSection}>
+                      <h3 className={styles.fleuraisonSectionTitle}>Observation</h3>
+                      <div className={styles.fleuraisonNotesList}>
+                        {selectedPosteFleuraisonNotesSorted.map((note, index) => (
+                          <div key={note.id} className={styles.fleuraisonNoteCard}>
+                            <div className={styles.fleuraisonNoteTop}>
+                              <span
+                                className={`${styles.fleuraisonNoteType} ${
+                                  note.noteType === "Début"
+                                    ? styles.fleuraisonNoteTypeStart
+                                    : note.noteType === "Finale"
+                                      ? styles.fleuraisonNoteTypeEnd
+                                      : styles.fleuraisonNoteTypeFollowUp
+                                }`}
+                              >
+                                {note.noteType}
+                              </span>
+                              <div className={styles.fleuraisonNoteMeta}>
+                                <p className={styles.fleuraisonNoteDate}>
+                                  {formatDateLongFr(note.observationDate)}
+                                </p>
+                                <button
+                                  type="button"
+                                  className={styles.fleuraisonNoteMoreButton}
+                                  aria-label="Actions observation"
+                                  onClick={() => setSelectedFleuraisonNoteId(note.id)}
+                                >
+                                  <span className={styles.fleuraisonNoteMore} aria-hidden="true">
+                                    more_vert
+                                  </span>
+                                </button>
+                              </div>
+                            </div>
+                            <p className={styles.fleuraisonNoteTitle}>Observation {index + 1}</p>
+                            <p className={styles.fleuraisonNoteSummary}>
+                              {activeObservationPhaseConfig.densityLabel}:{" "}
+                              <strong>{note.densityValue}</strong> ·{" "}
+                              {activeObservationPhaseConfig.secondaryLabel}: {note.secondaryValue}
+                            </p>
+                            {note.images.length > 0 ? (
+                              <div className={styles.fleuraisonNoteImages}>
+                                {note.images.slice(0, 3).map((imageSrc, imageIndex) => (
+                                  <button
+                                    key={`${note.id}-img-${imageIndex}`}
+                                    type="button"
+                                    className={styles.fleuraisonNoteImageTap}
+                                    onClick={(event) => {
+                                      event.stopPropagation();
+                                      setImageViewer({
+                                        images: note.images,
+                                        index: imageIndex,
+                                      });
+                                    }}
+                                  >
+                                    <img
+                                      src={imageSrc}
+                                      alt={`Observation ${index + 1} image ${imageIndex + 1}`}
+                                    />
+                                  </button>
+                                ))}
+                              </div>
+                            ) : null}
+                            {note.notes ? (
+                              <p className={styles.fleuraisonNoteComment}>{note.notes}</p>
+                            ) : null}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
-                  <div className={styles.posteEditActions}>
-                    {isObservationReadOnly ? (
-                      <button
-                        className={styles.posteSaveButton}
-                        type="button"
-                        onClick={() => setIsObservationEditMode(true)}
+                  {shouldShowFleuraisonForm || selectedPosteFleuraisonNotes.length > 0 ? (
+                    <div className={styles.posteEditActions}>
+                      {shouldShowFleuraisonForm ? (
+                        <button
+                          className={`${styles.posteSaveButton} ${
+                            hasFleuraisonValidationError ? styles.posteButtonDisabled : ""
+                          }`}
+                          type="button"
+                          disabled={hasFleuraisonValidationError}
+                          onClick={saveFleuraisonNote}
+                        >
+                          {editingFleuraisonNoteId ? "Enregistrer les modifications" : "Enregistrer"}
+                        </button>
+                      ) : (
+                        <button className={styles.posteSaveButton} type="button" onClick={openFleuraisonForm}>
+                          Ajouter une observation
+                        </button>
+                      )}
+                    </div>
+                  ) : null}
+                  {selectedSheetNote ? (
+                    <div
+                      className={styles.fleuraisonSheetOverlay}
+                      role="dialog"
+                      aria-modal="true"
+                      onClick={() => setSelectedFleuraisonNoteId(null)}
+                    >
+                      <div
+                        className={styles.fleuraisonActionSheet}
+                        onClick={(event) => event.stopPropagation()}
                       >
-                        Modifier
-                      </button>
-                    ) : (
-                      <button
-                        className={`${styles.posteSaveButton} ${
-                          hasFleuraisonValidationError ? styles.posteButtonDisabled : ""
-                        }`}
-                        type="button"
-                        disabled={hasFleuraisonValidationError}
-                        onClick={saveFleuraisonNote}
-                      >
-                        {observationFormStatus === "Terminé"
-                          ? "Enregistrer les modifications"
-                          : "Enregistrer"}
-                      </button>
-                    )}
-                  </div>
-                  {showObservationUnsavedModal ? (
+                        <span className={styles.fleuraisonSheetHandle} aria-hidden="true" />
+                        <button
+                          type="button"
+                          className={styles.fleuraisonSheetAction}
+                          onClick={() => startEditingFleuraisonNote(selectedSheetNote)}
+                        >
+                          Modifier
+                        </button>
+                        <button
+                          type="button"
+                          className={`${styles.fleuraisonSheetAction} ${
+                            selectedSheetNote.images.length === 0
+                              ? styles.fleuraisonSheetActionDisabled
+                              : ""
+                          }`}
+                          disabled={selectedSheetNote.images.length === 0}
+                          onClick={() => {
+                            if (selectedSheetNote.images.length === 0) {
+                              return;
+                            }
+
+                            setImageViewer({
+                              images: selectedSheetNote.images,
+                              index: 0,
+                            });
+                            setSelectedFleuraisonNoteId(null);
+                          }}
+                        >
+                          Prévisualiser les images
+                        </button>
+                        <button
+                          type="button"
+                          className={`${styles.fleuraisonSheetAction} ${styles.fleuraisonSheetActionDanger}`}
+                          onClick={() => {
+                            setDeleteConfirmNoteId(selectedSheetNote.id);
+                            setSelectedFleuraisonNoteId(null);
+                          }}
+                        >
+                          Supprimer
+                        </button>
+                      </div>
+                    </div>
+                  ) : null}
+                  {deleteConfirmNote ? (
                     <div className={styles.unsavedOverlay} role="dialog" aria-modal="true">
                       <div className={styles.unsavedCard}>
-                        <h4 className={styles.unsavedTitle}>Enregistrer les modifications ?</h4>
+                        <h4 className={styles.unsavedTitle}>Supprimer cette observation ?</h4>
                         <p className={styles.unsavedText}>
-                          Vos changements seront perdus si vous quittez sans enregistrer.
+                          Cette action est définitive et supprimera la note enregistrée.
                         </p>
                         <div className={styles.unsavedActions}>
                           <button
                             className={styles.unsavedSecondary}
                             type="button"
-                            onClick={() => {
-                              setShowObservationUnsavedModal(false);
-                              setSelectedObservation(null);
-                              setIsObservationEditMode(true);
-                            }}
+                            onClick={() => setDeleteConfirmNoteId(null)}
                           >
-                            Quitter
+                            Annuler
                           </button>
                           <button
-                            className={styles.unsavedPrimary}
+                            className={`${styles.unsavedPrimary} ${styles.unsavedDanger}`}
                             type="button"
                             onClick={() => {
-                              saveFleuraisonNote();
+                              confirmDeleteFleuraisonNote(deleteConfirmNote.id);
+                              setDeleteConfirmNoteId(null);
                             }}
                           >
-                            Enregistrer
+                            Supprimer
                           </button>
                         </div>
                       </div>
+                    </div>
+                  ) : null}
+                  {imageViewer ? (
+                    <div
+                      className={styles.fleuraisonViewerOverlay}
+                      role="dialog"
+                      aria-modal="true"
+                      onTouchStart={(event) => {
+                        imageViewerTouchStartXRef.current = event.touches[0]?.clientX ?? null;
+                      }}
+                      onTouchEnd={(event) => {
+                        const touchStartX = imageViewerTouchStartXRef.current;
+                        const touchEndX = event.changedTouches[0]?.clientX ?? null;
+                        if (touchStartX == null || touchEndX == null) {
+                          return;
+                        }
+
+                        const deltaX = touchEndX - touchStartX;
+                        if (Math.abs(deltaX) < 40) {
+                          return;
+                        }
+
+                        if (deltaX < 0) {
+                          setImageViewer((prev) =>
+                            prev
+                              ? {
+                                  ...prev,
+                                  index: Math.min(prev.images.length - 1, prev.index + 1),
+                                }
+                              : prev
+                          );
+                          return;
+                        }
+
+                        setImageViewer((prev) =>
+                          prev
+                            ? {
+                                ...prev,
+                                index: Math.max(0, prev.index - 1),
+                              }
+                            : prev
+                        );
+                      }}
+                    >
+                      <button
+                        type="button"
+                        className={styles.fleuraisonViewerClose}
+                        aria-label="Fermer la prévisualisation"
+                        onClick={() => setImageViewer(null)}
+                      >
+                        close
+                      </button>
+                      <img
+                        className={styles.fleuraisonViewerImage}
+                        src={imageViewer.images[imageViewer.index]}
+                        alt={`Image ${imageViewer.index + 1}`}
+                      />
+                      <p className={styles.fleuraisonViewerCounter}>
+                        {imageViewer.index + 1} / {imageViewer.images.length}
+                      </p>
+                      <button
+                        type="button"
+                        className={`${styles.fleuraisonViewerHitArea} ${styles.fleuraisonViewerHitLeft}`}
+                        aria-label="Image précédente"
+                        onClick={() =>
+                          setImageViewer((prev) =>
+                            prev
+                              ? {
+                                  ...prev,
+                                  index: Math.max(0, prev.index - 1),
+                                }
+                              : prev
+                          )
+                        }
+                      />
+                      <button
+                        type="button"
+                        className={`${styles.fleuraisonViewerHitArea} ${styles.fleuraisonViewerHitRight}`}
+                        aria-label="Image suivante"
+                        onClick={() =>
+                          setImageViewer((prev) =>
+                            prev
+                              ? {
+                                  ...prev,
+                                  index: Math.min(prev.images.length - 1, prev.index + 1),
+                                }
+                              : prev
+                          )
+                        }
+                      />
                     </div>
                   ) : null}
                 </div>
@@ -1903,8 +1894,10 @@ export function WorkerAppPostFixePage({
                           setSelectedPoste(null);
                           setIsEditingConfig(false);
                           setSelectedObservation(null);
-                          setIsObservationEditMode(true);
-                          setShowObservationUnsavedModal(false);
+                          setEditingFleuraisonNoteId(null);
+                          setSelectedFleuraisonNoteId(null);
+                          setDeleteConfirmNoteId(null);
+                          setImageViewer(null);
                         }}
                       >
                         <span className={styles.pageBackIcon} aria-hidden="true">
@@ -1933,7 +1926,12 @@ export function WorkerAppPostFixePage({
                         observations complétées · {selectedPosteProgress}%
                       </p>
                       <div className={styles.posteProgressRow}>
-                        {renderPosteProgressMilestones(selectedPosteCompletedCount)}
+                        <div className={styles.posteProgressTrack}>
+                          <span
+                            className={styles.posteProgressFill}
+                            style={{ width: `${selectedPosteProgress}%` }}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1956,20 +1954,20 @@ export function WorkerAppPostFixePage({
                             return;
                           }
 
-                          const observationKey = getObservationNotesKey(
-                            selectedPoste.name,
-                            observation.name
-                          );
-                          const existingForm = observationFormsByKey[observationKey] ?? null;
-                          const existingStatus = getObservationDerivedStatus(existingForm);
+                          const notesForPoste =
+                            observationNotesByKey[
+                              getObservationNotesKey(selectedPoste.name, observation.name)
+                            ] ?? [];
                           setSelectedObservation(observation);
-                          setShowObservationUnsavedModal(false);
-                          setIsObservationEditMode(existingStatus !== "Terminé");
-                          setFleuraisonForm(
-                            existingForm
-                              ? { ...existingForm, images: [...existingForm.images] }
-                              : createDefaultFleuraisonForm(observation.name)
+                          setIsAddingFleuraisonNote(false);
+                          resetFleuraisonForm(
+                            observation.name,
+                            getNextObservationNoteType(notesForPoste)
                           );
+                          setEditingFleuraisonNoteId(null);
+                          setSelectedFleuraisonNoteId(null);
+                          setDeleteConfirmNoteId(null);
+                          setImageViewer(null);
                         }}
                       >
                         <span
@@ -2054,7 +2052,12 @@ export function WorkerAppPostFixePage({
                           complétées · {posteProgress}%
                         </p>
                         <div className={styles.posteProgressRow}>
-                          {renderPosteProgressMilestones(posteCompletedCount)}
+                          <div className={styles.posteProgressTrack}>
+                            <span
+                              className={styles.posteProgressFill}
+                              style={{ width: `${posteProgress}%` }}
+                            />
+                          </div>
                         </div>
                       </button>
                     );
@@ -2139,21 +2142,7 @@ export function WorkerAppPostFixePage({
           {!isFullScreenFlow && frameView !== "empty" ? (
             <div className={styles.scrollFadeHint} aria-hidden="true" />
           ) : null}
-    </div>
-  );
-
-  if (embedded) {
-    return content;
-  }
-
-  return (
-    <div
-      className={showDeviceFrame ? frameClass : styles.androidCanvasNoFrame}
-      style={!isInteractive ? { pointerEvents: "none" } : undefined}
-    >
-      <div className={styles.androidScreen}>
-        <WorkerAppStatusBar theme={theme} />
-        {content}
+        </div>
         {!isFullScreenFlow ? <WorkerAppHomeBottomBarScreen activeIndex={2} /> : null}
         {isFullScreenFlow ? <WorkerAppNavigationScreen surface="page" /> : null}
         {!isFullScreenFlow ? <WorkerAppNavigationScreen /> : null}

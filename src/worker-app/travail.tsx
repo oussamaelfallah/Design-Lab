@@ -15,17 +15,24 @@ const syncStates = [
 type WorkerAppTravailPageProps = {
   showDeviceFrame: boolean;
   theme: "dark" | "light";
+  frameTheme?: "dark" | "light";
 };
 
-export function WorkerAppTravailPage({ showDeviceFrame, theme }: WorkerAppTravailPageProps) {
+export function WorkerAppTravailPage({
+  showDeviceFrame,
+  theme,
+  frameTheme,
+}: WorkerAppTravailPageProps) {
   const [syncStateIndex, setSyncStateIndex] = useState(2);
   const syncState = syncStates[syncStateIndex];
-  const frameClass = theme === "light" ? styles.androidCanvasLightFrame : styles.androidCanvas;
+  const resolvedFrameTheme = frameTheme ?? theme;
+  const frameClass =
+    resolvedFrameTheme === "light" ? styles.androidCanvasLightFrame : styles.androidCanvas;
 
   return (
     <div className={showDeviceFrame ? frameClass : styles.androidCanvasNoFrame}>
       <div className={styles.androidScreen}>
-        <WorkerAppStatusBar />
+        <WorkerAppStatusBar theme={theme} />
         <div className={styles.homeContent}>
           <div className={styles.homeHeaderRow}>
             <h2 className={styles.homeTitle}>Travail</h2>

@@ -1,0 +1,347 @@
+.root {
+  width: min(100%, 980px);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 8px;
+  padding-bottom: 4px;
+}
+
+.panel {
+  border: 1px solid var(--tds-border);
+  border-radius: 16px;
+  background: var(--tds-surface);
+  padding: 16px;
+  min-width: 0;
+}
+
+.panelHeaderTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.panelHeader h3 {
+  margin: 0;
+  color: var(--tds-text-primary);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.panelHeader p {
+  margin: 4px 0 0;
+  color: var(--tds-text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.themeToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--tds-border);
+  border-radius: 999px;
+  background: var(--tds-card);
+  padding: 4px;
+  flex-shrink: 0;
+}
+
+.themeToggleButton {
+  min-width: 64px;
+  height: 32px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--tds-text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.themeToggleButtonActive {
+  background: var(--tds-surface);
+  color: var(--tds-text-primary);
+}
+
+.journeyGrid {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.journeyCard {
+  border: 1px solid var(--tds-border);
+  border-radius: 14px;
+  background: var(--tds-card);
+  padding: 12px;
+}
+
+.journeyCardHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.journeyId {
+  display: inline-grid;
+  place-items: center;
+  min-width: 30px;
+  height: 24px;
+  border-radius: 999px;
+  border: 1px solid var(--tds-border);
+  background: var(--tds-surface);
+  color: var(--tds-text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+
+.journeyMeta {
+  min-width: 0;
+}
+
+.journeyMeta h4 {
+  margin: 0;
+  color: var(--tds-text-primary);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.journeyMeta p {
+  margin: 4px 0 0;
+  color: var(--tds-text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.journeyPreview {
+  margin-top: 10px;
+  border: 1px solid var(--tds-divider);
+  border-radius: 12px;
+  background: var(--tds-surface);
+  padding: 8px;
+  overflow: hidden;
+}
+
+@media (max-width: 720px) {
+  .panelHeaderTop {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .themeToggle {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .themeToggleButton {
+    flex: 1;
+  }
+}
+
+.cardsGrid {
+  margin-top: 12px;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.card {
+  border: none;
+  border-radius: 14px;
+  background: var(--tds-card);
+  padding: 12px;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cardHeader h4 {
+  margin: 0;
+  color: var(--tds-card-title);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.chevron {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 18px;
+  color: var(--tds-card-chevron);
+  line-height: 1;
+}
+
+.cardSector {
+  margin: 4px 0 0;
+  color: var(--tds-card-subtitle);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.cardMeta {
+  margin: 6px 0 0;
+  color: var(--tds-card-meta);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.cardProgressLabel {
+  margin: 8px 0 0;
+  color: var(--tds-card-progress-label);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.progressTrack {
+  margin-top: 8px;
+  display: grid;
+  gap: 4px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.progressSegment {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--tds-track-base);
+}
+
+.progressSegmentDone {
+  background: var(--tds-track-done);
+}
+
+.observationList {
+  margin-top: 12px;
+  border: none;
+  border-radius: 14px;
+  background: var(--tds-card);
+  overflow: hidden;
+}
+
+.observationRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-top: 1px solid var(--tds-observation-divider);
+}
+
+.observationRow:first-child {
+  border-top: none;
+}
+
+.observationIconWrap {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.observationIcon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.toneViolet {
+  background: var(--tds-tone-violet-bg);
+  color: var(--tds-tone-violet-fg);
+}
+
+.toneBlue {
+  background: var(--tds-tone-blue-bg);
+  color: var(--tds-tone-blue-fg);
+}
+
+.toneOrange {
+  background: var(--tds-tone-orange-bg);
+  color: var(--tds-tone-orange-fg);
+}
+
+.toneTeal {
+  background: var(--tds-tone-teal-bg);
+  color: var(--tds-tone-teal-fg);
+}
+
+.toneRose {
+  background: var(--tds-tone-rose-bg);
+  color: var(--tds-tone-rose-fg);
+}
+
+.observationMeta {
+  min-width: 0;
+  flex: 1;
+}
+
+.observationTitle {
+  margin: 0;
+  color: var(--tds-observation-title);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.observationSubtitle {
+  margin: 4px 0 0;
+  color: var(--tds-text-muted);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.observationStatus {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  border-radius: 999px;
+  padding: 0 8px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.statusNotStarted {
+  background: var(--tds-status-not-started-bg);
+  color: var(--tds-status-not-started-text);
+  border-color: var(--tds-status-not-started-border);
+}
+
+.statusInProgress {
+  background: var(--tds-status-in-progress-bg);
+  color: var(--tds-status-in-progress-text);
+  border-color: var(--tds-status-in-progress-border);
+}
+
+.statusDone {
+  background: var(--tds-status-done-bg);
+  color: var(--tds-status-done-text);
+  border-color: var(--tds-status-done-border);
+}
+
+@media (max-width: 900px) {
+  .root {
+    width: 100%;
+  }
+
+  .journeyGrid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,605 @@
+{
+  "color": {
+    "brand": {
+      "primary": {
+        "$type": "color",
+        "$value": "{color.green.500}",
+        "$description": "Main brand. Buttons, links, active states. Matches --ds-brand: #01a362."
+      },
+      "primary-subtle": {
+        "$type": "color",
+        "$value": "{color.green.50}",
+        "$description": "Light brand tint. Hover backgrounds, selected rows."
+      },
+      "primary-hover": {
+        "$type": "color",
+        "$value": "{color.green.600}",
+        "$description": "Hover — one stop darker than primary."
+      },
+      "primary-active": {
+        "$type": "color",
+        "$value": "{color.green.700}",
+        "$description": "Active/pressed — one stop darker than hover."
+      },
+      "primary-text": {
+        "$type": "color",
+        "$value": "{color.green.700}",
+        "$description": "Brand-colored text on light backgrounds."
+      },
+      "primary-on": {
+        "$type": "color",
+        "$value": "{color.neutral.0}",
+        "$description": "Text/icon placed ON a brand primary background."
+      }
+    },
+    "text": {
+      "primary": {
+        "$type": "color",
+        "$value": "{color.neutral.900}",
+        "$description": "Default body and heading text. Matches --ds-text-primary."
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "{color.neutral.700}",
+        "$description": "Supporting text, captions, metadata. Matches --ds-text-secondary."
+      },
+      "tertiary": {
+        "$type": "color",
+        "$value": "{color.neutral.500}",
+        "$description": "Placeholders, hints, ghost labels."
+      },
+      "disabled": {
+        "$type": "color",
+        "$value": "{color.neutral.400}",
+        "$description": "Disabled text."
+      },
+      "inverse": {
+        "$type": "color",
+        "$value": "{color.neutral.0}",
+        "$description": "Text on dark/colored surfaces."
+      },
+      "link": {
+        "$type": "color",
+        "$value": "{color.green.700}",
+        "$description": "Hyperlinks and interactive inline text."
+      },
+      "link-hover": {
+        "$type": "color",
+        "$value": "{color.green.800}",
+        "$description": "Hovered hyperlinks."
+      },
+      "danger": {
+        "$type": "color",
+        "$value": "{color.red.700}",
+        "$description": "Destructive action text, inline error messages."
+      },
+      "success": {
+        "$type": "color",
+        "$value": "{color.green.700}",
+        "$description": "Success confirmation text."
+      },
+      "warning": {
+        "$type": "color",
+        "$value": "{color.amber.700}",
+        "$description": "Warning / caution text."
+      },
+      "info": {
+        "$type": "color",
+        "$value": "{color.blue.700}",
+        "$description": "Informational text."
+      }
+    },
+    "surface": {
+      "default": {
+        "$type": "color",
+        "$value": "{color.neutral.100}",
+        "$description": "Page / app background. Matches --ds-surface: #f3f5f7."
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "{color.neutral.50}",
+        "$description": "Slightly lighter panel. Sidebar, drawer background."
+      },
+      "raised": {
+        "$type": "color",
+        "$value": "{color.neutral.0}",
+        "$description": "Cards, modals, dropdowns — white, lifted above the neutral.100 page."
+      },
+      "sunken": {
+        "$type": "color",
+        "$value": "{color.neutral.200}",
+        "$description": "Input fields, code blocks — recessed below the surface."
+      },
+      "overlay": {
+        "$type": "color",
+        "$value": "{color.neutral.950}",
+        "$description": "Modal backdrop. Apply at 50–60% opacity."
+      }
+    },
+    "border": {
+      "default": {
+        "$type": "color",
+        "$value": "{color.neutral.200}",
+        "$description": "Standard border. Matches --ds-border."
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "{color.neutral.300}",
+        "$description": "Emphasized border. Focused inputs, active panels."
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "{color.neutral.100}",
+        "$description": "Hairline separator."
+      },
+      "disabled": {
+        "$type": "color",
+        "$value": "{color.neutral.200}",
+        "$description": "Disabled form element borders."
+      },
+      "brand": {
+        "$type": "color",
+        "$value": "{color.green.500}",
+        "$description": "Brand-accented border. Selected state, active input."
+      },
+      "danger": {
+        "$type": "color",
+        "$value": "{color.red.500}",
+        "$description": "Error state border on form elements."
+      }
+    },
+    "feedback": {
+      "success": {
+        "bg": {
+          "$type": "color",
+          "$value": "{color.green.50}",
+          "$description": "Alert / banner background."
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{color.green.200}",
+          "$description": "Alert border."
+        },
+        "text": {
+          "$type": "color",
+          "$value": "{color.green.800}",
+          "$description": "Text on success background."
+        },
+        "icon": {
+          "$type": "color",
+          "$value": "{color.green.600}",
+          "$description": "Icon fill."
+        },
+        "solid": {
+          "$type": "color",
+          "$value": "{color.green.600}",
+          "$description": "Filled badge / toast background."
+        },
+        "solid-text": {
+          "$type": "color",
+          "$value": "{color.neutral.0}",
+          "$description": "Text on solid success background."
+        }
+      },
+      "error": {
+        "bg": {
+          "$type": "color",
+          "$value": "{color.red.50}",
+          "$description": "Alert / banner background."
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{color.red.200}",
+          "$description": "Alert border."
+        },
+        "text": {
+          "$type": "color",
+          "$value": "{color.red.800}",
+          "$description": "Text on error background."
+        },
+        "icon": {
+          "$type": "color",
+          "$value": "{color.red.600}",
+          "$description": "Icon fill."
+        },
+        "solid": {
+          "$type": "color",
+          "$value": "{color.red.600}",
+          "$description": "Filled badge / toast background."
+        },
+        "solid-text": {
+          "$type": "color",
+          "$value": "{color.neutral.0}",
+          "$description": "Text on solid error background."
+        }
+      },
+      "warning": {
+        "bg": {
+          "$type": "color",
+          "$value": "{color.amber.50}",
+          "$description": "Alert / banner background."
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{color.amber.200}",
+          "$description": "Alert border."
+        },
+        "text": {
+          "$type": "color",
+          "$value": "{color.amber.800}",
+          "$description": "Text on warning background."
+        },
+        "icon": {
+          "$type": "color",
+          "$value": "{color.amber.600}",
+          "$description": "Icon fill."
+        },
+        "solid": {
+          "$type": "color",
+          "$value": "{color.amber.500}",
+          "$description": "Filled badge / toast background."
+        },
+        "solid-text": {
+          "$type": "color",
+          "$value": "{color.amber.950}",
+          "$description": "Dark text on amber."
+        }
+      },
+      "info": {
+        "bg": {
+          "$type": "color",
+          "$value": "{color.blue.50}",
+          "$description": "Alert / banner background."
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{color.blue.200}",
+          "$description": "Alert border."
+        },
+        "text": {
+          "$type": "color",
+          "$value": "{color.blue.800}",
+          "$description": "Text on info background."
+        },
+        "icon": {
+          "$type": "color",
+          "$value": "{color.blue.600}",
+          "$description": "Icon fill."
+        },
+        "solid": {
+          "$type": "color",
+          "$value": "{color.blue.600}",
+          "$description": "Filled badge / toast background."
+        },
+        "solid-text": {
+          "$type": "color",
+          "$value": "{color.neutral.0}",
+          "$description": "Text on solid info background."
+        }
+      }
+    },
+    "status": {
+      "done": {
+        "bg": {
+          "$type": "color",
+          "$value": "{color.alpha.green-14}",
+          "$description": "Terminé chip background — brand green at 14% opacity."
+        },
+        "text": {
+          "$type": "color",
+          "$value": "{color.green.600}",
+          "$description": "Terminé chip text."
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{color.green.200}",
+          "$description": "Terminé chip border."
+        },
+        "solid": {
+          "$type": "color",
+          "$value": "{color.green.600}",
+          "$description": "Terminé filled chip background."
+        },
+        "solid-text": {
+          "$type": "color",
+          "$value": "{color.neutral.0}",
+          "$description": "Text on filled Terminé chip."
+        }
+      },
+      "in-progress": {
+        "bg": {
+          "$type": "color",
+          "$value": "{color.blue.100}",
+          "$description": "En cours chip background."
+        },
+        "text": {
+          "$type": "color",
+          "$value": "{color.blue.700}",
+          "$description": "En cours chip text."
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{color.blue.200}",
+          "$description": "En cours chip border."
+        },
+        "solid": {
+          "$type": "color",
+          "$value": "{color.blue.600}",
+          "$description": "En cours filled chip background."
+        },
+        "solid-text": {
+          "$type": "color",
+          "$value": "{color.neutral.0}",
+          "$description": "Text on filled En cours chip."
+        }
+      },
+      "not-started": {
+        "bg": {
+          "$type": "color",
+          "$value": "{color.neutral.100}",
+          "$description": "Pas commencé chip background."
+        },
+        "text": {
+          "$type": "color",
+          "$value": "{color.neutral.600}",
+          "$description": "Pas commencé chip text."
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{color.neutral.300}",
+          "$description": "Pas commencé chip border."
+        },
+        "solid": {
+          "$type": "color",
+          "$value": "{color.neutral.600}",
+          "$description": "Pas commencé filled chip background."
+        },
+        "solid-text": {
+          "$type": "color",
+          "$value": "{color.neutral.0}",
+          "$description": "Text on filled Pas commencé chip."
+        }
+      }
+    },
+    "card": {
+      "title": {
+        "$type": "color",
+        "$value": "{color.neutral.750}",
+        "$description": "card row title. Uses new neutral.750 = #4A5A53."
+      },
+      "divider": {
+        "$type": "color",
+        "$value": "{color.alpha.neutral-55}",
+        "$description": "Subtle row separator line."
+      },
+      "icon-bg-default": {
+        "$type": "color",
+        "$value": "{color.alpha.green-10}",
+        "$description": "Default card icon wrap background."
+      },
+      "icon-green": {
+        "icon-color": {
+          "$type": "color",
+          "$value": "{color.green.500}",
+          "$description": "Green tone icon."
+        },
+        "icon-bg": {
+          "$type": "color",
+          "$value": "{color.alpha.green-10}",
+          "$description": "Green tone icon background."
+        }
+      },
+      "icon-blue": {
+        "icon-color": {
+          "$type": "color",
+          "$value": "{color.blue.700}",
+          "$description": "Blue tone icon."
+        },
+        "icon-bg": {
+          "$type": "color",
+          "$value": "{color.alpha.blue-11}",
+          "$description": "Blue tone icon background."
+        }
+      },
+      "icon-teal": {
+        "icon-color": {
+          "$type": "color",
+          "$value": "{color.teal.700}",
+          "$description": "Teal tone icon."
+        },
+        "icon-bg": {
+          "$type": "color",
+          "$value": "{color.alpha.teal-12}",
+          "$description": "Teal tone icon background."
+        }
+      },
+      "icon-violet": {
+        "icon-color": {
+          "$type": "color",
+          "$value": "#6E56CF",
+          "$description": "Violet tone icon — intentional categorical color."
+        },
+        "icon-bg": {
+          "$type": "color",
+          "$value": "{color.alpha.violet-12}",
+          "$description": "Violet tone icon background."
+        }
+      },
+      "icon-orange": {
+        "icon-color": {
+          "$type": "color",
+          "$value": "{color.orange.600}",
+          "$description": "Orange tone icon."
+        },
+        "icon-bg": {
+          "$type": "color",
+          "$value": "{color.alpha.orange-12}",
+          "$description": "Orange tone icon background."
+        }
+      },
+      "icon-rose": {
+        "icon-color": {
+          "$type": "color",
+          "$value": "#BE185D",
+          "$description": "Rose tone icon — intentional pink-rose categorical color."
+        },
+        "icon-bg": {
+          "$type": "color",
+          "$value": "{color.alpha.rose-11}",
+          "$description": "Rose tone icon background."
+        }
+      }
+    },
+    "data-viz": {
+      "1": {
+        "$type": "color",
+        "$value": "{color.green.500}",
+        "$description": "Series 1 — brand green."
+      },
+      "2": {
+        "$type": "color",
+        "$value": "{color.teal.500}",
+        "$description": "Series 2 — teal."
+      },
+      "3": {
+        "$type": "color",
+        "$value": "{color.blue.500}",
+        "$description": "Series 3 — blue."
+      },
+      "4": {
+        "$type": "color",
+        "$value": "{color.purple.500}",
+        "$description": "Series 4 — purple."
+      },
+      "5": {
+        "$type": "color",
+        "$value": "{color.amber.500}",
+        "$description": "Series 5 — amber."
+      },
+      "6": {
+        "$type": "color",
+        "$value": "{color.orange.500}",
+        "$description": "Series 6 — orange."
+      },
+      "7": {
+        "$type": "color",
+        "$value": "{color.rose.500}",
+        "$description": "Series 7 — rose."
+      }
+    },
+    "tag": {
+      "green": {
+        "bg": {
+          "$type": "color",
+          "$value": "{color.green.50}"
+        },
+        "text": {
+          "$type": "color",
+          "$value": "{color.green.800}"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{color.green.200}"
+        }
+      },
+      "blue": {
+        "bg": {
+          "$type": "color",
+          "$value": "{color.blue.50}"
+        },
+        "text": {
+          "$type": "color",
+          "$value": "{color.blue.800}"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{color.blue.200}"
+        }
+      },
+      "amber": {
+        "bg": {
+          "$type": "color",
+          "$value": "{color.amber.50}"
+        },
+        "text": {
+          "$type": "color",
+          "$value": "{color.amber.800}"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{color.amber.200}"
+        }
+      },
+      "red": {
+        "bg": {
+          "$type": "color",
+          "$value": "{color.red.50}"
+        },
+        "text": {
+          "$type": "color",
+          "$value": "{color.red.800}"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{color.red.200}"
+        }
+      },
+      "purple": {
+        "bg": {
+          "$type": "color",
+          "$value": "{color.purple.50}"
+        },
+        "text": {
+          "$type": "color",
+          "$value": "{color.purple.800}"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{color.purple.200}"
+        }
+      },
+      "teal": {
+        "bg": {
+          "$type": "color",
+          "$value": "{color.teal.50}"
+        },
+        "text": {
+          "$type": "color",
+          "$value": "{color.teal.800}"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{color.teal.200}"
+        }
+      },
+      "orange": {
+        "bg": {
+          "$type": "color",
+          "$value": "{color.orange.50}"
+        },
+        "text": {
+          "$type": "color",
+          "$value": "{color.orange.800}"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{color.orange.200}"
+        }
+      },
+      "neutral": {
+        "bg": {
+          "$type": "color",
+          "$value": "{color.neutral.100}"
+        },
+        "text": {
+          "$type": "color",
+          "$value": "{color.neutral.700}"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{color.neutral.300}"
+        }
+      }
+    }
+  }
+}

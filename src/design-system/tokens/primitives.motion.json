@@ -1,0 +1,128 @@
+{
+  "duration": {
+    "instant": {
+      "$type": "duration",
+      "$value": "0ms",
+      "$description": "No animation. Required fallback for prefers-reduced-motion."
+    },
+    "fast": {
+      "$type": "duration",
+      "$value": "100ms",
+      "$description": "Micro interactions. Hover highlights, focus rings, active press states."
+    },
+    "normal": {
+      "$type": "duration",
+      "$value": "150ms",
+      "$description": "Default transition. Buttons, toggles, checkboxes, switches."
+    },
+    "moderate": {
+      "$type": "duration",
+      "$value": "200ms",
+      "$description": "Small element entry. Dropdowns opening, tooltips appearing, badges."
+    },
+    "slow": {
+      "$type": "duration",
+      "$value": "300ms",
+      "$description": "Medium element entry. Modals, side panels, expanding sections."
+    },
+    "slower": {
+      "$type": "duration",
+      "$value": "400ms",
+      "$description": "Large element entry. Bottom sheets, page-level transitions."
+    },
+    "slowest": {
+      "$type": "duration",
+      "$value": "500ms",
+      "$description": "Deliberate, expressive. Onboarding steps, splash screens, feature highlights."
+    }
+  },
+  "easing": {
+    "linear": {
+      "$type": "cubicBezier",
+      "$value": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "$description": "Constant velocity. Progress bars, loading spinners, looping animations."
+    },
+    "ease-in": {
+      "$type": "cubicBezier",
+      "$value": [
+        0.4,
+        0,
+        1,
+        1
+      ],
+      "$description": "Accelerates into exit. Use for elements LEAVING the screen (closing, dismissing, fading out)."
+    },
+    "ease-out": {
+      "$type": "cubicBezier",
+      "$value": [
+        0,
+        0,
+        0.2,
+        1
+      ],
+      "$description": "Decelerates into rest. Use for elements ENTERING the screen (appearing, sliding in, expanding)."
+    },
+    "ease-in-out": {
+      "$type": "cubicBezier",
+      "$value": [
+        0.4,
+        0,
+        0.2,
+        1
+      ],
+      "$description": "Default for most UI transitions. Elements that move from one position to another within the screen."
+    },
+    "spring": {
+      "$type": "cubicBezier",
+      "$value": [
+        0.34,
+        1.56,
+        0.64,
+        1
+      ],
+      "$description": "Slight overshoot, then settles. Modals appearing, bottom sheets, playful confirmations. Use sparingly."
+    },
+    "sharp": {
+      "$type": "cubicBezier",
+      "$value": [
+        0.4,
+        0,
+        0.6,
+        1
+      ],
+      "$description": "Quick snap with abrupt end. Menus, tooltips, snappy feedback states. Feels responsive, not floaty."
+    }
+  },
+  "delay": {
+    "none": {
+      "$type": "duration",
+      "$value": "0ms",
+      "$description": "No delay. Default for all transitions."
+    },
+    "short": {
+      "$type": "duration",
+      "$value": "50ms",
+      "$description": "Slight stagger. Sequential list items, staggered card reveals."
+    },
+    "medium": {
+      "$type": "duration",
+      "$value": "100ms",
+      "$description": "Noticeable pause. Step-by-step onboarding, tooltip after hover intent."
+    },
+    "long": {
+      "$type": "duration",
+      "$value": "200ms",
+      "$description": "Deliberate delay. Confirmation feedback, loading state entry."
+    },
+    "skeleton": {
+      "$type": "duration",
+      "$value": "300ms",
+      "$description": "Skeleton screen delay — wait before showing loading state to avoid flash on fast loads."
+    }
+  }
+}

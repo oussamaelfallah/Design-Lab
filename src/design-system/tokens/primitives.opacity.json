@@ -1,0 +1,44 @@
+{
+  "opacity": {
+    "0": {
+      "$type": "number",
+      "$value": 0,
+      "$description": "Fully invisible. Hidden elements, v-show/display:none alternative, animation start state."
+    },
+    "100": {
+      "$type": "number",
+      "$value": 1,
+      "$description": "Fully opaque. Default for all visible, interactive content."
+    },
+    "disabled": {
+      "$type": "number",
+      "$value": 0.38,
+      "$description": "Disabled UI elements. Material Design standard. Apply to disabled buttons, inputs, labels, and icons."
+    },
+    "subtle": {
+      "$type": "number",
+      "$value": 0.5,
+      "$description": "Dimmed. Modal/drawer backdrop, secondary icon tints, skeleton shimmer base."
+    },
+    "muted": {
+      "$type": "number",
+      "$value": 0.6,
+      "$description": "De-emphasized. Inactive tabs, unfocused sidebar items, placeholder icons."
+    },
+    "soft": {
+      "$type": "number",
+      "$value": 0.72,
+      "$description": "Soft presence. Hover ghost states, watermarks, image overlays with text on top."
+    },
+    "medium": {
+      "$type": "number",
+      "$value": 0.8,
+      "$description": "Semi-transparent. Frosted panel overlays, sidebar tints, map overlays in field view."
+    },
+    "high": {
+      "$type": "number",
+      "$value": 0.92,
+      "$description": "Nearly opaque. Tooltip backgrounds, toast surfaces, contextual overlay panels."
+    }
+  }
+}

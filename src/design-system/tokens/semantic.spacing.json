@@ -1,0 +1,147 @@
+{
+  "spacing": {
+    "component": {
+      "padding": {
+        "xs": {
+          "$type": "dimension",
+          "$value": "{spacing.4}",
+          "$description": "Icon-only buttons, tight chips, compact badges."
+        },
+        "sm": {
+          "$type": "dimension",
+          "$value": "{spacing.8}",
+          "$description": "Compact buttons, badge padding, tag padding."
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "{spacing.12}",
+          "$description": "Default input fields, selects, standard form elements."
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "{spacing.16}",
+          "$description": "Large buttons, comfortable input fields."
+        },
+        "xl": {
+          "$type": "dimension",
+          "$value": "{spacing.20}",
+          "$description": "Hero buttons, prominent CTAs, large chips."
+        }
+      },
+      "gap": {
+        "xs": {
+          "$type": "dimension",
+          "$value": "{spacing.4}",
+          "$description": "Icon-to-label gap, inline element spacing."
+        },
+        "sm": {
+          "$type": "dimension",
+          "$value": "{spacing.8}",
+          "$description": "Form field internal gap, tight list item gap."
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "{spacing.12}",
+          "$description": "Button group gap, tab bar gap, segmented control."
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "{spacing.16}",
+          "$description": "Form row gap, card content stack gap."
+        },
+        "xl": {
+          "$type": "dimension",
+          "$value": "{spacing.24}",
+          "$description": "Between major sections within a component."
+        }
+      }
+    },
+    "layout": {
+      "padding": {
+        "sm": {
+          "$type": "dimension",
+          "$value": "{spacing.16}",
+          "$description": "Mobile page edge padding (≤768px)."
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "{spacing.24}",
+          "$description": "Tablet page edge padding (768–1024px)."
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "{spacing.32}",
+          "$description": "Desktop page edge padding (1024–1440px)."
+        },
+        "xl": {
+          "$type": "dimension",
+          "$value": "{spacing.48}",
+          "$description": "Wide desktop / marketing pages (1440px+)."
+        }
+      },
+      "gap": {
+        "sm": {
+          "$type": "dimension",
+          "$value": "{spacing.16}",
+          "$description": "Stacked cards on mobile, tight grid gap."
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "{spacing.24}",
+          "$description": "Default grid column/row gap."
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "{spacing.32}",
+          "$description": "Wide grid gap, prominent section dividers."
+        }
+      }
+    },
+    "section": {
+      "gap": {
+        "sm": {
+          "$type": "dimension",
+          "$value": "{spacing.32}",
+          "$description": "Between compact page sections. Dashboard widgets."
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "{spacing.48}",
+          "$description": "Default vertical gap between page sections."
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "{spacing.64}",
+          "$description": "Major section breaks. Between distinct content areas."
+        },
+        "xl": {
+          "$type": "dimension",
+          "$value": "{spacing.96}",
+          "$description": "Marketing / landing page sections. Generous breathing room."
+        }
+      }
+    },
+    "inset": {
+      "sm": {
+        "$type": "dimension",
+        "$value": "{spacing.12}",
+        "$description": "Compact card, dense table cell, tight popover."
+      },
+      "md": {
+        "$type": "dimension",
+        "$value": "{spacing.16}",
+        "$description": "Default card padding, standard panel inset."
+      },
+      "lg": {
+        "$type": "dimension",
+        "$value": "{spacing.24}",
+        "$description": "Comfortable card, modal body padding."
+      },
+      "xl": {
+        "$type": "dimension",
+        "$value": "{spacing.32}",
+        "$description": "Large modal, onboarding panel, feature card."
+      }
+    }
+  }
+}

@@ -1,0 +1,605 @@
+{
+  "color": {
+    "brand": {
+      "primary": {
+        "$type": "color",
+        "$value": "{color.green.400}",
+        "$description": "Desaturated one step — vivid green feels aggressive on dark."
+      },
+      "primary-subtle": {
+        "$type": "color",
+        "$value": "#1C3329",
+        "$description": "Very dark green tint — Apple-style subtle brand tint."
+      },
+      "primary-hover": {
+        "$type": "color",
+        "$value": "{color.green.300}",
+        "$description": "Hover — lighter on dark."
+      },
+      "primary-active": {
+        "$type": "color",
+        "$value": "{color.green.200}",
+        "$description": "Active/pressed."
+      },
+      "primary-text": {
+        "$type": "color",
+        "$value": "{color.green.400}",
+        "$description": "Brand-colored text on dark."
+      },
+      "primary-on": {
+        "$type": "color",
+        "$value": "#000000",
+        "$description": "Text ON brand primary background — black for contrast."
+      }
+    },
+    "text": {
+      "primary": {
+        "$type": "color",
+        "$value": "#FFFFFF",
+        "$description": "Apple label — pure white."
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "rgba(235,235,245,0.60)",
+        "$description": "Apple secondaryLabel — 60% cool white."
+      },
+      "tertiary": {
+        "$type": "color",
+        "$value": "rgba(235,235,245,0.30)",
+        "$description": "Apple tertiaryLabel — 30% cool white. Hints, placeholders."
+      },
+      "disabled": {
+        "$type": "color",
+        "$value": "rgba(235,235,245,0.18)",
+        "$description": "Apple quaternaryLabel — nearly invisible."
+      },
+      "inverse": {
+        "$type": "color",
+        "$value": "#000000",
+        "$description": "Text on light surfaces within dark UI."
+      },
+      "link": {
+        "$type": "color",
+        "$value": "{color.green.400}",
+        "$description": "Links on dark."
+      },
+      "link-hover": {
+        "$type": "color",
+        "$value": "{color.green.300}",
+        "$description": "Hovered links on dark."
+      },
+      "danger": {
+        "$type": "color",
+        "$value": "#FF453A",
+        "$description": "Apple systemRed dark."
+      },
+      "success": {
+        "$type": "color",
+        "$value": "#30D158",
+        "$description": "Apple systemGreen dark."
+      },
+      "warning": {
+        "$type": "color",
+        "$value": "#FFD60A",
+        "$description": "Apple systemYellow dark."
+      },
+      "info": {
+        "$type": "color",
+        "$value": "#0A84FF",
+        "$description": "Apple systemBlue dark."
+      }
+    },
+    "surface": {
+      "default": {
+        "$type": "color",
+        "$value": "#1C1C1E",
+        "$description": "Apple systemBackground dark — not black, slightly warm gray."
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "#141416",
+        "$description": "Deeper background — below the default layer."
+      },
+      "raised": {
+        "$type": "color",
+        "$value": "#2C2C2E",
+        "$description": "Apple secondarySystemBackground — cards, modals. Lighter = elevated."
+      },
+      "sunken": {
+        "$type": "color",
+        "$value": "#1C1C1E",
+        "$description": "Apple tertiarySystemBackground — recessed inputs."
+      },
+      "overlay": {
+        "$type": "color",
+        "$value": "#000000",
+        "$description": "Modal backdrop. Apply at 60% opacity."
+      }
+    },
+    "border": {
+      "default": {
+        "$type": "color",
+        "$value": "rgba(84,84,88,0.60)",
+        "$description": "Apple separator dark — subtle, barely visible."
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "rgba(84,84,88,0.85)",
+        "$description": "Emphasized border. Focused inputs."
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "rgba(84,84,88,0.35)",
+        "$description": "Hairline — nearly invisible dividers."
+      },
+      "disabled": {
+        "$type": "color",
+        "$value": "rgba(84,84,88,0.35)",
+        "$description": "Disabled element borders."
+      },
+      "brand": {
+        "$type": "color",
+        "$value": "{color.green.400}",
+        "$description": "Brand border — active inputs, selected state."
+      },
+      "danger": {
+        "$type": "color",
+        "$value": "#FF453A",
+        "$description": "Error border — Apple systemRed."
+      }
+    },
+    "feedback": {
+      "success": {
+        "bg": {
+          "$type": "color",
+          "$value": "rgba(48,209,88,0.15)",
+          "$description": "Apple-style: color at low opacity over dark surface."
+        },
+        "border": {
+          "$type": "color",
+          "$value": "rgba(48,209,88,0.30)",
+          "$description": "Success border on dark."
+        },
+        "text": {
+          "$type": "color",
+          "$value": "#30D158",
+          "$description": "Apple systemGreen dark."
+        },
+        "icon": {
+          "$type": "color",
+          "$value": "#30D158",
+          "$description": "Success icon."
+        },
+        "solid": {
+          "$type": "color",
+          "$value": "#30D158",
+          "$description": "Filled badge."
+        },
+        "solid-text": {
+          "$type": "color",
+          "$value": "#000000",
+          "$description": "Black text on bright green."
+        }
+      },
+      "error": {
+        "bg": {
+          "$type": "color",
+          "$value": "rgba(255,69,58,0.15)",
+          "$description": "Apple-style error surface."
+        },
+        "border": {
+          "$type": "color",
+          "$value": "rgba(255,69,58,0.30)",
+          "$description": "Error border on dark."
+        },
+        "text": {
+          "$type": "color",
+          "$value": "#FF453A",
+          "$description": "Apple systemRed dark."
+        },
+        "icon": {
+          "$type": "color",
+          "$value": "#FF453A",
+          "$description": "Error icon."
+        },
+        "solid": {
+          "$type": "color",
+          "$value": "#FF453A",
+          "$description": "Filled badge."
+        },
+        "solid-text": {
+          "$type": "color",
+          "$value": "#FFFFFF",
+          "$description": "White text on red."
+        }
+      },
+      "warning": {
+        "bg": {
+          "$type": "color",
+          "$value": "rgba(255,214,10,0.15)",
+          "$description": "Apple-style warning surface."
+        },
+        "border": {
+          "$type": "color",
+          "$value": "rgba(255,214,10,0.30)",
+          "$description": "Warning border on dark."
+        },
+        "text": {
+          "$type": "color",
+          "$value": "#FFD60A",
+          "$description": "Apple systemYellow dark."
+        },
+        "icon": {
+          "$type": "color",
+          "$value": "#FFD60A",
+          "$description": "Warning icon."
+        },
+        "solid": {
+          "$type": "color",
+          "$value": "#FFD60A",
+          "$description": "Filled badge."
+        },
+        "solid-text": {
+          "$type": "color",
+          "$value": "#000000",
+          "$description": "Black text on yellow — required for contrast."
+        }
+      },
+      "info": {
+        "bg": {
+          "$type": "color",
+          "$value": "rgba(10,132,255,0.15)",
+          "$description": "Apple-style info surface."
+        },
+        "border": {
+          "$type": "color",
+          "$value": "rgba(10,132,255,0.30)",
+          "$description": "Info border on dark."
+        },
+        "text": {
+          "$type": "color",
+          "$value": "#0A84FF",
+          "$description": "Apple systemBlue dark."
+        },
+        "icon": {
+          "$type": "color",
+          "$value": "#0A84FF",
+          "$description": "Info icon."
+        },
+        "solid": {
+          "$type": "color",
+          "$value": "#0A84FF",
+          "$description": "Filled badge."
+        },
+        "solid-text": {
+          "$type": "color",
+          "$value": "#FFFFFF",
+          "$description": "White text on blue."
+        }
+      }
+    },
+    "status": {
+      "done": {
+        "bg": {
+          "$type": "color",
+          "$value": "rgba(48,209,88,0.15)",
+          "$description": "Terminé chip bg — Apple green tint."
+        },
+        "text": {
+          "$type": "color",
+          "$value": "#30D158",
+          "$description": "Terminé chip text."
+        },
+        "border": {
+          "$type": "color",
+          "$value": "rgba(48,209,88,0.30)",
+          "$description": "Terminé chip border."
+        },
+        "solid": {
+          "$type": "color",
+          "$value": "#30D158",
+          "$description": "Terminé filled chip."
+        },
+        "solid-text": {
+          "$type": "color",
+          "$value": "#000000",
+          "$description": "Black on bright green."
+        }
+      },
+      "in-progress": {
+        "bg": {
+          "$type": "color",
+          "$value": "rgba(10,132,255,0.15)",
+          "$description": "En cours chip bg — Apple blue tint."
+        },
+        "text": {
+          "$type": "color",
+          "$value": "#0A84FF",
+          "$description": "En cours chip text."
+        },
+        "border": {
+          "$type": "color",
+          "$value": "rgba(10,132,255,0.30)",
+          "$description": "En cours chip border."
+        },
+        "solid": {
+          "$type": "color",
+          "$value": "#0A84FF",
+          "$description": "En cours filled chip."
+        },
+        "solid-text": {
+          "$type": "color",
+          "$value": "#FFFFFF",
+          "$description": "White on blue."
+        }
+      },
+      "not-started": {
+        "bg": {
+          "$type": "color",
+          "$value": "rgba(84,84,88,0.35)",
+          "$description": "Pas commencé chip bg — Apple gray tint."
+        },
+        "text": {
+          "$type": "color",
+          "$value": "rgba(235,235,245,0.60)",
+          "$description": "Pas commencé chip text — secondary label."
+        },
+        "border": {
+          "$type": "color",
+          "$value": "rgba(84,84,88,0.60)",
+          "$description": "Pas commencé chip border."
+        },
+        "solid": {
+          "$type": "color",
+          "$value": "#3A3A3C",
+          "$description": "Pas commencé filled chip."
+        },
+        "solid-text": {
+          "$type": "color",
+          "$value": "rgba(235,235,245,0.60)",
+          "$description": "Secondary text on gray chip."
+        }
+      }
+    },
+    "card": {
+      "title": {
+        "$type": "color",
+        "$value": "#FFFFFF",
+        "$description": "Card row title — pure white on dark."
+      },
+      "divider": {
+        "$type": "color",
+        "$value": "rgba(84,84,88,0.35)",
+        "$description": "Apple-style separator — barely visible."
+      },
+      "icon-bg-default": {
+        "$type": "color",
+        "$value": "rgba(84,84,88,0.35)",
+        "$description": "Default icon wrap bg on dark."
+      },
+      "icon-green": {
+        "icon-color": {
+          "$type": "color",
+          "$value": "#30D158",
+          "$description": "Apple systemGreen."
+        },
+        "icon-bg": {
+          "$type": "color",
+          "$value": "rgba(48,209,88,0.15)",
+          "$description": "Green icon bg on dark."
+        }
+      },
+      "icon-blue": {
+        "icon-color": {
+          "$type": "color",
+          "$value": "#0A84FF",
+          "$description": "Apple systemBlue."
+        },
+        "icon-bg": {
+          "$type": "color",
+          "$value": "rgba(10,132,255,0.15)",
+          "$description": "Blue icon bg on dark."
+        }
+      },
+      "icon-teal": {
+        "icon-color": {
+          "$type": "color",
+          "$value": "#5AC8FA",
+          "$description": "Apple systemTeal."
+        },
+        "icon-bg": {
+          "$type": "color",
+          "$value": "rgba(90,200,250,0.15)",
+          "$description": "Teal icon bg on dark."
+        }
+      },
+      "icon-violet": {
+        "icon-color": {
+          "$type": "color",
+          "$value": "#BF5AF2",
+          "$description": "Apple systemPurple."
+        },
+        "icon-bg": {
+          "$type": "color",
+          "$value": "rgba(191,90,242,0.15)",
+          "$description": "Violet icon bg on dark."
+        }
+      },
+      "icon-orange": {
+        "icon-color": {
+          "$type": "color",
+          "$value": "#FF9F0A",
+          "$description": "Apple systemOrange."
+        },
+        "icon-bg": {
+          "$type": "color",
+          "$value": "rgba(255,159,10,0.15)",
+          "$description": "Orange icon bg on dark."
+        }
+      },
+      "icon-rose": {
+        "icon-color": {
+          "$type": "color",
+          "$value": "#FF375F",
+          "$description": "Apple systemPink."
+        },
+        "icon-bg": {
+          "$type": "color",
+          "$value": "rgba(255,55,95,0.15)",
+          "$description": "Rose icon bg on dark."
+        }
+      }
+    },
+    "data-viz": {
+      "1": {
+        "$type": "color",
+        "$value": "#30D158",
+        "$description": "Apple systemGreen."
+      },
+      "2": {
+        "$type": "color",
+        "$value": "#5AC8FA",
+        "$description": "Apple systemTeal."
+      },
+      "3": {
+        "$type": "color",
+        "$value": "#0A84FF",
+        "$description": "Apple systemBlue."
+      },
+      "4": {
+        "$type": "color",
+        "$value": "#BF5AF2",
+        "$description": "Apple systemPurple."
+      },
+      "5": {
+        "$type": "color",
+        "$value": "#FF9F0A",
+        "$description": "Apple systemOrange."
+      },
+      "6": {
+        "$type": "color",
+        "$value": "#FF6961",
+        "$description": "Apple systemRed soft."
+      },
+      "7": {
+        "$type": "color",
+        "$value": "#FF375F",
+        "$description": "Apple systemPink."
+      }
+    },
+    "tag": {
+      "green": {
+        "bg": {
+          "$type": "color",
+          "$value": "rgba(48,209,88,0.15)"
+        },
+        "text": {
+          "$type": "color",
+          "$value": "#30D158"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "rgba(48,209,88,0.30)"
+        }
+      },
+      "blue": {
+        "bg": {
+          "$type": "color",
+          "$value": "rgba(10,132,255,0.15)"
+        },
+        "text": {
+          "$type": "color",
+          "$value": "#0A84FF"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "rgba(10,132,255,0.30)"
+        }
+      },
+      "amber": {
+        "bg": {
+          "$type": "color",
+          "$value": "rgba(255,214,10,0.15)"
+        },
+        "text": {
+          "$type": "color",
+          "$value": "#FFD60A"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "rgba(255,214,10,0.30)"
+        }
+      },
+      "red": {
+        "bg": {
+          "$type": "color",
+          "$value": "rgba(255,69,58,0.15)"
+        },
+        "text": {
+          "$type": "color",
+          "$value": "#FF453A"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "rgba(255,69,58,0.30)"
+        }
+      },
+      "purple": {
+        "bg": {
+          "$type": "color",
+          "$value": "rgba(191,90,242,0.15)"
+        },
+        "text": {
+          "$type": "color",
+          "$value": "#BF5AF2"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "rgba(191,90,242,0.30)"
+        }
+      },
+      "teal": {
+        "bg": {
+          "$type": "color",
+          "$value": "rgba(90,200,250,0.15)"
+        },
+        "text": {
+          "$type": "color",
+          "$value": "#5AC8FA"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "rgba(90,200,250,0.30)"
+        }
+      },
+      "orange": {
+        "bg": {
+          "$type": "color",
+          "$value": "rgba(255,159,10,0.15)"
+        },
+        "text": {
+          "$type": "color",
+          "$value": "#FF9F0A"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "rgba(255,159,10,0.30)"
+        }
+      },
+      "neutral": {
+        "bg": {
+          "$type": "color",
+          "$value": "rgba(84,84,88,0.35)"
+        },
+        "text": {
+          "$type": "color",
+          "$value": "rgba(235,235,245,0.60)"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "rgba(84,84,88,0.60)"
+        }
+      }
+    }
+  }
+}

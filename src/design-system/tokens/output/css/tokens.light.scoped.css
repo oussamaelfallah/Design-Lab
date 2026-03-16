@@ -1,0 +1,228 @@
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+[data-theme="light"] {
+  --color-brand-primary: #01a362; /** Main brand. Buttons, links, active states. Matches --ds-brand: #01a362. */
+  --color-brand-primary-subtle: #e8f8f2; /** Light brand tint. Hover backgrounds, selected rows. */
+  --color-brand-primary-hover: #018b54; /** Hover — one stop darker than primary. */
+  --color-brand-primary-active: #016642; /** Active/pressed — one stop darker than hover. */
+  --color-brand-primary-text: #016642; /** Brand-colored text on light backgrounds. */
+  --color-brand-primary-on: #ffffff; /** Text/icon placed ON a brand primary background. */
+  --color-text-primary: #17211f; /** Default body and heading text. Matches --ds-text-primary. */
+  --color-text-secondary: #5f6f68; /** Supporting text, captions, metadata. Matches --ds-text-secondary. */
+  --color-text-tertiary: #8e98a5; /** Placeholders, hints, ghost labels. */
+  --color-text-disabled: #b6c0cb; /** Disabled text. */
+  --color-text-inverse: #ffffff; /** Text on dark/colored surfaces. */
+  --color-text-link: #016642; /** Hyperlinks and interactive inline text. */
+  --color-text-link-hover: #055035; /** Hovered hyperlinks. */
+  --color-text-danger: #d92d20; /** Destructive action text, inline error messages. */
+  --color-text-success: #016642; /** Success confirmation text. */
+  --color-text-warning: #b45309; /** Warning / caution text. */
+  --color-text-info: #1d4ed8; /** Informational text. */
+  --color-surface-default: #f3f5f7; /** Page / app background. Matches --ds-surface: #f3f5f7. */
+  --color-surface-subtle: #f9fafb; /** Slightly lighter panel. Sidebar, drawer background. */
+  --color-surface-raised: #ffffff; /** Cards, modals, dropdowns — white, lifted above the neutral.100 page. */
+  --color-surface-sunken: #e3e8ee; /** Input fields, code blocks — recessed below the surface. */
+  --color-surface-overlay: #0b1110; /** Modal backdrop. Apply at 50–60% opacity. */
+  --color-border-default: #e3e8ee; /** Standard border. Matches --ds-border. */
+  --color-border-strong: #d1d8e1; /** Emphasized border. Focused inputs, active panels. */
+  --color-border-subtle: #f3f5f7; /** Hairline separator. */
+  --color-border-disabled: #e3e8ee; /** Disabled form element borders. */
+  --color-border-brand: #01a362; /** Brand-accented border. Selected state, active input. */
+  --color-border-danger: #ef4444; /** Error state border on form elements. */
+  --color-feedback-success-bg: #e8f8f2; /** Alert / banner background. */
+  --color-feedback-success-border: #c6ecd9; /** Alert border. */
+  --color-feedback-success-text: #055035; /** Text on success background. */
+  --color-feedback-success-icon: #018b54; /** Icon fill. */
+  --color-feedback-success-solid: #018b54; /** Filled badge / toast background. */
+  --color-feedback-success-solid-text: #ffffff; /** Text on solid success background. */
+  --color-feedback-error-bg: #fef2f2; /** Alert / banner background. */
+  --color-feedback-error-border: #fecaca; /** Alert border. */
+  --color-feedback-error-text: #991b1b; /** Text on error background. */
+  --color-feedback-error-icon: #dc2626; /** Icon fill. */
+  --color-feedback-error-solid: #dc2626; /** Filled badge / toast background. */
+  --color-feedback-error-solid-text: #ffffff; /** Text on solid error background. */
+  --color-feedback-warning-bg: #fff4e9; /** Alert / banner background. */
+  --color-feedback-warning-border: #fde68a; /** Alert border. */
+  --color-feedback-warning-text: #92400e; /** Text on warning background. */
+  --color-feedback-warning-icon: #d97706; /** Icon fill. */
+  --color-feedback-warning-solid: #f59e0b; /** Filled badge / toast background. */
+  --color-feedback-warning-solid-text: #451a03; /** Dark text on amber. */
+  --color-feedback-info-bg: #eff6ff; /** Alert / banner background. */
+  --color-feedback-info-border: #bfdbfe; /** Alert border. */
+  --color-feedback-info-text: #1e40af; /** Text on info background. */
+  --color-feedback-info-icon: #2563eb; /** Icon fill. */
+  --color-feedback-info-solid: #2563eb; /** Filled badge / toast background. */
+  --color-feedback-info-solid-text: #ffffff; /** Text on solid info background. */
+  --color-status-done-bg: rgba(1, 163, 98, 0.14); /** Terminé chip background — brand green at 14% opacity. */
+  --color-status-done-text: #018b54; /** Terminé chip text. */
+  --color-status-done-border: #c6ecd9; /** Terminé chip border. */
+  --color-status-done-solid: #018b54; /** Terminé filled chip background. */
+  --color-status-done-solid-text: #ffffff; /** Text on filled Terminé chip. */
+  --color-status-in-progress-bg: #dbeafe; /** En cours chip background. */
+  --color-status-in-progress-text: #1d4ed8; /** En cours chip text. */
+  --color-status-in-progress-border: #bfdbfe; /** En cours chip border. */
+  --color-status-in-progress-solid: #2563eb; /** En cours filled chip background. */
+  --color-status-in-progress-solid-text: #ffffff; /** Text on filled En cours chip. */
+  --color-status-not-started-bg: #f3f5f7; /** Pas commencé chip background. */
+  --color-status-not-started-text: #6b7280; /** Pas commencé chip text. */
+  --color-status-not-started-border: #d1d8e1; /** Pas commencé chip border. */
+  --color-status-not-started-solid: #6b7280; /** Pas commencé filled chip background. */
+  --color-status-not-started-solid-text: #ffffff; /** Text on filled Pas commencé chip. */
+  --color-card-title: #4a5a53; /** card row title. Uses new neutral.750 = #4A5A53. */
+  --color-card-divider: rgba(227, 232, 238, 0.55); /** Subtle row separator line. */
+  --color-card-icon-bg-default: rgba(1, 163, 98, 0.1); /** Default card icon wrap background. */
+  --color-card-icon-green-icon-color: #01a362; /** Green tone icon. */
+  --color-card-icon-green-icon-bg: rgba(1, 163, 98, 0.1); /** Green tone icon background. */
+  --color-card-icon-blue-icon-color: #1d4ed8; /** Blue tone icon. */
+  --color-card-icon-blue-icon-bg: rgba(37, 99, 235, 0.11); /** Blue tone icon background. */
+  --color-card-icon-teal-icon-color: #0f766e; /** Teal tone icon. */
+  --color-card-icon-teal-icon-bg: rgba(13, 148, 136, 0.12); /** Teal tone icon background. */
+  --color-card-icon-violet-icon-color: #6e56cf; /** Violet tone icon — intentional categorical color. */
+  --color-card-icon-violet-icon-bg: rgba(123, 97, 255, 0.12); /** Violet tone icon background. */
+  --color-card-icon-orange-icon-color: #c2410c; /** Orange tone icon. */
+  --color-card-icon-orange-icon-bg: rgba(249, 115, 22, 0.12); /** Orange tone icon background. */
+  --color-card-icon-rose-icon-color: #be185d; /** Rose tone icon — intentional pink-rose categorical color. */
+  --color-card-icon-rose-icon-bg: rgba(225, 29, 72, 0.11); /** Rose tone icon background. */
+  --color-data-viz-1: #01a362; /** Series 1 — brand green. */
+  --color-data-viz-2: #14b8a6; /** Series 2 — teal. */
+  --color-data-viz-3: #3b82f6; /** Series 3 — blue. */
+  --color-data-viz-4: #8b5cf6; /** Series 4 — purple. */
+  --color-data-viz-5: #f59e0b; /** Series 5 — amber. */
+  --color-data-viz-6: #ea6b0a; /** Series 6 — orange. */
+  --color-data-viz-7: #f43f5e; /** Series 7 — rose. */
+  --color-tag-green-bg: #e8f8f2;
+  --color-tag-green-text: #055035;
+  --color-tag-green-border: #c6ecd9;
+  --color-tag-blue-bg: #eff6ff;
+  --color-tag-blue-text: #1e40af;
+  --color-tag-blue-border: #bfdbfe;
+  --color-tag-amber-bg: #fff4e9;
+  --color-tag-amber-text: #92400e;
+  --color-tag-amber-border: #fde68a;
+  --color-tag-red-bg: #fef2f2;
+  --color-tag-red-text: #991b1b;
+  --color-tag-red-border: #fecaca;
+  --color-tag-purple-bg: #f4eeff;
+  --color-tag-purple-text: #5b21b6;
+  --color-tag-purple-border: #ddd6fe;
+  --color-tag-teal-bg: #e8f8f4;
+  --color-tag-teal-text: #115e59;
+  --color-tag-teal-border: #99f6e4;
+  --color-tag-orange-bg: #fff4ed;
+  --color-tag-orange-text: #7c2d12;
+  --color-tag-orange-border: #fec89a;
+  --color-tag-neutral-bg: #f3f5f7;
+  --color-tag-neutral-text: #5f6f68;
+  --color-tag-neutral-border: #d1d8e1;
+  --spacing-component-padding-xs: 4px; /** Icon-only buttons, tight chips, compact badges. */
+  --spacing-component-padding-sm: 8px; /** Compact buttons, badge padding, tag padding. */
+  --spacing-component-padding-md: 12px; /** Default input fields, selects, standard form elements. */
+  --spacing-component-padding-lg: 16px; /** Large buttons, comfortable input fields. */
+  --spacing-component-padding-xl: 20px; /** Hero buttons, prominent CTAs, large chips. */
+  --spacing-component-gap-xs: 4px; /** Icon-to-label gap, inline element spacing. */
+  --spacing-component-gap-sm: 8px; /** Form field internal gap, tight list item gap. */
+  --spacing-component-gap-md: 12px; /** Button group gap, tab bar gap, segmented control. */
+  --spacing-component-gap-lg: 16px; /** Form row gap, card content stack gap. */
+  --spacing-component-gap-xl: 24px; /** Between major sections within a component. */
+  --spacing-layout-padding-sm: 16px; /** Mobile page edge padding (≤768px). */
+  --spacing-layout-padding-md: 24px; /** Tablet page edge padding (768–1024px). */
+  --spacing-layout-padding-lg: 32px; /** Desktop page edge padding (1024–1440px). */
+  --spacing-layout-padding-xl: 48px; /** Wide desktop / marketing pages (1440px+). */
+  --spacing-layout-gap-sm: 16px; /** Stacked cards on mobile, tight grid gap. */
+  --spacing-layout-gap-md: 24px; /** Default grid column/row gap. */
+  --spacing-layout-gap-lg: 32px; /** Wide grid gap, prominent section dividers. */
+  --spacing-section-gap-sm: 32px; /** Between compact page sections. Dashboard widgets. */
+  --spacing-section-gap-md: 48px; /** Default vertical gap between page sections. */
+  --spacing-section-gap-lg: 64px; /** Major section breaks. Between distinct content areas. */
+  --spacing-section-gap-xl: 96px; /** Marketing / landing page sections. Generous breathing room. */
+  --spacing-inset-sm: 12px; /** Compact card, dense table cell, tight popover. */
+  --spacing-inset-md: 16px; /** Default card padding, standard panel inset. */
+  --spacing-inset-lg: 24px; /** Comfortable card, modal body padding. */
+  --spacing-inset-xl: 32px; /** Large modal, onboarding panel, feature card. */
+  --elevation-flat: none; /** No elevation. Inline elements, disabled states, flat table rows, background fills. */
+  --elevation-raised-xs: 0px 1px 2px 0px rgba(0, 0, 0, 0.05); /** Barely lifted. Input fields on hover, subtle chip surfaces, table row hover state. */
+  --elevation-raised-sm: 0px 1px 3px 0px rgba(0, 0, 0, 0.10), 0px 1px 2px -1px rgba(0, 0, 0, 0.06); /** Resting card. Default card, list container, form group — the most-used elevation in CropLens dashboard. */
+  --elevation-raised-md: 0px 4px 6px -1px rgba(0, 0, 0, 0.10), 0px 2px 4px -2px rgba(0, 0, 0, 0.06); /** Raised card. Hovered card state, active panel, open accordion. */
+  --elevation-overlay-sm: 0px 10px 15px -3px rgba(0, 0, 0, 0.10), 0px 4px 6px -4px rgba(0, 0, 0, 0.05); /** Small floating UI. Tooltips, popovers, select dropdowns, date pickers, context menus. */
+  --elevation-overlay-md: 0px 20px 25px -5px rgba(0, 0, 0, 0.10), 0px 8px 10px -6px rgba(0, 0, 0, 0.04); /** Modal-level. Dialogs, confirmation modals, side sheets, image lightbox. */
+  --elevation-overlay-lg: 0px 25px 50px -12px rgba(0, 0, 0, 0.25); /** Maximum. Full-screen overlays, command palette, global search, critical alert dialogs. */
+  --elevation-inset: inset 0px 2px 4px 0px rgba(0, 0, 0, 0.06); /** Sunken surface. Input fields in focus/filled state, pressed button active state, well containers, map overlays in field view. */
+  --elevation-focus-default: 0px 0px 0px 3px rgba(1, 163, 98, 0.35); /** Brand focus ring. Apply to ALL interactive elements on keyboard focus: buttons, inputs, links, select, checkbox, radio, switch, tab. Required for WCAG 2.4.7. */
+  --elevation-focus-error: 0px 0px 0px 3px rgba(239, 68, 68, 0.35); /** Error focus ring. Replace default focus ring on invalid form fields. Signals both focus AND error state simultaneously. */
+  --typography-font-family-base: Inter, ui-sans-serif, system-ui, sans-serif; /** Default for all web UI. */
+  --typography-font-family-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace; /** Sensor readings, coordinates, code. */
+  --typography-display-2xl-font-size: 60px;
+  --typography-display-2xl-font-weight: 700;
+  --typography-display-2xl-line-height: 1.25;
+  --typography-display-2xl-letter-spacing: -0.05em;
+  --typography-display-xl-font-size: 48px;
+  --typography-display-xl-font-weight: 700;
+  --typography-display-xl-line-height: 1.25;
+  --typography-display-xl-letter-spacing: -0.05em;
+  --typography-heading-xl-font-size: 36px;
+  --typography-heading-xl-font-weight: 700;
+  --typography-heading-xl-line-height: 1.25;
+  --typography-heading-xl-letter-spacing: -0.025em;
+  --typography-heading-lg-font-size: 30px;
+  --typography-heading-lg-font-weight: 700;
+  --typography-heading-lg-line-height: 1.25;
+  --typography-heading-lg-letter-spacing: -0.025em;
+  --typography-heading-md-font-size: 24px;
+  --typography-heading-md-font-weight: 600;
+  --typography-heading-md-line-height: 1.375;
+  --typography-heading-md-letter-spacing: -0.025em;
+  --typography-heading-sm-font-size: 20px;
+  --typography-heading-sm-font-weight: 600;
+  --typography-heading-sm-line-height: 1.375;
+  --typography-heading-sm-letter-spacing: 0em;
+  --typography-heading-xs-font-size: 18px;
+  --typography-heading-xs-font-weight: 600;
+  --typography-heading-xs-line-height: 1.375;
+  --typography-heading-xs-letter-spacing: 0em;
+  --typography-body-lg-font-size: 18px;
+  --typography-body-lg-font-weight: 400;
+  --typography-body-lg-line-height: 1.625;
+  --typography-body-lg-letter-spacing: 0em;
+  --typography-body-md-font-size: 16px;
+  --typography-body-md-font-weight: 400;
+  --typography-body-md-line-height: 1.5;
+  --typography-body-md-letter-spacing: 0em;
+  --typography-body-sm-font-size: 14px;
+  --typography-body-sm-font-weight: 400;
+  --typography-body-sm-line-height: 1.5;
+  --typography-body-sm-letter-spacing: 0em;
+  --typography-label-lg-font-size: 16px;
+  --typography-label-lg-font-weight: 500;
+  --typography-label-lg-line-height: 1;
+  --typography-label-lg-letter-spacing: 0em;
+  --typography-label-md-font-size: 14px;
+  --typography-label-md-font-weight: 500;
+  --typography-label-md-line-height: 1;
+  --typography-label-md-letter-spacing: 0em;
+  --typography-label-sm-font-size: 13px;
+  --typography-label-sm-font-weight: 500;
+  --typography-label-sm-line-height: 1;
+  --typography-label-sm-letter-spacing: 0.025em;
+  --typography-caption-md-font-size: 13px;
+  --typography-caption-md-font-weight: 400;
+  --typography-caption-md-line-height: 1.5;
+  --typography-caption-md-letter-spacing: 0em;
+  --typography-caption-sm-font-size: 12px;
+  --typography-caption-sm-font-weight: 400;
+  --typography-caption-sm-line-height: 1.5;
+  --typography-caption-sm-letter-spacing: 0.025em;
+  --typography-overline-font-size: 12px;
+  --typography-overline-font-weight: 600;
+  --typography-overline-line-height: 1;
+  --typography-overline-letter-spacing: 0.1em;
+  --typography-mono-md-font-size: 14px;
+  --typography-mono-md-font-weight: 400;
+  --typography-mono-md-line-height: 1.625;
+  --typography-mono-md-letter-spacing: 0em;
+  --typography-mono-sm-font-size: 13px;
+  --typography-mono-sm-font-weight: 400;
+  --typography-mono-sm-line-height: 1.5;
+  --typography-mono-sm-letter-spacing: 0em;
+}

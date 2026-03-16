@@ -1,4 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:FILL@0..1");
+@import "../design-system/tokens/output/css/tokens.light.css";
+@import "../design-system/tokens/output/css/tokens.light.scoped.css";
+@import "../design-system/tokens/output/css/tokens.dark.css";
 
 :root {
   --background: #ffffff;

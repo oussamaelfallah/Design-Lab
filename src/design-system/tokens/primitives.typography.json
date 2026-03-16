@@ -1,0 +1,167 @@
+{
+  "font-family": {
+    "inter": {
+      "$type": "fontFamily",
+      "$value": "Inter, ui-sans-serif, system-ui, sans-serif",
+      "$description": "Web primary. Load via Google Fonts or self-host."
+    },
+    "roboto": {
+      "$type": "fontFamily",
+      "$value": "Roboto, ui-sans-serif, sans-serif",
+      "$description": "Android primary."
+    },
+    "sf-pro": {
+      "$type": "fontFamily",
+      "$value": "-apple-system, BlinkMacSystemFont, SF Pro Display, sans-serif",
+      "$description": "iOS / macOS primary."
+    },
+    "mono": {
+      "$type": "fontFamily",
+      "$value": "JetBrains Mono, ui-monospace, SFMono-Regular, monospace",
+      "$description": "Code, sensor data, coordinates."
+    }
+  },
+  "font-size": {
+    "75": {
+      "$type": "dimension",
+      "$value": "12px",
+      "$description": "2xs — legal, fine print."
+    },
+    "100": {
+      "$type": "dimension",
+      "$value": "13px",
+      "$description": "xs — captions, metadata."
+    },
+    "200": {
+      "$type": "dimension",
+      "$value": "14px",
+      "$description": "sm — secondary body, labels."
+    },
+    "300": {
+      "$type": "dimension",
+      "$value": "16px",
+      "$description": "md — default body text."
+    },
+    "400": {
+      "$type": "dimension",
+      "$value": "18px",
+      "$description": "lg — lead text, large labels."
+    },
+    "500": {
+      "$type": "dimension",
+      "$value": "20px",
+      "$description": "xl — small headings."
+    },
+    "600": {
+      "$type": "dimension",
+      "$value": "24px",
+      "$description": "2xl — section headings."
+    },
+    "700": {
+      "$type": "dimension",
+      "$value": "30px",
+      "$description": "3xl — page headings."
+    },
+    "800": {
+      "$type": "dimension",
+      "$value": "36px",
+      "$description": "4xl — hero headings."
+    },
+    "900": {
+      "$type": "dimension",
+      "$value": "48px",
+      "$description": "5xl — display."
+    },
+    "950": {
+      "$type": "dimension",
+      "$value": "60px",
+      "$description": "6xl — large display."
+    }
+  },
+  "font-weight": {
+    "regular": {
+      "$type": "fontWeight",
+      "$value": 400,
+      "$description": "Body text."
+    },
+    "medium": {
+      "$type": "fontWeight",
+      "$value": 500,
+      "$description": "Labels, emphasized body."
+    },
+    "semibold": {
+      "$type": "fontWeight",
+      "$value": 600,
+      "$description": "Subheadings, buttons."
+    },
+    "bold": {
+      "$type": "fontWeight",
+      "$value": 700,
+      "$description": "Headings, strong emphasis."
+    }
+  },
+  "line-height": {
+    "none": {
+      "$type": "number",
+      "$value": 1,
+      "$description": "Single line — buttons, badges, inputs."
+    },
+    "tight": {
+      "$type": "number",
+      "$value": 1.25,
+      "$description": "Headings."
+    },
+    "snug": {
+      "$type": "number",
+      "$value": 1.375,
+      "$description": "Subheadings, lead text."
+    },
+    "normal": {
+      "$type": "number",
+      "$value": 1.5,
+      "$description": "Default body text."
+    },
+    "relaxed": {
+      "$type": "number",
+      "$value": 1.625,
+      "$description": "Long-form reading."
+    },
+    "loose": {
+      "$type": "number",
+      "$value": 1.75,
+      "$description": "Large text blocks, accessibility."
+    }
+  },
+  "letter-spacing": {
+    "tighter": {
+      "$type": "dimension",
+      "$value": "-0.05em",
+      "$description": "Large display headings."
+    },
+    "tight": {
+      "$type": "dimension",
+      "$value": "-0.025em",
+      "$description": "Headings 24px+."
+    },
+    "normal": {
+      "$type": "dimension",
+      "$value": "0em",
+      "$description": "Body text default."
+    },
+    "wide": {
+      "$type": "dimension",
+      "$value": "0.025em",
+      "$description": "Uppercase labels, badges."
+    },
+    "wider": {
+      "$type": "dimension",
+      "$value": "0.05em",
+      "$description": "All-caps micro labels."
+    },
+    "widest": {
+      "$type": "dimension",
+      "$value": "0.1em",
+      "$description": "Section dividers, eyebrow text."
+    }
+  }
+}

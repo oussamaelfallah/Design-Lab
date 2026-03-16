@@ -14,10 +14,12 @@ const navItems: HomeNavItem[] = [
 
 type WorkerAppHomeBottomBarScreenProps = {
   activeIndex?: number;
+  onSelect?: (index: number) => void;
 };
 
 export function WorkerAppHomeBottomBarScreen({
   activeIndex = 0,
+  onSelect,
 }: WorkerAppHomeBottomBarScreenProps) {
   return (
     <div className={styles.homeBottomBar}>
@@ -26,7 +28,9 @@ export function WorkerAppHomeBottomBarScreen({
           key={item.label}
           className={`${styles.homeNavItem} ${index === activeIndex ? styles.homeNavItemActive : ""}`}
           type="button"
-          disabled={index !== activeIndex}
+          disabled={onSelect == null ? index !== activeIndex : undefined}
+          onClick={onSelect ? () => onSelect(index) : undefined}
+          aria-current={index === activeIndex ? "page" : undefined}
         >
           <span className={styles.homeNavItemInner}>
             <span className={styles.homeNavIconSlot}>

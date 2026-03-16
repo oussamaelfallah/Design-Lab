@@ -1,0 +1,145 @@
+{
+  "shadow": {
+    "none": {
+      "$type": "string",
+      "$value": "none",
+      "$description": "No elevation. Flat surfaces, inline elements, disabled states."
+    },
+    "xs": {
+      "$type": "shadow",
+      "$value": {
+        "offsetX": "0px",
+        "offsetY": "1px",
+        "blur": "2px",
+        "spread": "0px",
+        "color": "rgba(0, 0, 0, 0.05)"
+      },
+      "$description": "Barely lifted. Input fields, subtle chips, table rows on hover."
+    },
+    "sm": {
+      "$type": "shadow",
+      "$value": [
+        {
+          "offsetX": "0px",
+          "offsetY": "1px",
+          "blur": "3px",
+          "spread": "0px",
+          "color": "rgba(0, 0, 0, 0.10)"
+        },
+        {
+          "offsetX": "0px",
+          "offsetY": "1px",
+          "blur": "2px",
+          "spread": "-1px",
+          "color": "rgba(0, 0, 0, 0.06)"
+        }
+      ],
+      "$description": "Resting card. Default cards, list items, form containers."
+    },
+    "md": {
+      "$type": "shadow",
+      "$value": [
+        {
+          "offsetX": "0px",
+          "offsetY": "4px",
+          "blur": "6px",
+          "spread": "-1px",
+          "color": "rgba(0, 0, 0, 0.10)"
+        },
+        {
+          "offsetX": "0px",
+          "offsetY": "2px",
+          "blur": "4px",
+          "spread": "-2px",
+          "color": "rgba(0, 0, 0, 0.06)"
+        }
+      ],
+      "$description": "Raised. Hovered cards, open dropdowns, tooltips."
+    },
+    "lg": {
+      "$type": "shadow",
+      "$value": [
+        {
+          "offsetX": "0px",
+          "offsetY": "10px",
+          "blur": "15px",
+          "spread": "-3px",
+          "color": "rgba(0, 0, 0, 0.10)"
+        },
+        {
+          "offsetX": "0px",
+          "offsetY": "4px",
+          "blur": "6px",
+          "spread": "-4px",
+          "color": "rgba(0, 0, 0, 0.05)"
+        }
+      ],
+      "$description": "Floating. Modals, popovers, context menus, date pickers."
+    },
+    "xl": {
+      "$type": "shadow",
+      "$value": [
+        {
+          "offsetX": "0px",
+          "offsetY": "20px",
+          "blur": "25px",
+          "spread": "-5px",
+          "color": "rgba(0, 0, 0, 0.10)"
+        },
+        {
+          "offsetX": "0px",
+          "offsetY": "8px",
+          "blur": "10px",
+          "spread": "-6px",
+          "color": "rgba(0, 0, 0, 0.04)"
+        }
+      ],
+      "$description": "High elevation. Dialogs, side sheets, command palette."
+    },
+    "2xl": {
+      "$type": "shadow",
+      "$value": {
+        "offsetX": "0px",
+        "offsetY": "25px",
+        "blur": "50px",
+        "spread": "-12px",
+        "color": "rgba(0, 0, 0, 0.25)"
+      },
+      "$description": "Maximum elevation. Full-screen overlays, toasts, notifications."
+    },
+    "inner": {
+      "$type": "shadow",
+      "$value": {
+        "offsetX": "0px",
+        "offsetY": "2px",
+        "blur": "4px",
+        "spread": "0px",
+        "color": "rgba(0, 0, 0, 0.06)",
+        "inset": true
+      },
+      "$description": "Inset shadow. Sunken input fields, pressed/active button states, well containers."
+    },
+    "focus": {
+      "$type": "shadow",
+      "$value": {
+        "offsetX": "0px",
+        "offsetY": "0px",
+        "blur": "0px",
+        "spread": "3px",
+        "color": "rgba(1, 163, 98, 0.35)"
+      },
+      "$description": "Brand focus ring. Apply to all interactive elements on keyboard focus. Uses green.500 at 35% opacity."
+    },
+    "focus-error": {
+      "$type": "shadow",
+      "$value": {
+        "offsetX": "0px",
+        "offsetY": "0px",
+        "blur": "0px",
+        "spread": "3px",
+        "color": "rgba(239, 68, 68, 0.35)"
+      },
+      "$description": "Error focus ring. Invalid/error state form fields on focus. Uses red.500 at 35% opacity."
+    }
+  }
+}

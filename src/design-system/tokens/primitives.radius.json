@@ -1,0 +1,54 @@
+{
+  "radius": {
+    "none": {
+      "$type": "dimension",
+      "$value": "0px",
+      "$description": "No rounding. Data tables, code blocks, dividers."
+    },
+    "xs": {
+      "$type": "dimension",
+      "$value": "2px",
+      "$description": "Barely-there rounding. Tight chips, input borders."
+    },
+    "sm": {
+      "$type": "dimension",
+      "$value": "4px",
+      "$description": "Small. Badges, tags, tooltips, inline elements."
+    },
+    "md": {
+      "$type": "dimension",
+      "$value": "8px",
+      "$description": "Default component. Buttons, inputs, selects, dropdowns."
+    },
+    "lg": {
+      "$type": "dimension",
+      "$value": "12px",
+      "$description": "Cards, modals, popovers, panels."
+    },
+    "xl": {
+      "$type": "dimension",
+      "$value": "16px",
+      "$description": "Large cards, bottom sheets, side drawers."
+    },
+    "2xl": {
+      "$type": "dimension",
+      "$value": "20px",
+      "$description": "Feature cards, hero surfaces."
+    },
+    "3xl": {
+      "$type": "dimension",
+      "$value": "24px",
+      "$description": "Large modals, onboarding screens, splash cards."
+    },
+    "pill": {
+      "$type": "dimension",
+      "$value": "9999px",
+      "$description": "Full pill. Toggle chips, status badges, rounded CTAs."
+    },
+    "circle": {
+      "$type": "dimension",
+      "$value": "50%",
+      "$description": "Perfect circle. Avatars, icon buttons, dot indicators."
+    }
+  }
+}
