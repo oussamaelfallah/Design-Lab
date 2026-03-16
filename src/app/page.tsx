@@ -2319,6 +2319,43 @@ export default function Home() {
               ) : null}
             </div>
           </div>
+          {resolvedActiveScreen === "postFixe" ? (
+            <div className={styles.frameViewRail} role="tablist" aria-label="Post Fixe states">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={postFixeFrameView === "data"}
+                className={`${styles.frameViewRailTab} ${
+                  postFixeFrameView === "data" ? styles.frameViewRailTabActive : ""
+                }`}
+                onClick={() => setPostFixeFrameView("data")}
+              >
+                Design
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={postFixeFrameView === "loading"}
+                className={`${styles.frameViewRailTab} ${
+                  postFixeFrameView === "loading" ? styles.frameViewRailTabActive : ""
+                }`}
+                onClick={() => setPostFixeFrameView("loading")}
+              >
+                Loading
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={postFixeFrameView === "empty"}
+                className={`${styles.frameViewRailTab} ${
+                  postFixeFrameView === "empty" ? styles.frameViewRailTabActive : ""
+                }`}
+                onClick={() => setPostFixeFrameView("empty")}
+              >
+                Empty
+              </button>
+            </div>
+          ) : null}
 
           {resolvedCanvasView === "frames" ? (
             <div className={styles.componentsCanvas}>
