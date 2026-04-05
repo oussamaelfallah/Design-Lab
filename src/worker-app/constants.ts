@@ -1,7 +1,8 @@
 export const WORKER_APP_TAB_NAME = "Worker app";
 export const WORKER_APP_CANVAS_NAME = "Full App Prototype";
 export const WORKER_APP_GET_STARTED_PAGE_NAME = "Get Started Page";
-export const WORKER_APP_HOME_PAGE_NAME = "Home";
+export const WORKER_APP_GET_STARTED_V2_PAGE_NAME = "Get Started V2";
+export const WORKER_APP_HOME_PAGE_NAME = "Accueil";
 export const WORKER_APP_TRAVAIL_PAGE_NAME = "Travail";
 export const WORKER_APP_POST_FIXE_PAGE_NAME = "Post Fixe";
 export const WORKER_APP_BOITE_PAGE_NAME = "Boite";

@@ -128,6 +128,22 @@
     linear-gradient(180deg, #f8fefb 0%, #ffffff 42%);
 }
 
+.getStartedCanvasV2 {
+  background: #ffffff;
+}
+
+.getStartedCanvasV2 .statusBar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 3;
+}
+
+.getStartedCanvasV2 .mobileContent {
+  height: calc(100% - 24px);
+}
+
 .statusBar {
   position: relative;
   display: flex;
@@ -136,6 +152,10 @@
   height: 48px;
   padding: 10px 24px;
   background: var(--ds-surface);
+}
+
+.statusBarTransparent {
+  background: transparent;
 }
 
 .statusBarDark {
@@ -162,6 +182,8 @@
   left: 50%;
   width: 24px;
   height: 24px;
+  border-radius: 50%;
+  background: currentcolor;
   transform: translateX(-50%);
 }
 
@@ -172,30 +194,53 @@
   color: currentcolor;
 }
 
-.statusAssetImage {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
 .statusWifi {
   position: relative;
+  display: grid;
+  place-items: center;
   width: 17px;
   height: 17px;
 }
 
 .statusSignal {
+  display: grid;
+  place-items: center;
   width: 17px;
   height: 17px;
   margin-left: 16px;
 }
 
 .statusBattery {
+  display: grid;
+  place-items: center;
   width: 8px;
   height: 15px;
-  margin-top: 1px;
+  margin-top: 0;
   margin-left: 5px;
+}
+
+.statusSymbol {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-variation-settings:
+    "FILL" 1,
+    "wght" 500,
+    "GRAD" 0,
+    "opsz" 20;
+  color: currentcolor;
+  line-height: 1;
+  user-select: none;
+}
+
+.statusWifi .statusSymbol {
+  font-size: 16px;
+}
+
+.statusSignal .statusSymbol {
+  font-size: 16px;
+}
+
+.statusBattery .statusSymbol {
+  font-size: 16px;
 }
 
 .mobileContent {
@@ -2322,14 +2367,14 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 28px;
+  gap: 20px;
   width: 100%;
 }
 
 .brandRow {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-3);
 }
 
 .brandIcon {
@@ -2349,34 +2394,281 @@
 }
 
 .brandName {
+  margin: 0;
   color: var(--ds-text-primary);
-  font-size: 19px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--typography-heading-xs-font-size, 18px);
+  font-weight: var(--typography-heading-xs-font-weight, 600);
+  line-height: var(--typography-heading-xs-line-height, 1.375);
+  letter-spacing: var(--typography-heading-xs-letter-spacing, -0.01em);
 }
 
-.imagePlaceholder {
+.getStartedHeroCard {
   width: 100%;
-  height: 280px;
-  border: 1px dashed color-mix(in srgb, var(--ds-brand) 32%, var(--ds-border));
-  border-radius: 18px;
-  background: color-mix(in srgb, var(--ds-card) 70%, transparent);
+  padding: 0;
+  border-radius: 28px;
+  border: 1px solid color-mix(in srgb, var(--ds-brand) 10%, var(--ds-border));
+  background: color-mix(in srgb, var(--ds-card) 94%, white);
+  box-shadow: var(--elevation-raised-md, 0 4px 6px -1px rgb(0 0 0 / 10%), 0 2px 4px -2px rgb(0 0 0 / 6%));
+  overflow: hidden;
+}
+
+.getStartedHeroScene {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  min-height: 258px;
+  padding: 24px;
+  background: linear-gradient(180deg, #f8fcfa 0%, #f2f7f4 100%);
+}
+
+.heroSurface {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 16% 18%, rgb(255 255 255 / 80%), transparent 18%),
+    linear-gradient(145deg, color-mix(in srgb, var(--ds-brand) 12%, white) 0%, color-mix(in srgb, var(--ds-brand) 6%, white) 56%, #ffffff 100%);
+}
+
+.heroPreviewShell {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+.heroPreviewHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+}
+
+.heroPreviewHeaderText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.heroPreviewLabel {
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.heroPreviewHeading {
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.heroPreviewSync {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ds-brand) 10%, white);
+  color: var(--ds-brand);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.heroMissionCard {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+  padding: 18px;
+  border-radius: 24px;
+  background: rgb(255 255 255 / 92%);
+  box-shadow:
+    var(--elevation-raised-sm, 0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px -1px rgb(0 0 0 / 6%)),
+    inset 0 1px 0 rgb(255 255 255 / 72%);
+}
+
+.heroMissionTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.heroMissionBadgeGroup {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.heroMissionBadge,
+.heroMissionBadgeMuted,
+.heroMissionStatus {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  border-radius: 999px;
+  padding: 0 var(--space-3);
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  line-height: var(--typography-overline-line-height, 1);
+  letter-spacing: var(--typography-overline-letter-spacing, 0.1em);
+  text-transform: uppercase;
+}
+
+.heroMissionBadge {
+  color: var(--ds-brand);
+  background: color-mix(in srgb, var(--ds-brand) 12%, white);
+}
+
+.heroMissionBadgeMuted {
+  color: var(--ds-text-secondary);
+  background: #f2f5f3;
+}
+
+.heroMissionStatus {
+  color: var(--ds-info-text);
+  background: color-mix(in srgb, var(--ds-info-bg) 84%, white);
+}
+
+.heroMissionTitleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.heroMissionTitle {
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--typography-heading-sm-font-size, 20px);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.heroMissionMeta {
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--typography-body-sm-font-size, 14px);
+  line-height: 1.5;
+}
+
+.heroMissionBody {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.heroMissionRows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.heroMissionRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--ds-brand) 4%, white);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ds-brand) 6%, var(--ds-border));
+}
+
+.heroMissionStatIcon {
   display: grid;
   place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--ds-icon-green-bg);
+  color: var(--ds-icon-green-fg);
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 20px;
+  line-height: 1;
 }
 
-.imagePlaceholder span {
+.heroMissionStatText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.heroMissionStatValue {
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--typography-label-sm-font-size, 13px);
+  font-weight: 700;
+  line-height: var(--typography-body-sm-line-height, 1.5);
+}
+
+.heroMissionStatLabel {
   color: var(--ds-text-secondary);
-  font-size: 14px;
-  font-weight: 600;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  line-height: var(--typography-caption-sm-line-height, 1.5);
+}
+
+.heroMissionFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 2px;
+}
+
+.heroMissionFooterMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.heroMissionFooterValue {
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.heroMissionFooterLabel {
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.heroMissionFooterState {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ds-warning-bg) 84%, white);
+  color: var(--ds-warning-text);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .getStartedTitle {
   color: var(--ds-text-primary);
+  margin: 0;
+  font-family: var(--font-geist-sans), sans-serif;
   font-size: 32px;
-  font-weight: 700;
+  font-weight: var(--typography-heading-xl-font-weight, 700);
   line-height: 1.12;
-  letter-spacing: -0.03em;
+  letter-spacing: var(--typography-heading-xl-letter-spacing, -0.025em);
   text-align: left;
   text-wrap: balance;
 }
@@ -2384,49 +2676,376 @@
 .textBlock {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
+}
+
+.getStartedEyebrow {
+  margin: 0;
+  color: var(--ds-brand);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  line-height: var(--typography-overline-line-height, 1);
+  letter-spacing: var(--typography-overline-letter-spacing, 0.1em);
+  text-transform: uppercase;
 }
 
 .getStartedText {
+  margin: 0;
   max-width: 320px;
   color: var(--ds-text-secondary);
-  font-size: 16px;
-  line-height: 1.56;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-body-main);
+  font-weight: var(--typography-body-md-font-weight, 400);
+  line-height: var(--typography-body-md-line-height, 1.5);
+  letter-spacing: var(--typography-body-md-letter-spacing, 0);
   text-align: left;
   text-wrap: pretty;
-}
-
-.featuresList {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding-left: 18px;
-  color: var(--ds-text-primary);
-  font-size: 15px;
-  line-height: 1.5;
-}
-
-.featuresList li::marker {
-  color: var(--brand);
 }
 
 .getStartedBottom {
   width: 100%;
   margin-top: auto;
-  padding-top: 30px;
+  padding-top: 20px;
+}
+
+.getStartedTrustRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  line-height: var(--typography-caption-sm-line-height, 1.5);
+  text-align: center;
+  flex-wrap: wrap;
+}
+
+.getStartedTrustItem {
+  white-space: nowrap;
+}
+
+.getStartedTrustDot {
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ds-brand) 65%, white);
+}
+
+.getStartedV2Content {
+  justify-content: flex-start;
+  padding: 0;
+}
+
+.getStartedV2Stage {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+}
+
+.getStartedV2Artboard {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  width: 100%;
+  background: #ffffff;
+  isolation: isolate;
+}
+
+.getStartedV2Hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1;
+  padding: 76px var(--inset-lg) 34px;
+}
+
+.getStartedV2DecorTop,
+.getStartedV2DecorBottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: color-mix(in srgb, var(--ds-brand) 18%, white);
+}
+
+.getStartedV2DecorTop {
+  top: 0;
+  z-index: 0;
+  height: 434px;
+  background:
+    radial-gradient(circle at 18% 18%, rgb(255 255 255 / 65%), transparent 22%),
+    linear-gradient(180deg, color-mix(in srgb, var(--ds-brand) 22%, white), color-mix(in srgb, var(--ds-brand) 15%, white));
+  clip-path: ellipse(118% 100% at 50% 0%);
+}
+
+.getStartedV2DecorBottom {
+  bottom: 0;
+  z-index: 0;
+  height: 100%;
+  border-top-left-radius: 38px;
+  border-top-right-radius: 38px;
+  background:
+    radial-gradient(circle at 82% 78%, rgb(255 255 255 / 45%), transparent 18%),
+    linear-gradient(180deg, color-mix(in srgb, var(--ds-brand) 18%, white), color-mix(in srgb, var(--ds-brand) 22%, white));
+  clip-path: ellipse(96% 100% at 50% 100%);
+}
+
+.getStartedV2Spark {
+  position: absolute;
+  z-index: 0;
+  display: block;
+  width: 46px;
+  height: 46px;
+  clip-path: polygon(50% 0%, 64% 35%, 100% 50%, 64% 65%, 50% 100%, 36% 65%, 0% 50%, 36% 35%);
+}
+
+.getStartedV2SparkPrimary {
+  left: 36px;
+  top: 230px;
+  background: var(--ds-brand);
+  transform: rotate(-14deg) scale(0.82);
+  animation: getStartedV2SparkFloatPrimary 4.6s ease-in-out infinite;
+}
+
+.getStartedV2SparkLightTop {
+  right: 30px;
+  top: 138px;
+  background: rgb(255 255 255 / 96%);
+  transform: rotate(14deg) scale(0.84);
+  animation: getStartedV2SparkFloatTop 5s ease-in-out infinite;
+}
+
+.getStartedV2SparkLightBottom {
+  right: 28px;
+  top: 18px;
+  background: rgb(255 255 255 / 96%);
+  transform: rotate(8deg) scale(0.74);
+  animation: getStartedV2SparkFloatBottom 4.8s ease-in-out infinite;
+}
+
+@keyframes getStartedV2SparkFloatPrimary {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-14deg) scale(0.82);
+  }
+
+  50% {
+    transform: translateY(-6px) rotate(-14deg) scale(0.82);
+  }
+}
+
+@keyframes getStartedV2SparkFloatTop {
+  0%,
+  100% {
+    transform: translateY(0) rotate(14deg) scale(0.84);
+  }
+
+  50% {
+    transform: translateY(5px) rotate(14deg) scale(0.84);
+  }
+}
+
+@keyframes getStartedV2SparkFloatBottom {
+  0%,
+  100% {
+    transform: translateY(0) rotate(8deg) scale(0.74);
+  }
+
+  50% {
+    transform: translateY(-4px) rotate(8deg) scale(0.74);
+  }
+}
+
+.getStartedV2Brand {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  align-self: flex-start;
+  margin-top: 0;
+}
+
+.getStartedV2Body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 18px var(--inset-lg) 0;
+}
+
+.getStartedV2HeroBadge {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  align-items: center;
+  z-index: 1;
+  margin-top: 22px;
+}
+
+.getStartedV2HeroBadgeRing {
+  display: grid;
+  place-items: center;
+  width: 88px;
+  height: 88px;
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--ds-brand) 16%, white),
+    color-mix(in srgb, var(--ds-brand) 6%, white)
+  );
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--ds-brand) 12%, white),
+    0 14px 28px rgb(1 163 98 / 12%);
+}
+
+.getStartedV2HeroBadgeIcon {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 999px;
+  background: var(--ds-brand);
+  color: var(--ds-text-inverse);
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.getStartedV2HeroBadgeChip {
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--ds-brand) 10%, white);
+  color: var(--ds-brand);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  line-height: 1;
+  padding: 0 var(--space-3);
+}
+
+.getStartedV2Message {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  align-items: center;
+  z-index: 1;
+  margin-top: 20px;
+  max-width: 292px;
+  text-align: center;
+}
+
+.getStartedV2Title {
+  margin: 0;
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.getStartedV2Text {
+  margin: 0;
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 15px;
+  line-height: 1.52;
+  max-width: 264px;
+}
+
+.getStartedV2Dots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.getStartedV2DotButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  min-height: 18px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.getStartedV2DotButtonActive {
+  cursor: default;
+}
+
+.getStartedV2Dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ds-brand) 28%, white);
+  transition:
+    width 180ms ease,
+    background-color 180ms ease;
+}
+
+.getStartedV2DotActive {
+  width: 24px;
+  background: var(--ds-brand);
+}
+
+.getStartedV2Actions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0;
+  padding: 18px var(--inset-lg) 24px;
+  min-height: 164px;
+}
+
+.getStartedV2PrimaryButton {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  border: none;
+  border-radius: 18px;
+  background: var(--ds-brand);
+  color: var(--ds-text-inverse);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--typography-label-lg-font-size, 16px);
+  font-weight: 700;
+  line-height: 1;
+  padding: 17px var(--inset-md);
+  cursor: pointer;
+  box-shadow: var(--elevation-overlay-sm, 0 10px 15px -3px rgb(0 0 0 / 10%), 0 4px 6px -4px rgb(0 0 0 / 5%));
 }
 
 .signInButton {
   width: 100%;
   border: none;
-  border-radius: 16px;
+  border-radius: 18px;
   background: var(--brand);
   color: var(--ds-text-inverse);
-  font-size: 17px;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--typography-label-lg-font-size, 16px);
   font-weight: 700;
-  letter-spacing: 0.01em;
-  padding: 16px;
+  line-height: var(--typography-label-lg-line-height, 1);
+  letter-spacing: var(--typography-label-lg-letter-spacing, 0);
+  padding: var(--spacing-component-padding-lg, 16px);
   cursor: pointer;
+  box-shadow: var(--elevation-overlay-sm, 0 10px 15px -3px rgb(0 0 0 / 10%), 0 4px 6px -4px rgb(0 0 0 / 5%));
 }
 
 .navigationBar {
@@ -2438,6 +3057,10 @@
 
 .navigationBarPageSurface {
   background: var(--ds-surface);
+}
+
+.navigationBarBrandSurface {
+  background: color-mix(in srgb, var(--ds-brand) 20%, white);
 }
 
 .homeBottomBar {

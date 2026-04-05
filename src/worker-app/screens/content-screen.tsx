@@ -13,25 +13,79 @@ export function WorkerAppContentScreen() {
           <p className={styles.brandName}>CropLens</p>
         </div>
 
-        <div className={styles.imagePlaceholder} aria-label="Image placeholder">
-          <span>Image Placeholder</span>
+        <div className={styles.getStartedHeroCard}>
+          <div className={styles.getStartedHeroScene} aria-hidden="true">
+            <div className={styles.heroSurface} />
+            <div className={styles.heroPreviewShell}>
+              <div className={styles.heroPreviewHeader}>
+                <div className={styles.heroPreviewHeaderText}>
+                  <span className={styles.heroPreviewLabel}>Travail</span>
+                  <span className={styles.heroPreviewHeading}>Missions du jour</span>
+                </div>
+                <span className={styles.heroPreviewSync}>Sync</span>
+              </div>
+
+              <div className={styles.heroMissionCard}>
+                <div className={styles.heroMissionTop}>
+                  <div className={styles.heroMissionBadgeGroup}>
+                    <span className={styles.heroMissionBadge}>Poste fixe</span>
+                    <span className={styles.heroMissionBadgeMuted}>Aujourd&apos;hui</span>
+                  </div>
+                  <span className={styles.heroMissionStatus}>En cours</span>
+                </div>
+
+                <div className={styles.heroMissionBody}>
+                  <div className={styles.heroMissionTitleGroup}>
+                    <span className={styles.heroMissionTitle}>Poste Fixe 5097</span>
+                    <span className={styles.heroMissionMeta}>Parcelle A12 • Secteur Nord</span>
+                  </div>
+
+                  <div className={styles.heroMissionRows}>
+                    <div className={styles.heroMissionRow}>
+                      <span className={styles.heroMissionStatIcon}>checklist</span>
+                      <div className={styles.heroMissionStatText}>
+                        <span className={styles.heroMissionStatValue}>3 observations</span>
+                        <span className={styles.heroMissionStatLabel}>fleuraison, nouaison, chute</span>
+                      </div>
+                    </div>
+
+                    <div className={styles.heroMissionRow}>
+                      <span className={styles.heroMissionStatIcon}>photo_camera</span>
+                      <div className={styles.heroMissionStatText}>
+                        <span className={styles.heroMissionStatValue}>Photos terrain</span>
+                        <span className={styles.heroMissionStatLabel}>ajout rapide depuis la parcelle</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className={styles.heroMissionFooter}>
+                    <div className={styles.heroMissionFooterMeta}>
+                      <span className={styles.heroMissionFooterValue}>2 / 5</span>
+                      <span className={styles.heroMissionFooterLabel}>complétés</span>
+                    </div>
+                    <span className={styles.heroMissionFooterState}>Hors ligne prêt</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className={styles.textBlock}>
-          <h3 className={styles.getStartedTitle}>Bienvenue sur CropLens</h3>
+          <p className={styles.getStartedEyebrow}>Worker app</p>
+          <h3 className={styles.getStartedTitle}>Connectez-vous pour accéder à vos missions.</h3>
           <p className={styles.getStartedText}>
-            L’application pour collecter et suivre les observations terrain.
+            Retrouvez vos parcelles, saisissez vos observations et synchronisez vos données depuis le terrain.
           </p>
         </div>
-
-        <ul className={styles.featuresList}>
-          <li>Accédez à vos missions de terrain</li>
-          <li>Capturez des images et observations</li>
-          <li>Synchronisez vos données automatiquement</li>
-        </ul>
       </div>
 
       <div className={styles.getStartedBottom}>
+        <div className={styles.getStartedTrustRow}>
+          <span className={styles.getStartedTrustItem}>Compte terrain sécurisé</span>
+          <span className={styles.getStartedTrustDot} aria-hidden="true" />
+          <span className={styles.getStartedTrustItem}>Accès réservé aux équipes</span>
+        </div>
         <button className={styles.signInButton} type="button">
           Se connecter
         </button>

@@ -19,6 +19,7 @@ import {
   WORKER_APP_CANVAS_NAME,
   WORKER_APP_BOITE_PAGE_NAME,
   WORKER_APP_GET_STARTED_PAGE_NAME,
+  WORKER_APP_GET_STARTED_V2_PAGE_NAME,
   WORKER_APP_HOME_PAGE_NAME,
   WORKER_APP_POST_FIXE_PAGE_NAME,
   WORKER_APP_PROFILE_PAGE_NAME,
@@ -29,6 +30,7 @@ import {
 import { WorkerAppBoitePage } from "../worker-app/boite";
 import { WorkerAppFullPrototypePage } from "../worker-app/full-prototype";
 import { WorkerAppGetStartedPage } from "../worker-app/getstarted";
+import { WorkerAppGetStartedV2Page } from "../worker-app/getstarted-v2";
 import { WorkerAppHomePage } from "../worker-app/home";
 import {
   PostFixePreviewState,
@@ -1123,6 +1125,7 @@ function resolveWorkerCanvasView(
   activeScreen:
     | "prototype"
     | "getStarted"
+    | "getStartedV2"
     | "home"
     | "travail"
     | "postFixe"
@@ -1240,6 +1243,7 @@ export default function Home() {
   const [activeScreen, setActiveScreen] = useState<
     | "prototype"
     | "getStarted"
+    | "getStartedV2"
     | "home"
     | "travail"
     | "postFixe"
@@ -1305,6 +1309,7 @@ export default function Home() {
   const isWorkerAppScreen = [
     "prototype",
     "getStarted",
+    "getStartedV2",
     "home",
     "travail",
     "postFixe",
@@ -1316,6 +1321,7 @@ export default function Home() {
   const pageTitleByScreen: Record<
     | "prototype"
     | "getStarted"
+    | "getStartedV2"
     | "home"
     | "travail"
     | "postFixe"
@@ -1328,6 +1334,7 @@ export default function Home() {
   > = {
     prototype: WORKER_APP_CANVAS_NAME,
     getStarted: WORKER_APP_GET_STARTED_PAGE_NAME,
+    getStartedV2: WORKER_APP_GET_STARTED_V2_PAGE_NAME,
     home: WORKER_APP_HOME_PAGE_NAME,
     travail: WORKER_APP_TRAVAIL_PAGE_NAME,
     postFixe: WORKER_APP_POST_FIXE_PAGE_NAME,
@@ -2212,6 +2219,16 @@ export default function Home() {
                 }}
               >
                 {WORKER_APP_GET_STARTED_PAGE_NAME}
+              </button>
+              <button
+                className={`${styles.subTab} ${activeScreen === "getStartedV2" ? styles.activeSubTab : ""}`}
+                type="button"
+                onClick={() => {
+                  setActiveScreen("getStartedV2");
+                  setIsWorkerAppOpen(true);
+                }}
+              >
+                {WORKER_APP_GET_STARTED_V2_PAGE_NAME}
               </button>
               <button
                 className={`${styles.subTab} ${activeScreen === "home" ? styles.activeSubTab : ""}`}
@@ -3148,6 +3165,12 @@ export default function Home() {
             />
           ) : resolvedActiveScreen === "home" ? (
             <WorkerAppHomePage
+              showDeviceFrame={showDeviceFrame}
+              theme={canvasTheme}
+              frameTheme={canvasFrameTheme}
+            />
+          ) : resolvedActiveScreen === "getStartedV2" ? (
+            <WorkerAppGetStartedV2Page
               showDeviceFrame={showDeviceFrame}
               theme={canvasTheme}
               frameTheme={canvasFrameTheme}
