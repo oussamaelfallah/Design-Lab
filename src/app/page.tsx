@@ -49,48 +49,48 @@ const posteFixeComponentStates = [
     startDate: "01 Mai",
     updatedDate: "21 Juil",
     completed: 0,
-    total: 5,
+    total: 3,
     progress: 0,
   },
   {
-    label: "En cours · 20%",
+    label: "En cours · 33%",
     name: "Poste Fixe 2381",
     sector: "Secteur S2",
     startDate: "05 Mai",
     updatedDate: "14 Juil",
     completed: 1,
-    total: 5,
-    progress: 20,
+    total: 3,
+    progress: 33,
   },
   {
-    label: "En cours · 40%",
+    label: "En cours · 67%",
     name: "Poste Fixe 7642",
     sector: "Secteur S3",
     startDate: "12 Mai",
     updatedDate: "08 Juil",
     completed: 2,
-    total: 5,
-    progress: 40,
+    total: 3,
+    progress: 67,
   },
   {
-    label: "En cours · 60%",
+    label: "Terminé · 100%",
     name: "Poste Fixe 5097",
     sector: "Secteur S4",
     startDate: "20 Mai",
     updatedDate: "27 Juil",
     completed: 3,
-    total: 5,
-    progress: 60,
+    total: 3,
+    progress: 100,
   },
   {
-    label: "En cours · 80%",
+    label: "En cours · 67%",
     name: "Poste Fixe 3318",
     sector: "Secteur S5",
     startDate: "24 Mai",
     updatedDate: "02 Août",
-    completed: 4,
-    total: 5,
-    progress: 80,
+    completed: 2,
+    total: 3,
+    progress: 67,
   },
   {
     label: "Terminé · 100%",
@@ -98,8 +98,8 @@ const posteFixeComponentStates = [
     sector: "Secteur S6",
     startDate: "28 Mai",
     updatedDate: "30 Juil",
-    completed: 5,
-    total: 5,
+    completed: 3,
+    total: 3,
     progress: 100,
   },
 ] as const;
@@ -194,34 +194,139 @@ const postFixeCoreFrames = [
   },
   {
     id: "06",
+    title: "Fertilisation (Analyse de sol)",
+    note: "Fertilisation overview with Analyse de sol tab active.",
+    frameView: "data" as SecteursFrameView,
+    previewState: "conduite-fertilisation-soil-tab" as PostFixePreviewState,
+  },
+  {
+    id: "07",
+    title: "Fertilisation (Apports)",
+    note: "Fertilisation overview with Apports tab active.",
+    frameView: "data" as SecteursFrameView,
+    previewState: "conduite-fertilisation-apport-tab" as PostFixePreviewState,
+    },
+  {
+    id: "08",
     title: "Observation Example (Pas commencé)",
     note: "Example frame for status Pas commencé.",
     frameView: "data" as SecteursFrameView,
     previewState: "observation-status-not-started" as PostFixePreviewState,
   },
   {
-    id: "07",
+    id: "09",
     title: "Observation Example (En cours)",
     note: "Example frame for status En cours.",
     frameView: "data" as SecteursFrameView,
     previewState: "observation-status-in-progress" as PostFixePreviewState,
   },
   {
-    id: "08",
+    id: "10",
     title: "Observation Example (Terminé)",
     note: "Example frame for status Terminé.",
     frameView: "data" as SecteursFrameView,
     previewState: "observation-status-done" as PostFixePreviewState,
   },
   {
-    id: "09",
+    id: "11",
     title: "Observation (Read-only / Modifier)",
     note: "Completed state where primary action is Modifier.",
     frameView: "data" as SecteursFrameView,
     previewState: "observation-readonly" as PostFixePreviewState,
   },
   {
-    id: "10",
+    id: "12",
+    title: "Fertilisation Sheet (Analyse de sol · Add)",
+    note: "Creation sheet for a new Analyse de sol entry.",
+    frameView: "data" as SecteursFrameView,
+    previewState: "conduite-fertilisation-soil-create" as PostFixePreviewState,
+  },
+  {
+    id: "13",
+    title: "Fertilisation Sheet (Analyse de sol · View)",
+    note: "Read-only sheet for an existing Analyse de sol record.",
+    frameView: "data" as SecteursFrameView,
+    previewState: "conduite-fertilisation-soil-view" as PostFixePreviewState,
+  },
+  {
+    id: "14",
+    title: "Fertilisation Sheet (Apport · Add)",
+    note: "Creation sheet for a new Apport entry.",
+    frameView: "data" as SecteursFrameView,
+    previewState: "conduite-fertilisation-apport-create" as PostFixePreviewState,
+  },
+  {
+    id: "15",
+    title: "Fertilisation Sheet (Apport · View)",
+    note: "Read-only sheet for an existing Apport record.",
+    frameView: "data" as SecteursFrameView,
+    previewState: "conduite-fertilisation-apport-view" as PostFixePreviewState,
+  },
+  {
+    id: "16",
+    title: "Fertilisation Sheet (Analyse de sol · Unsaved)",
+    note: "Unsaved confirmation shown above the Analyse de sol add sheet.",
+    frameView: "data" as SecteursFrameView,
+    previewState: "conduite-fertilisation-soil-unsaved" as PostFixePreviewState,
+  },
+  {
+    id: "17",
+    title: "Irrigation (Programme d'arrosage)",
+    note: "Irrigation overview with Programme d'arrosage tab active.",
+    frameView: "data" as SecteursFrameView,
+    previewState: "conduite-irrigation-program-tab" as PostFixePreviewState,
+  },
+  {
+    id: "18",
+    title: "Irrigation (Stress hydrique)",
+    note: "Irrigation overview with Stress hydrique tab active.",
+    frameView: "data" as SecteursFrameView,
+    previewState: "conduite-irrigation-stress-tab" as PostFixePreviewState,
+  },
+  {
+    id: "19",
+    title: "Irrigation Sheet (Programme · Add)",
+    note: "Creation sheet for a new Programme d'arrosage entry.",
+    frameView: "data" as SecteursFrameView,
+    previewState: "conduite-irrigation-program-create" as PostFixePreviewState,
+  },
+  {
+    id: "20",
+    title: "Irrigation Sheet (Programme · View)",
+    note: "Read-only sheet for an existing Programme d'arrosage record.",
+    frameView: "data" as SecteursFrameView,
+    previewState: "conduite-irrigation-program-view" as PostFixePreviewState,
+  },
+  {
+    id: "21",
+    title: "Irrigation Sheet (Programme · Unsaved)",
+    note: "Unsaved confirmation shown above the Programme add sheet.",
+    frameView: "data" as SecteursFrameView,
+    previewState: "conduite-irrigation-program-unsaved" as PostFixePreviewState,
+  },
+  {
+    id: "22",
+    title: "Irrigation Sheet (Stress hydrique · Add)",
+    note: "Creation sheet for a new Stress hydrique entry.",
+    frameView: "data" as SecteursFrameView,
+    previewState: "conduite-irrigation-stress-create" as PostFixePreviewState,
+  },
+  {
+    id: "23",
+    title: "Irrigation Sheet (Stress hydrique · View)",
+    note: "Read-only sheet for an existing Stress hydrique record.",
+    frameView: "data" as SecteursFrameView,
+    previewState: "conduite-irrigation-stress-view" as PostFixePreviewState,
+  },
+  {
+    id: "24",
+    title: "Irrigation Sheet (Stress hydrique · Unsaved)",
+    note: "Unsaved confirmation shown above the Stress hydrique add sheet.",
+    frameView: "data" as SecteursFrameView,
+    previewState: "conduite-irrigation-stress-unsaved" as PostFixePreviewState,
+  },
+  {
+    id: "25",
     title: "Observation Unsaved Modal",
     note: "Confirmation dialog when leaving with unsaved changes.",
     frameView: "data" as SecteursFrameView,
@@ -243,16 +348,28 @@ const postFixeCoreFrameGroups = [
     frameIds: ["03", "04", "05"],
   },
   {
+    id: "conduite-fertilisation",
+    title: "Conduite Culturale · Fertilisation",
+    note: "Fertilisation tabs plus add and view sheets.",
+    frameIds: ["06", "07", "12", "13", "14", "15", "16"],
+  },
+  {
+    id: "conduite-irrigation",
+    title: "Conduite Culturale · Irrigation",
+    note: "Irrigation tabs plus add and view sheets.",
+    frameIds: ["17", "18", "19", "20", "21", "22", "23", "24"],
+  },
+  {
     id: "statusExamples",
     title: "Status Examples",
     note: "Reference states used for observation status rendering.",
-    frameIds: ["06", "07", "08"],
+    frameIds: ["08", "09", "10"],
   },
   {
     id: "actions",
     title: "Completion And Exit",
     note: "Locked final state and unsaved confirmation modal.",
-    frameIds: ["09", "10"],
+    frameIds: ["11", "25"],
   },
 ] as const;
 
@@ -1254,6 +1371,7 @@ export default function Home() {
     | "testDs"
   >("postFixe");
   const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [workerTheme, setWorkerTheme] = useState<"dark" | "light">("light");
   const [showDeviceFrame, setShowDeviceFrame] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isWorkerAppOpen, setIsWorkerAppOpen] = useState(true);
@@ -1347,7 +1465,7 @@ export default function Home() {
   const activePageTitle = pageTitleByScreen[resolvedActiveScreen];
   const renderComponentMilestones = (completed: number) => (
     <div className={styles.componentsProgressTrack} aria-hidden="true">
-      {Array.from({ length: 5 }).map((_, index) => (
+      {Array.from({ length: 3 }).map((_, index) => (
         <span
           key={index}
           className={`${styles.componentsProgressSegment} ${
@@ -2088,8 +2206,8 @@ export default function Home() {
     </div>
   );
 
-  const canvasTheme: "light" | "dark" = "light";
-  const canvasFrameTheme = theme;
+  const canvasTheme = workerTheme;
+  const canvasFrameTheme = workerTheme;
 
   return (
     <div
@@ -2201,34 +2319,13 @@ export default function Home() {
                   setIsWorkerAppOpen(true);
                 }}
               >
-                <span className={styles.subTabLabelRow}>
+                <span className={`${styles.subTabLabelRow} ${styles.subTabLabelRowCentered}`}>
                   <span>{WORKER_APP_POST_FIXE_PAGE_NAME}</span>
                   <span className={styles.devReadyBadge}>
                     <span className={styles.devReadyDot} aria-hidden="true" />
-                    Ready for dev
+                    Ready For Dev
                   </span>
                 </span>
-              </button>
-              <div className={styles.subTabDivider} aria-hidden="true" />
-              <button
-                className={`${styles.subTab} ${activeScreen === "getStarted" ? styles.activeSubTab : ""}`}
-                type="button"
-                onClick={() => {
-                  setActiveScreen("getStarted");
-                  setIsWorkerAppOpen(true);
-                }}
-              >
-                {WORKER_APP_GET_STARTED_PAGE_NAME}
-              </button>
-              <button
-                className={`${styles.subTab} ${activeScreen === "getStartedV2" ? styles.activeSubTab : ""}`}
-                type="button"
-                onClick={() => {
-                  setActiveScreen("getStartedV2");
-                  setIsWorkerAppOpen(true);
-                }}
-              >
-                {WORKER_APP_GET_STARTED_V2_PAGE_NAME}
               </button>
               <button
                 className={`${styles.subTab} ${activeScreen === "home" ? styles.activeSubTab : ""}`}
@@ -2336,7 +2433,7 @@ export default function Home() {
               ) : null}
             </div>
           </div>
-          {resolvedActiveScreen === "postFixe" ? (
+          {resolvedActiveScreen === "postFixe" && resolvedCanvasView !== "frames" ? (
             <div className={styles.frameViewRail} role="tablist" aria-label="Post Fixe states">
               <button
                 type="button"
@@ -2584,7 +2681,7 @@ export default function Home() {
                       <span className={styles.componentSkeletonMeta} aria-hidden="true" />
                       <span className={styles.componentSkeletonMetaWide} aria-hidden="true" />
                       <div className={styles.componentsProgressTrack} aria-hidden="true">
-                        {Array.from({ length: 5 }).map((_, index) => (
+                        {Array.from({ length: 3 }).map((_, index) => (
                           <span key={index} className={styles.componentSkeletonSegment} />
                         ))}
                       </div>
@@ -2743,7 +2840,7 @@ export default function Home() {
                           Début : 20 Mai · Modifié le 27 Juil
                         </p>
                         <p className={styles.componentPosteCardProgressText}>
-                          3 / 5 observations complétées · 60%
+                          3 / 3 observations complétées · 100%
                         </p>
                         {renderComponentMilestones(3)}
                       </div>
@@ -3158,11 +3255,13 @@ export default function Home() {
           ) : resolvedCanvasView === "designSystem" ? (
             renderDesignSystemWorkspace()
           ) : resolvedActiveScreen === "prototype" ? (
-            <WorkerAppFullPrototypePage
-              showDeviceFrame={showDeviceFrame}
-              theme={canvasTheme}
-              frameTheme={canvasFrameTheme}
-            />
+            <div className={styles.centeredCanvasScreen}>
+              <WorkerAppFullPrototypePage
+                showDeviceFrame={showDeviceFrame}
+                theme={canvasTheme}
+                frameTheme={canvasFrameTheme}
+              />
+            </div>
           ) : resolvedActiveScreen === "home" ? (
             <WorkerAppHomePage
               showDeviceFrame={showDeviceFrame}
@@ -3182,12 +3281,14 @@ export default function Home() {
               frameTheme={canvasFrameTheme}
             />
           ) : resolvedActiveScreen === "postFixe" ? (
-            <WorkerAppPostFixePage
-              showDeviceFrame={showDeviceFrame}
-              theme={canvasTheme}
-              frameTheme={canvasFrameTheme}
-              frameView={postFixeFrameView}
-            />
+            <div className={styles.centeredCanvasScreen}>
+              <WorkerAppPostFixePage
+                showDeviceFrame={showDeviceFrame}
+                theme={canvasTheme}
+                frameTheme={canvasFrameTheme}
+                frameView={postFixeFrameView}
+              />
+            </div>
           ) : resolvedActiveScreen === "boite" ? (
             <WorkerAppBoitePage
               showDeviceFrame={showDeviceFrame}

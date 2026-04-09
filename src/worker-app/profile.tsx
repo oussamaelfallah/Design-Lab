@@ -19,7 +19,11 @@ export function WorkerAppProfilePage({
 
   return (
     <div className={showDeviceFrame ? frameClass : styles.androidCanvasNoFrame}>
-      <div className={styles.androidScreen}>
+      <div
+        className={`${styles.androidScreen} ${
+          theme === "dark" ? styles.androidScreenDark : styles.androidScreenLight
+        }`}
+      >
         <WorkerAppStatusBar theme={theme} />
         <div className={styles.detailContent}>
           <div className={styles.pageTopBar}>

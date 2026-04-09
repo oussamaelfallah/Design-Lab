@@ -20,7 +20,7 @@ type WorkerAppPostFixePageProps = {
   frameTheme?: "dark" | "light";
   frameView: SecteursFrameView;
   previewState?: PostFixePreviewState;
-  previewObservationPhase?: "Fleuraison" | "Nouaison" | "Chute physiologique";
+  previewObservationPhase?: ObservationPhaseName;
   isInteractive?: boolean;
   embedded?: boolean;
   onLayoutModeChange?: (mode: "default" | "fullScreen") => void;
@@ -32,6 +32,21 @@ export type PostFixePreviewState =
   | "list-loading"
   | "list-empty"
   | "detail-overview"
+  | "conduite-fertilisation-soil-tab"
+  | "conduite-fertilisation-apport-tab"
+  | "conduite-fertilisation-soil-create"
+  | "conduite-fertilisation-soil-view"
+  | "conduite-fertilisation-soil-unsaved"
+  | "conduite-fertilisation-apport-create"
+  | "conduite-fertilisation-apport-view"
+  | "conduite-irrigation-program-tab"
+  | "conduite-irrigation-stress-tab"
+  | "conduite-irrigation-program-create"
+  | "conduite-irrigation-program-view"
+  | "conduite-irrigation-program-unsaved"
+  | "conduite-irrigation-stress-create"
+  | "conduite-irrigation-stress-view"
+  | "conduite-irrigation-stress-unsaved"
   | "detail-loading"
   | "observation-edit"
   | "observation-edit-fleuraison"
@@ -49,7 +64,7 @@ type PosteFixeItem = {
   startDate: string;
   lastUpdate: string;
   campaign: string;
-  progress: 0 | 20 | 40 | 60 | 80 | 100;
+  progress: number;
 };
 
 type ObservationItem = {
@@ -62,7 +77,12 @@ type ObservationItem = {
 
 type PosteStatus = "Pas commencé" | "En cours" | "Terminé";
 type FleuraisonNoteType = "Début" | "Suivi" | "Finale";
-type ObservationPhaseName = "Fleuraison" | "Nouaison" | "Chute physiologique";
+type ObservationPhaseName =
+  | "Fleuraison"
+  | "Nouaison"
+  | "Chute physiologique"
+  | "Fertilisation"
+  | "Irrigation";
 type ObservationSecondaryMode = "input" | "chips";
 
 type FleuraisonFormState = {
@@ -84,6 +104,78 @@ type FleuraisonSeedNote = {
   notes: string;
   images: string[];
 };
+
+type FertilisationOrganicMatter = "Riche" | "Modérée" | "Faible";
+type FertilisationSoilPh = "Acide" | "Neutre" | "Basique";
+type FertilisationQuality = "Bonne" | "Moyenne" | "Faible";
+type FertilisationDeficiencyRisk = "Aucun" | "Carence P" | "Carence Mg";
+
+type FertilisationSoilObservation = {
+  id: string;
+  title: string;
+  date: string;
+  organicMatter: FertilisationOrganicMatter;
+  soilPh: FertilisationSoilPh;
+  waterRetention: FertilisationQuality;
+  npkLevel: FertilisationQuality;
+  deficiencyRisk: FertilisationDeficiencyRisk;
+};
+
+type FertilisationApportIntervention = {
+  id: string;
+  title: string;
+  date: string;
+  product: string;
+  quantity: string;
+  dose: string;
+};
+
+type FertilisationPosteState = {
+  trackingStartDate: string;
+  trackingEndDate: string;
+  soilObservations: FertilisationSoilObservation[];
+  apports: FertilisationApportIntervention[];
+};
+
+type FertilisationSoilFormState = Omit<FertilisationSoilObservation, "id" | "title">;
+type FertilisationApportFormState = Omit<FertilisationApportIntervention, "id" | "title">;
+type FertilisationSheetMode = "soil" | "apport";
+
+type IrrigationProgram = {
+  id: string;
+  title: string;
+  startDate: string;
+  endDate: string;
+  frequencyDays: string;
+  volumePerIrrigation: string;
+};
+
+type IrrigationStressType =
+  | "Panne système d’irrigation"
+  | "Manque d’eau"
+  | "Qualité d’eau"
+  | "Vague de chaleur";
+
+type IrrigationStressObservation = {
+  id: string;
+  title: string;
+  startDate: string;
+  endDate: string;
+  type: IrrigationStressType;
+  durationDays: string;
+  note: string;
+};
+
+type IrrigationPosteState = {
+  trackingStartDate: string;
+  trackingEndDate: string;
+  programs: IrrigationProgram[];
+  stressObservations: IrrigationStressObservation[];
+};
+
+type IrrigationProgramFormState = Omit<IrrigationProgram, "id" | "title">;
+type IrrigationStressFormState = Omit<IrrigationStressObservation, "id" | "title">;
+type IrrigationSheetMode = "program" | "stress";
 
 function getCurrentIsoDate(): string {
   const now = new Date();
@@ -131,6 +223,22 @@ const observationPhaseConfigs: Record<
     secondaryOptions: ["90%", "75%", "50%", "25%"],
     emptySubtitle: "Ajoutez votre première observation de chute physiologique.",
   },
+  Fertilisation: {
+    title: "Fertilisation",
+    densityLabel: "Niveau",
+    densityOptions: ["Bonne"],
+    secondaryLabel: "Valeur",
+    secondaryMode: "input",
+    emptySubtitle: "Ajoutez votre première observation de fertilisation.",
+  },
+  Irrigation: {
+    title: "Irrigation",
+    densityLabel: "Niveau",
+    densityOptions: ["Bonne"],
+    secondaryLabel: "Valeur",
+    secondaryMode: "input",
+    emptySubtitle: "Ajoutez votre première observation d'irrigation.",
+  },
 };
 
 function isObservationPhaseName(value: string): value is ObservationPhaseName {
@@ -160,6 +268,248 @@ function createDefaultFleuraisonForm(
 
 const defaultFleuraisonForm: FleuraisonFormState = createDefaultFleuraisonForm("Fleuraison");
 const fleuraisonSeedImage = "/notesimages/istockphoto-1147544807-612x612.jpg";
+
+const fertilisationOrganicMatterOptions: FertilisationOrganicMatter[] = [
+  "Riche",
+  "Modérée",
+  "Faible",
+];
+const fertilisationSoilPhOptions: FertilisationSoilPh[] = ["Acide", "Neutre", "Basique"];
+const fertilisationQualityOptions: FertilisationQuality[] = ["Bonne", "Moyenne", "Faible"];
+const fertilisationDeficiencyRiskOptions: FertilisationDeficiencyRisk[] = [
+  "Aucun",
+  "Carence P",
+  "Carence Mg",
+];
+const fertilisationProductOptions = [
+  "Acide sulfurique",
+  "Acide phosphorique",
+  "Ammonitrate",
+  "Nitrate de potasse",
+] as const;
+const irrigationStressTypeOptions: IrrigationStressType[] = [
+  "Panne système d’irrigation",
+  "Manque d’eau",
+  "Qualité d’eau",
+  "Vague de chaleur",
+];
+
+function createDefaultFertilisationSoilForm(): FertilisationSoilFormState {
+  return {
+    date: getCurrentIsoDate(),
+    organicMatter: fertilisationOrganicMatterOptions[0],
+    soilPh: fertilisationSoilPhOptions[1],
+    waterRetention: fertilisationQualityOptions[0],
+    npkLevel: fertilisationQualityOptions[0],
+    deficiencyRisk: fertilisationDeficiencyRiskOptions[0],
+  };
+}
+
+function createDefaultFertilisationApportForm(): FertilisationApportFormState {
+  return {
+    date: getCurrentIsoDate(),
+    product: fertilisationProductOptions[0],
+    quantity: "",
+    dose: "",
+  };
+}
+
+function createFertilisationSoilFormFromRecord(
+  record: FertilisationSoilObservation
+): FertilisationSoilFormState {
+  return {
+    date: record.date,
+    organicMatter: record.organicMatter,
+    soilPh: record.soilPh,
+    waterRetention: record.waterRetention,
+    npkLevel: record.npkLevel,
+    deficiencyRisk: record.deficiencyRisk,
+  };
+}
+
+function createFertilisationApportFormFromRecord(
+  record: FertilisationApportIntervention
+): FertilisationApportFormState {
+  return {
+    date: record.date,
+    product: record.product,
+    quantity: record.quantity,
+    dose: record.dose,
+  };
+}
+
+function createDefaultIrrigationProgramForm(): IrrigationProgramFormState {
+  return {
+    startDate: getCurrentIsoDate(),
+    endDate: "",
+    frequencyDays: "",
+    volumePerIrrigation: "",
+  };
+}
+
+function createDefaultIrrigationStressForm(): IrrigationStressFormState {
+  return {
+    startDate: getCurrentIsoDate(),
+    endDate: "",
+    type: irrigationStressTypeOptions[0],
+    durationDays: "",
+    note: "",
+  };
+}
+
+function createIrrigationProgramFormFromRecord(
+  record: IrrigationProgram
+): IrrigationProgramFormState {
+  return {
+    startDate: record.startDate,
+    endDate: record.endDate,
+    frequencyDays: record.frequencyDays,
+    volumePerIrrigation: record.volumePerIrrigation,
+  };
+}
+
+function createIrrigationStressFormFromRecord(
+  record: IrrigationStressObservation
+): IrrigationStressFormState {
+  return {
+    startDate: record.startDate,
+    endDate: record.endDate,
+    type: record.type,
+    durationDays: record.durationDays,
+    note: record.note,
+  };
+}
+
+function getFertilisationAllDates(
+  soilObservations: FertilisationSoilObservation[],
+  apports: FertilisationApportIntervention[]
+): string[] {
+  return [...soilObservations.map((item) => item.date), ...apports.map((item) => item.date)].filter(
+    Boolean
+  );
+}
+
+function getFertilisationTrackingStartDate(
+  soilObservations: FertilisationSoilObservation[],
+  apports: FertilisationApportIntervention[]
+): string {
+  return getFertilisationAllDates(soilObservations, apports).sort(
+    (a, b) => parseIsoDateToTime(a) - parseIsoDateToTime(b)
+  )[0] ?? "";
+}
+
+function getDerivedFertilisationStatus(
+  fertilisationState: FertilisationPosteState
+): ObservationItem["status"] {
+  const trackingStartDate =
+    fertilisationState.trackingStartDate ||
+    getFertilisationTrackingStartDate(
+      fertilisationState.soilObservations,
+      fertilisationState.apports
+    );
+
+  if (!trackingStartDate) {
+    return "Pas commencé";
+  }
+
+  const hasSoilObservation = fertilisationState.soilObservations.length > 0;
+  const hasApport = fertilisationState.apports.length > 0;
+
+  return fertilisationState.trackingEndDate && hasSoilObservation && hasApport
+    ? "Terminé"
+    : "En cours";
+}
+
+function getIrrigationAllDates(
+  programs: IrrigationProgram[],
+  stressObservations: IrrigationStressObservation[]
+): string[] {
+  return [
+    ...programs.map((item) => item.startDate),
+    ...programs.map((item) => item.endDate),
+    ...stressObservations.map((item) => item.startDate),
+    ...stressObservations.map((item) => item.endDate),
+  ].filter(Boolean);
+}
+
+function getIrrigationTrackingStartDate(
+  programs: IrrigationProgram[],
+  stressObservations: IrrigationStressObservation[]
+): string {
+  return getIrrigationAllDates(programs, stressObservations).sort(
+    (a, b) => parseIsoDateToTime(a) - parseIsoDateToTime(b)
+  )[0] ?? "";
+}
+
+function getDerivedIrrigationStatus(
+  irrigationState: IrrigationPosteState
+): ObservationItem["status"] {
+  const trackingStartDate =
+    irrigationState.trackingStartDate ||
+    getIrrigationTrackingStartDate(irrigationState.programs, irrigationState.stressObservations);
+
+  if (!trackingStartDate) {
+    return "Pas commencé";
+  }
+
+  const hasProgram = irrigationState.programs.length > 0;
+  const hasStressObservation = irrigationState.stressObservations.length > 0;
+
+  return irrigationState.trackingEndDate && hasProgram && hasStressObservation
+    ? "Terminé"
+    : "En cours";
+}
+
+function areFertilisationSoilFormsEqual(
+  firstForm: FertilisationSoilFormState,
+  secondForm: FertilisationSoilFormState
+): boolean {
+  return (
+    firstForm.date === secondForm.date &&
+    firstForm.organicMatter === secondForm.organicMatter &&
+    firstForm.soilPh === secondForm.soilPh &&
+    firstForm.waterRetention === secondForm.waterRetention &&
+    firstForm.npkLevel === secondForm.npkLevel &&
+    firstForm.deficiencyRisk === secondForm.deficiencyRisk
+  );
+}
+
+function areFertilisationApportFormsEqual(
+  firstForm: FertilisationApportFormState,
+  secondForm: FertilisationApportFormState
+): boolean {
+  return (
+    firstForm.date === secondForm.date &&
+    firstForm.product === secondForm.product &&
+    firstForm.quantity === secondForm.quantity &&
+    firstForm.dose === secondForm.dose
+  );
+}
+
+function areIrrigationProgramFormsEqual(
+  firstForm: IrrigationProgramFormState,
+  secondForm: IrrigationProgramFormState
+): boolean {
+  return (
+    firstForm.startDate === secondForm.startDate &&
+    firstForm.endDate === secondForm.endDate &&
+    firstForm.frequencyDays === secondForm.frequencyDays &&
+    firstForm.volumePerIrrigation === secondForm.volumePerIrrigation
+  );
+}
+
+function areIrrigationStressFormsEqual(
+  firstForm: IrrigationStressFormState,
+  secondForm: IrrigationStressFormState
+): boolean {
+  return (
+    firstForm.startDate === secondForm.startDate &&
+    firstForm.endDate === secondForm.endDate &&
+    firstForm.type === secondForm.type &&
+    firstForm.durationDays === secondForm.durationDays &&
+    firstForm.note === secondForm.note
+  );
+}
 
 function createSeedFleuraisonNotes(posteId: string): FleuraisonSeedNote[] {
   return [
@@ -416,6 +766,11 @@ type PosteConfig = {
   waterQuality: string;
 };
 
+type ObservationUnsavedContext =
+  | "exit-observation"
+  | "close-fertilisation-sheet"
+  | "close-irrigation-sheet";
+
 const postesFixes: PosteFixeItem[] = [
   {
     name: "Poste Fixe 1254",
@@ -431,7 +786,7 @@ const postesFixes: PosteFixeItem[] = [
     startDate: "05 Mai",
     lastUpdate: "14 Juil",
     campaign: "2025-2026",
-    progress: 20,
+    progress: 33,
   },
   {
     name: "Poste Fixe 7642",
@@ -439,7 +794,7 @@ const postesFixes: PosteFixeItem[] = [
     startDate: "12 Mai",
     lastUpdate: "08 Juil",
     campaign: "2025-2026",
-    progress: 40,
+    progress: 67,
   },
   {
     name: "Poste Fixe 5097",
@@ -447,7 +802,7 @@ const postesFixes: PosteFixeItem[] = [
     startDate: "20 Mai",
     lastUpdate: "27 Juil",
     campaign: "2025-2026",
-    progress: 60,
+    progress: 100,
   },
   {
     name: "Poste Fixe 3318",
@@ -455,7 +810,7 @@ const postesFixes: PosteFixeItem[] = [
     startDate: "24 Mai",
     lastUpdate: "02 Août",
     campaign: "2025-2026",
-    progress: 80,
+    progress: 67,
   },
   {
     name: "Poste Fixe 9026",
@@ -471,7 +826,7 @@ const postesFixes: PosteFixeItem[] = [
     startDate: "03 Juin",
     lastUpdate: "11 Juil",
     campaign: "2025-2026",
-    progress: 40,
+    progress: 33,
   },
   {
     name: "Poste Fixe 6880",
@@ -615,14 +970,14 @@ const posteObservationsByPoste: Record<string, ObservationItem[]> = {
       name: "Fertilisation",
       lastUpdate: "18 Juil",
       icon: "science",
-      status: "Pas commencé",
+      status: "Terminé",
       tone: "teal",
     },
     {
       name: "Irrigation",
       lastUpdate: "20 Juil",
       icon: "water_drop",
-      status: "Pas commencé",
+      status: "En cours",
       tone: "rose",
     },
   ],
@@ -653,7 +1008,7 @@ const posteObservationsByPoste: Record<string, ObservationItem[]> = {
       name: "Irrigation",
       lastUpdate: "20 Juil",
       icon: "water_drop",
-      status: "Pas commencé",
+      status: "En cours",
       tone: "rose",
     },
   ],
@@ -758,7 +1113,174 @@ const posteObservationsByPoste: Record<string, ObservationItem[]> = {
   ],
 };
 
+function createSeedFertilisationState(
+  posteName: string,
+  status: ObservationItem["status"]
+): FertilisationPosteState {
+  const posteKey = posteName.toLowerCase().replace(/\s+/g, "-");
+  const baseSoilObservation: FertilisationSoilObservation = {
+    id: `${posteKey}-soil-1`,
+    title: "Analyse de sol 1",
+    date: "2026-07-21",
+    organicMatter: "Riche",
+    soilPh: "Neutre",
+    waterRetention: "Bonne",
+    npkLevel: "Bonne",
+    deficiencyRisk: "Aucun",
+  };
+  const baseSoilObservationTwo: FertilisationSoilObservation = {
+    id: `${posteKey}-soil-2`,
+    title: "Analyse de sol 2",
+    date: "2026-07-27",
+    organicMatter: "Modérée",
+    soilPh: "Neutre",
+    waterRetention: "Moyenne",
+    npkLevel: "Moyenne",
+    deficiencyRisk: "Carence Mg",
+  };
+  const baseApportOne: FertilisationApportIntervention = {
+    id: `${posteKey}-apport-1`,
+    title: "Apport 1",
+    date: "2026-07-29",
+    product: "ACIDE SULFURIQUE",
+    quantity: "5.8",
+    dose: "1.5",
+  };
+  const baseApportTwo: FertilisationApportIntervention = {
+    id: `${posteKey}-apport-2`,
+    title: "Apport 2",
+    date: "2026-07-31",
+    product: "ACIDE PHOSPHORIQUE",
+    quantity: "4.2",
+    dose: "1.2",
+  };
+
+  if (status === "Pas commencé") {
+    return {
+      trackingStartDate: "",
+      trackingEndDate: "",
+      soilObservations: [],
+      apports: [],
+    };
+  }
+
+  if (status === "En cours") {
+    return {
+      trackingStartDate: "2026-07-21",
+      trackingEndDate: "",
+      soilObservations: [baseSoilObservationTwo, baseSoilObservation],
+      apports: [baseApportTwo, baseApportOne],
+    };
+  }
+
+  return {
+    trackingStartDate: "2026-07-21",
+    trackingEndDate: "2026-07-31",
+    soilObservations: [baseSoilObservationTwo, baseSoilObservation],
+    apports: [baseApportTwo, baseApportOne],
+  };
+}
+
+const initialFertilisationByPoste: Record<string, FertilisationPosteState> = Object.fromEntries(
+  postesFixes.map((poste) => {
+    const fertilisationObservation = (
+      posteObservationsByPoste[poste.name] ?? posteObservationsByPoste["Poste Fixe 1254"]
+    ).find((observation) => observation.name === "Fertilisation");
+
+    return [
+      poste.name,
+      createSeedFertilisationState(
+        poste.name,
+        fertilisationObservation?.status ?? "Pas commencé"
+      ),
+    ];
+  })
+);
+
+function createSeedIrrigationState(
+  posteName: string,
+  status: ObservationItem["status"]
+): IrrigationPosteState {
+  const posteKey = posteName.toLowerCase().replace(/\s+/g, "-");
+  const baseProgram: IrrigationProgram = {
+    id: `${posteKey}-program-1`,
+    title: "Programme 1",
+    startDate: "2026-03-01",
+    endDate: "2026-05-01",
+    frequencyDays: "3",
+    volumePerIrrigation: "50",
+  };
+  const baseProgramTwo: IrrigationProgram = {
+    id: `${posteKey}-program-2`,
+    title: "Programme 2",
+    startDate: "2026-05-02",
+    endDate: "2026-06-18",
+    frequencyDays: "4",
+    volumePerIrrigation: "42",
+  };
+  const baseStressObservation: IrrigationStressObservation = {
+    id: `${posteKey}-stress-1`,
+    title: "Observation 1",
+    startDate: "2026-03-01",
+    endDate: "2026-03-03",
+    type: "Panne système d’irrigation",
+    durationDays: "3",
+    note: "Arrêt temporaire sur la ligne sud, reprise après remplacement du filtre.",
+  };
+  const baseStressObservationTwo: IrrigationStressObservation = {
+    id: `${posteKey}-stress-2`,
+    title: "Observation 2",
+    startDate: "2026-05-22",
+    endDate: "2026-05-24",
+    type: "Vague de chaleur",
+    durationDays: "2",
+    note: "Hausse de la fréquence d’irrigation pendant le pic thermique.",
+  };
+
+  if (status === "Pas commencé") {
+    return {
+      trackingStartDate: "",
+      trackingEndDate: "",
+      programs: [],
+      stressObservations: [],
+    };
+  }
+
+  if (status === "En cours") {
+    return {
+      trackingStartDate: "2026-03-01",
+      trackingEndDate: "",
+      programs: [baseProgramTwo, baseProgram],
+      stressObservations: [baseStressObservation],
+    };
+  }
+
+  return {
+    trackingStartDate: "2026-03-01",
+    trackingEndDate: "2026-06-18",
+    programs: [baseProgramTwo, baseProgram],
+    stressObservations: [baseStressObservationTwo, baseStressObservation],
+  };
+}
+
+const initialIrrigationByPoste: Record<string, IrrigationPosteState> = Object.fromEntries(
+  postesFixes.map((poste) => {
+    const irrigationObservation = (
+      posteObservationsByPoste[poste.name] ?? posteObservationsByPoste["Poste Fixe 1254"]
+    ).find((observation) => observation.name === "Irrigation");
+
+    return [
+      poste.name,
+      createSeedIrrigationState(poste.name, irrigationObservation?.status ?? "Pas commencé"),
+    ];
+  })
+);
+
 const defaultPosteObservations = posteObservationsByPoste["Poste Fixe 1254"];
+const groupedTrackingObservationNames = new Set<ObservationPhaseName>([
+  "Fertilisation",
+  "Irrigation",
+]);
 
 function getPosteObservations(posteName: string): ObservationItem[] {
   return posteObservationsByPoste[posteName] ?? defaultPosteObservations;
@@ -859,6 +1381,7 @@ const loadingCardSkeletons = [
 ] as const;
 const waterSourceOptions = ["Forage", "Réseau", "Barrage"];
 const waterQualityOptions = ["Bonne", "Moyenne", "Faible"];
+const compactDatePlaceholder = "mm/dd/yyyy";
 const emptyPosteConfig: PosteConfig = {
   irrigationType: "",
   waterSource: "",
@@ -869,7 +1392,7 @@ const defaultPosteConfig: PosteConfig = {
   waterSource: "Forage",
   waterQuality: "Bonne",
 };
-const posteProgressSteps = 5;
+const posteProgressSteps = 3;
 const initialPosteConfigs: Record<string, PosteConfig> = {
   "Poste Fixe 1254": {
     irrigationType: "Goutte-à-goutte en surface",
@@ -893,6 +1416,27 @@ type PostFixePreviewSetup = {
   isObservationEditMode: boolean;
   observationFormsByKey: Record<string, FleuraisonFormState>;
   fleuraisonForm: FleuraisonFormState;
+  activeFertilisationTab: FertilisationSheetMode;
+  isFertilisationSheetOpen: boolean;
+  isFertilisationSheetEditing: boolean;
+  fertilisationSheetMode: FertilisationSheetMode;
+  selectedFertilisationSoilId: string | null;
+  selectedFertilisationApportId: string | null;
+  isCreatingFertilisationSoil: boolean;
+  isCreatingFertilisationApport: boolean;
+  fertilisationSoilForm: FertilisationSoilFormState;
+  fertilisationApportForm: FertilisationApportFormState;
+  isFertilisationCurrentDateEnd: boolean;
+  activeIrrigationTab: IrrigationSheetMode;
+  isIrrigationSheetOpen: boolean;
+  isIrrigationSheetEditing: boolean;
+  irrigationSheetMode: IrrigationSheetMode;
+  selectedIrrigationProgramId: string | null;
+  selectedIrrigationStressId: string | null;
+  isCreatingIrrigationProgram: boolean;
+  isCreatingIrrigationStress: boolean;
+  irrigationProgramForm: IrrigationProgramFormState;
+  irrigationStressForm: IrrigationStressFormState;
 };
 
 function cloneObservationForms(
@@ -911,7 +1455,7 @@ function cloneObservationForms(
 
 function buildPostFixePreviewSetup(
   previewState?: PostFixePreviewState,
-  previewObservationPhase: "Fleuraison" | "Nouaison" | "Chute physiologique" = "Fleuraison"
+  previewObservationPhase: ObservationPhaseName = "Fleuraison"
 ): PostFixePreviewSetup | null {
   if (!previewState) {
     return null;
@@ -927,16 +1471,37 @@ function buildPostFixePreviewSetup(
           : previewObservationPhase;
 
   const overviewPoste = postesFixes.find((poste) => poste.name === "Poste Fixe 5097") ?? postesFixes[0];
-  const editPoste = postesFixes.find((poste) => poste.name === "Poste Fixe 1254") ?? postesFixes[0];
-  const readonlyPoste = postesFixes.find((poste) => poste.name === "Poste Fixe 5097") ?? postesFixes[0];
+  const conduitePoste = postesFixes.find((poste) => poste.name === "Poste Fixe 9026") ?? postesFixes[0];
+  const editPoste =
+    effectiveObservationPhase === "Fertilisation" || effectiveObservationPhase === "Irrigation"
+      ? conduitePoste
+      : postesFixes.find((poste) => poste.name === "Poste Fixe 1254") ?? postesFixes[0];
+  const readonlyPoste =
+    effectiveObservationPhase === "Fertilisation" || effectiveObservationPhase === "Irrigation"
+      ? conduitePoste
+      : postesFixes.find((poste) => poste.name === "Poste Fixe 5097") ?? postesFixes[0];
   const editObservation =
     getPosteObservations(editPoste.name).find(
       (observation) => observation.name === effectiveObservationPhase
     ) ??
     getPosteObservations(editPoste.name)[0] ??
     null;
+  const conduiteObservation =
+    getPosteObservations(conduitePoste.name).find(
+      (observation) => observation.name === "Fertilisation"
+    ) ??
+    getPosteObservations(conduitePoste.name)[0] ??
+    null;
+  const conduiteIrrigationObservation =
+    getPosteObservations(conduitePoste.name).find(
+      (observation) => observation.name === "Irrigation"
+    ) ??
+    getPosteObservations(conduitePoste.name)[0] ??
+    null;
   const readonlyObservation =
-    getPosteObservations(readonlyPoste.name).find((observation) => observation.name === "Fleuraison") ??
+    getPosteObservations(readonlyPoste.name).find(
+      (observation) => observation.name === effectiveObservationPhase
+    ) ??
     getPosteObservations(readonlyPoste.name)[0] ??
     null;
   const observationForms = cloneObservationForms(initialObservationFormsByKey);
@@ -949,7 +1514,7 @@ function buildPostFixePreviewSetup(
     images: [...overviewForm.images],
   };
   const editObservationKey = getObservationNotesKey(editPoste.name, effectiveObservationPhase);
-  const readonlyObservationKey = getObservationNotesKey(readonlyPoste.name, "Fleuraison");
+  const readonlyObservationKey = getObservationNotesKey(readonlyPoste.name, effectiveObservationPhase);
   const editFormSource =
     observationForms[editObservationKey] ?? createDefaultFleuraisonForm(effectiveObservationPhase);
   const editForm: FleuraisonFormState = {
@@ -958,7 +1523,7 @@ function buildPostFixePreviewSetup(
     images: [...editFormSource.images],
   };
   const readonlyFormSource =
-    observationForms[readonlyObservationKey] ?? createDefaultFleuraisonForm("Fleuraison");
+    observationForms[readonlyObservationKey] ?? createDefaultFleuraisonForm(effectiveObservationPhase);
   const readonlyForm: FleuraisonFormState = {
     ...readonlyFormSource,
     startDate: readonlyFormSource.startDate || getCurrentIsoDate(),
@@ -966,6 +1531,22 @@ function buildPostFixePreviewSetup(
     images: [...readonlyFormSource.images],
   };
   observationForms[readonlyObservationKey] = readonlyForm;
+  const conduiteFertilisationState = initialFertilisationByPoste[conduitePoste.name] ?? {
+    trackingStartDate: "",
+    trackingEndDate: "",
+    soilObservations: [],
+    apports: [],
+  };
+  const conduiteSoilRecord = conduiteFertilisationState.soilObservations[0] ?? null;
+  const conduiteApportRecord = conduiteFertilisationState.apports[0] ?? null;
+  const conduiteIrrigationState = initialIrrigationByPoste[conduitePoste.name] ?? {
+    trackingStartDate: "",
+    trackingEndDate: "",
+    programs: [],
+    stressObservations: [],
+  };
+  const conduiteProgramRecord = conduiteIrrigationState.programs[0] ?? null;
+  const conduiteStressRecord = conduiteIrrigationState.stressObservations[0] ?? null;
 
   const baseSetup: PostFixePreviewSetup = {
     selectedPoste: null,
@@ -977,6 +1558,27 @@ function buildPostFixePreviewSetup(
     isObservationEditMode: true,
     observationFormsByKey: observationForms,
     fleuraisonForm: defaultFleuraisonForm,
+    activeFertilisationTab: "soil",
+    isFertilisationSheetOpen: false,
+    isFertilisationSheetEditing: false,
+    fertilisationSheetMode: "soil",
+    selectedFertilisationSoilId: null,
+    selectedFertilisationApportId: null,
+    isCreatingFertilisationSoil: false,
+    isCreatingFertilisationApport: false,
+    fertilisationSoilForm: createDefaultFertilisationSoilForm(),
+    fertilisationApportForm: createDefaultFertilisationApportForm(),
+    isFertilisationCurrentDateEnd: false,
+    activeIrrigationTab: "program",
+    isIrrigationSheetOpen: false,
+    isIrrigationSheetEditing: false,
+    irrigationSheetMode: "program",
+    selectedIrrigationProgramId: null,
+    selectedIrrigationStressId: null,
+    isCreatingIrrigationProgram: false,
+    isCreatingIrrigationStress: false,
+    irrigationProgramForm: createDefaultIrrigationProgramForm(),
+    irrigationStressForm: createDefaultIrrigationStressForm(),
   };
 
   switch (previewState) {
@@ -989,6 +1591,220 @@ function buildPostFixePreviewSetup(
       return {
         ...baseSetup,
         selectedPoste: overviewPoste,
+      };
+    case "conduite-fertilisation-soil-tab":
+      return {
+        ...baseSetup,
+        selectedPoste: conduitePoste,
+        selectedObservation: conduiteObservation,
+        activeFertilisationTab: "soil",
+        fertilisationSheetMode: "soil",
+        selectedFertilisationSoilId: conduiteSoilRecord?.id ?? null,
+        fertilisationSoilForm: conduiteSoilRecord
+          ? createFertilisationSoilFormFromRecord(conduiteSoilRecord)
+          : createDefaultFertilisationSoilForm(),
+      };
+    case "conduite-fertilisation-apport-tab":
+      return {
+        ...baseSetup,
+        selectedPoste: conduitePoste,
+        selectedObservation: conduiteObservation,
+        activeFertilisationTab: "apport",
+        fertilisationSheetMode: "apport",
+        selectedFertilisationApportId: conduiteApportRecord?.id ?? null,
+        fertilisationApportForm: conduiteApportRecord
+          ? createFertilisationApportFormFromRecord(conduiteApportRecord)
+          : createDefaultFertilisationApportForm(),
+      };
+    case "conduite-fertilisation-soil-create":
+      return {
+        ...baseSetup,
+        selectedPoste: conduitePoste,
+        selectedObservation: conduiteObservation,
+        activeFertilisationTab: "soil",
+        isFertilisationSheetOpen: true,
+        isFertilisationSheetEditing: true,
+        fertilisationSheetMode: "soil",
+        isCreatingFertilisationSoil: true,
+        fertilisationSoilForm: createDefaultFertilisationSoilForm(),
+      };
+    case "conduite-fertilisation-soil-view":
+      return {
+        ...baseSetup,
+        selectedPoste: conduitePoste,
+        selectedObservation: conduiteObservation,
+        activeFertilisationTab: "soil",
+        isFertilisationSheetOpen: true,
+        isFertilisationSheetEditing: false,
+        fertilisationSheetMode: "soil",
+        selectedFertilisationSoilId: conduiteSoilRecord?.id ?? null,
+        fertilisationSoilForm: conduiteSoilRecord
+          ? createFertilisationSoilFormFromRecord(conduiteSoilRecord)
+          : createDefaultFertilisationSoilForm(),
+        isFertilisationCurrentDateEnd:
+          conduiteSoilRecord?.date === conduiteFertilisationState.trackingEndDate,
+      };
+    case "conduite-fertilisation-soil-unsaved":
+      return {
+        ...baseSetup,
+        selectedPoste: conduitePoste,
+        selectedObservation: conduiteObservation,
+        showObservationUnsavedModal: true,
+        activeFertilisationTab: "soil",
+        isFertilisationSheetOpen: true,
+        isFertilisationSheetEditing: true,
+        fertilisationSheetMode: "soil",
+        isCreatingFertilisationSoil: true,
+        fertilisationSoilForm: {
+          ...createDefaultFertilisationSoilForm(),
+          date: "2026-08-03",
+          organicMatter: "Faible",
+          waterRetention: "Moyenne",
+          deficiencyRisk: "Carence Mg",
+        },
+      };
+    case "conduite-fertilisation-apport-create":
+      return {
+        ...baseSetup,
+        selectedPoste: conduitePoste,
+        selectedObservation: conduiteObservation,
+        activeFertilisationTab: "apport",
+        isFertilisationSheetOpen: true,
+        isFertilisationSheetEditing: true,
+        fertilisationSheetMode: "apport",
+        isCreatingFertilisationApport: true,
+        fertilisationApportForm: createDefaultFertilisationApportForm(),
+      };
+    case "conduite-fertilisation-apport-view":
+      return {
+        ...baseSetup,
+        selectedPoste: conduitePoste,
+        selectedObservation: conduiteObservation,
+        activeFertilisationTab: "apport",
+        isFertilisationSheetOpen: true,
+        isFertilisationSheetEditing: false,
+        fertilisationSheetMode: "apport",
+        selectedFertilisationApportId: conduiteApportRecord?.id ?? null,
+        fertilisationApportForm: conduiteApportRecord
+          ? createFertilisationApportFormFromRecord(conduiteApportRecord)
+          : createDefaultFertilisationApportForm(),
+        isFertilisationCurrentDateEnd:
+          conduiteApportRecord?.date === conduiteFertilisationState.trackingEndDate,
+      };
+    case "conduite-irrigation-program-tab":
+      return {
+        ...baseSetup,
+        selectedPoste: conduitePoste,
+        selectedObservation: conduiteIrrigationObservation,
+        activeIrrigationTab: "program",
+        irrigationSheetMode: "program",
+        selectedIrrigationProgramId: conduiteProgramRecord?.id ?? null,
+        irrigationProgramForm: conduiteProgramRecord
+          ? createIrrigationProgramFormFromRecord(conduiteProgramRecord)
+          : createDefaultIrrigationProgramForm(),
+      };
+    case "conduite-irrigation-stress-tab":
+      return {
+        ...baseSetup,
+        selectedPoste: conduitePoste,
+        selectedObservation: conduiteIrrigationObservation,
+        activeIrrigationTab: "stress",
+        irrigationSheetMode: "stress",
+        selectedIrrigationStressId: conduiteStressRecord?.id ?? null,
+        irrigationStressForm: conduiteStressRecord
+          ? createIrrigationStressFormFromRecord(conduiteStressRecord)
+          : createDefaultIrrigationStressForm(),
+      };
+    case "conduite-irrigation-program-create":
+      return {
+        ...baseSetup,
+        selectedPoste: conduitePoste,
+        selectedObservation: conduiteIrrigationObservation,
+        activeIrrigationTab: "program",
+        isIrrigationSheetOpen: true,
+        isIrrigationSheetEditing: true,
+        irrigationSheetMode: "program",
+        isCreatingIrrigationProgram: true,
+        irrigationProgramForm: createDefaultIrrigationProgramForm(),
+      };
+    case "conduite-irrigation-program-view":
+      return {
+        ...baseSetup,
+        selectedPoste: conduitePoste,
+        selectedObservation: conduiteIrrigationObservation,
+        activeIrrigationTab: "program",
+        isIrrigationSheetOpen: true,
+        isIrrigationSheetEditing: false,
+        irrigationSheetMode: "program",
+        selectedIrrigationProgramId: conduiteProgramRecord?.id ?? null,
+        irrigationProgramForm: conduiteProgramRecord
+          ? createIrrigationProgramFormFromRecord(conduiteProgramRecord)
+          : createDefaultIrrigationProgramForm(),
+      };
+    case "conduite-irrigation-program-unsaved":
+      return {
+        ...baseSetup,
+        selectedPoste: conduitePoste,
+        selectedObservation: conduiteIrrigationObservation,
+        showObservationUnsavedModal: true,
+        activeIrrigationTab: "program",
+        isIrrigationSheetOpen: true,
+        isIrrigationSheetEditing: true,
+        irrigationSheetMode: "program",
+        isCreatingIrrigationProgram: true,
+        irrigationProgramForm: {
+          ...createDefaultIrrigationProgramForm(),
+          startDate: "2026-08-01",
+          endDate: "2026-08-06",
+          frequencyDays: "2",
+          volumePerIrrigation: "46",
+        },
+      };
+    case "conduite-irrigation-stress-create":
+      return {
+        ...baseSetup,
+        selectedPoste: conduitePoste,
+        selectedObservation: conduiteIrrigationObservation,
+        activeIrrigationTab: "stress",
+        isIrrigationSheetOpen: true,
+        isIrrigationSheetEditing: true,
+        irrigationSheetMode: "stress",
+        isCreatingIrrigationStress: true,
+        irrigationStressForm: createDefaultIrrigationStressForm(),
+      };
+    case "conduite-irrigation-stress-view":
+      return {
+        ...baseSetup,
+        selectedPoste: conduitePoste,
+        selectedObservation: conduiteIrrigationObservation,
+        activeIrrigationTab: "stress",
+        isIrrigationSheetOpen: true,
+        isIrrigationSheetEditing: false,
+        irrigationSheetMode: "stress",
+        selectedIrrigationStressId: conduiteStressRecord?.id ?? null,
+        irrigationStressForm: conduiteStressRecord
+          ? createIrrigationStressFormFromRecord(conduiteStressRecord)
+          : createDefaultIrrigationStressForm(),
+      };
+    case "conduite-irrigation-stress-unsaved":
+      return {
+        ...baseSetup,
+        selectedPoste: conduitePoste,
+        selectedObservation: conduiteIrrigationObservation,
+        showObservationUnsavedModal: true,
+        activeIrrigationTab: "stress",
+        isIrrigationSheetOpen: true,
+        isIrrigationSheetEditing: true,
+        irrigationSheetMode: "stress",
+        isCreatingIrrigationStress: true,
+        irrigationStressForm: {
+          ...createDefaultIrrigationStressForm(),
+          startDate: "2026-08-04",
+          endDate: "2026-08-06",
+          type: "Manque d’eau",
+          durationDays: "2",
+          note: "Réduction temporaire du débit observée sur la parcelle ouest.",
+        },
       };
     case "observation-readonly":
       return {
@@ -1116,6 +1932,8 @@ export function WorkerAppPostFixePage({
   const [showObservationUnsavedModal, setShowObservationUnsavedModal] = useState(
     previewSetup?.showObservationUnsavedModal ?? false
   );
+  const [observationUnsavedContext, setObservationUnsavedContext] =
+    useState<ObservationUnsavedContext>("exit-observation");
   const [isObservationEditMode, setIsObservationEditMode] = useState(
     previewSetup?.isObservationEditMode ?? true
   );
@@ -1129,8 +1947,77 @@ export function WorkerAppPostFixePage({
   const [fleuraisonForm, setFleuraisonForm] = useState<FleuraisonFormState>(
     previewSetup?.fleuraisonForm ?? defaultFleuraisonForm
   );
+  const [fertilisationByPoste, setFertilisationByPoste] = useState<
+    Record<string, FertilisationPosteState>
+  >(initialFertilisationByPoste);
+  const [selectedFertilisationSoilId, setSelectedFertilisationSoilId] = useState<string | null>(
+    previewSetup?.selectedFertilisationSoilId ?? null
+  );
+  const [selectedFertilisationApportId, setSelectedFertilisationApportId] = useState<string | null>(
+    previewSetup?.selectedFertilisationApportId ?? null
+  );
+  const [isCreatingFertilisationSoil, setIsCreatingFertilisationSoil] = useState(
+    previewSetup?.isCreatingFertilisationSoil ?? false
+  );
+  const [isCreatingFertilisationApport, setIsCreatingFertilisationApport] = useState(
+    previewSetup?.isCreatingFertilisationApport ?? false
+  );
+  const [activeFertilisationTab, setActiveFertilisationTab] =
+    useState<FertilisationSheetMode>(previewSetup?.activeFertilisationTab ?? "soil");
+  const [isFertilisationSheetOpen, setIsFertilisationSheetOpen] = useState(
+    previewSetup?.isFertilisationSheetOpen ?? false
+  );
+  const [isFertilisationSheetEditing, setIsFertilisationSheetEditing] = useState(
+    previewSetup?.isFertilisationSheetEditing ?? false
+  );
+  const [fertilisationSheetMode, setFertilisationSheetMode] =
+    useState<FertilisationSheetMode>(previewSetup?.fertilisationSheetMode ?? "soil");
+  const [fertilisationSoilForm, setFertilisationSoilForm] = useState<FertilisationSoilFormState>(
+    previewSetup?.fertilisationSoilForm ?? createDefaultFertilisationSoilForm()
+  );
+  const [fertilisationApportForm, setFertilisationApportForm] =
+    useState<FertilisationApportFormState>(
+      previewSetup?.fertilisationApportForm ?? createDefaultFertilisationApportForm()
+    );
+  const [isFertilisationCurrentDateEnd, setIsFertilisationCurrentDateEnd] = useState(
+    previewSetup?.isFertilisationCurrentDateEnd ?? false
+  );
+  const [irrigationByPoste, setIrrigationByPoste] = useState<Record<string, IrrigationPosteState>>(
+    initialIrrigationByPoste
+  );
+  const [selectedIrrigationProgramId, setSelectedIrrigationProgramId] = useState<string | null>(
+    previewSetup?.selectedIrrigationProgramId ?? null
+  );
+  const [selectedIrrigationStressId, setSelectedIrrigationStressId] = useState<string | null>(
+    previewSetup?.selectedIrrigationStressId ?? null
+  );
+  const [isCreatingIrrigationProgram, setIsCreatingIrrigationProgram] = useState(
+    previewSetup?.isCreatingIrrigationProgram ?? false
+  );
+  const [isCreatingIrrigationStress, setIsCreatingIrrigationStress] = useState(
+    previewSetup?.isCreatingIrrigationStress ?? false
+  );
+  const [activeIrrigationTab, setActiveIrrigationTab] = useState<IrrigationSheetMode>(
+    previewSetup?.activeIrrigationTab ?? "program"
+  );
+  const [isIrrigationSheetOpen, setIsIrrigationSheetOpen] = useState(
+    previewSetup?.isIrrigationSheetOpen ?? false
+  );
+  const [isIrrigationSheetEditing, setIsIrrigationSheetEditing] = useState(
+    previewSetup?.isIrrigationSheetEditing ?? false
+  );
+  const [irrigationSheetMode, setIrrigationSheetMode] = useState<IrrigationSheetMode>(
+    previewSetup?.irrigationSheetMode ?? "program"
+  );
+  const [irrigationProgramForm, setIrrigationProgramForm] = useState<IrrigationProgramFormState>(
+    previewSetup?.irrigationProgramForm ?? createDefaultIrrigationProgramForm()
+  );
+  const [irrigationStressForm, setIrrigationStressForm] = useState<IrrigationStressFormState>(
+    previewSetup?.irrigationStressForm ?? createDefaultIrrigationStressForm()
+  );
   const syncBadgeStateClass = styles.syncBadgeIdle;
   const syncIcon = syncStatusIconMap[syncStatus];
+  const shouldShowSyncBadge = !embedded;
   const renderSyncBadge = () => (
     <div className={`${styles.syncBadge} ${syncBadgeStateClass}`} role="img" aria-label="Synchronisation inactive">
       <span className={styles.googleSymbol} aria-hidden="true">
@@ -1147,9 +2034,12 @@ export function WorkerAppPostFixePage({
       ? selectedObservation.name
       : null;
   const activeObservationPhaseName = selectedObservationPhaseName ?? "Fleuraison";
+  const isFertilisationScreen = activeObservationPhaseName === "Fertilisation";
+  const isIrrigationScreen = activeObservationPhaseName === "Irrigation";
   const activeObservationPhaseConfig = observationPhaseConfigs[activeObservationPhaseName];
   const isObservationScreen = Boolean(selectedPoste && selectedObservationPhaseName);
-  const isFullScreenFlow = isConfigEditScreen || isObservationScreen;
+  const isDetailScreen = Boolean(selectedPoste);
+  const isFullScreenFlow = isDetailScreen || isConfigEditScreen || isObservationScreen;
   useEffect(() => {
     onLayoutModeChange?.(isFullScreenFlow ? "fullScreen" : "default");
   }, [isFullScreenFlow, onLayoutModeChange]);
@@ -1164,15 +2054,104 @@ export function WorkerAppPostFixePage({
     savedObservationFormForPhase != null
       ? savedObservationFormForPhase
       : createDefaultFleuraisonForm(activeObservationPhaseName);
-  const observationFormStatus = getObservationDerivedStatus(savedObservationFormForPhase ?? null);
+  const selectedFertilisationState =
+    selectedPoste != null
+      ? (fertilisationByPoste[selectedPoste.name] ?? {
+          trackingStartDate: "",
+          trackingEndDate: "",
+          soilObservations: [],
+          apports: [],
+        })
+      : { trackingStartDate: "", trackingEndDate: "", soilObservations: [], apports: [] };
+  const selectedIrrigationState =
+    selectedPoste != null
+      ? (irrigationByPoste[selectedPoste.name] ?? {
+          trackingStartDate: "",
+          trackingEndDate: "",
+          programs: [],
+          stressObservations: [],
+        })
+      : { trackingStartDate: "", trackingEndDate: "", programs: [], stressObservations: [] };
+  const selectedFertilisationSoilRecord = selectedFertilisationState.soilObservations.find(
+    (record) => record.id === selectedFertilisationSoilId
+  );
+  const selectedFertilisationApportRecord = selectedFertilisationState.apports.find(
+    (record) => record.id === selectedFertilisationApportId
+  );
+  const selectedIrrigationProgramRecord = selectedIrrigationState.programs.find(
+    (record) => record.id === selectedIrrigationProgramId
+  );
+  const selectedIrrigationStressRecord = selectedIrrigationState.stressObservations.find(
+    (record) => record.id === selectedIrrigationStressId
+  );
+  const initialFertilisationSoilForm = selectedFertilisationSoilRecord
+    ? createFertilisationSoilFormFromRecord(selectedFertilisationSoilRecord)
+    : createDefaultFertilisationSoilForm();
+  const initialFertilisationApportForm = selectedFertilisationApportRecord
+    ? createFertilisationApportFormFromRecord(selectedFertilisationApportRecord)
+    : createDefaultFertilisationApportForm();
+  const initialIrrigationProgramForm = selectedIrrigationProgramRecord
+    ? createIrrigationProgramFormFromRecord(selectedIrrigationProgramRecord)
+    : createDefaultIrrigationProgramForm();
+  const initialIrrigationStressForm = selectedIrrigationStressRecord
+    ? createIrrigationStressFormFromRecord(selectedIrrigationStressRecord)
+    : createDefaultIrrigationStressForm();
+  const initialFertilisationCurrentDateEnd =
+    fertilisationSheetMode === "soil"
+      ? selectedFertilisationSoilRecord?.date === selectedFertilisationState.trackingEndDate
+      : selectedFertilisationApportRecord?.date === selectedFertilisationState.trackingEndDate;
+  const hasFertilisationSoilChanges = !areFertilisationSoilFormsEqual(
+    fertilisationSoilForm,
+    initialFertilisationSoilForm
+  );
+  const hasFertilisationApportChanges = !areFertilisationApportFormsEqual(
+    fertilisationApportForm,
+    initialFertilisationApportForm
+  );
+  const hasIrrigationProgramChanges = !areIrrigationProgramFormsEqual(
+    irrigationProgramForm,
+    initialIrrigationProgramForm
+  );
+  const hasIrrigationStressChanges = !areIrrigationStressFormsEqual(
+    irrigationStressForm,
+    initialIrrigationStressForm
+  );
+  const activeFertilisationDate =
+    fertilisationSheetMode === "soil" ? fertilisationSoilForm.date : fertilisationApportForm.date;
+  const canUseFertilisationCurrentDateAsEnd =
+    (fertilisationSheetMode === "soil" || selectedFertilisationState.soilObservations.length > 0) &&
+    (fertilisationSheetMode === "apport" || selectedFertilisationState.apports.length > 0);
+  const hasActiveFertilisationSheetChanges = isFertilisationSheetOpen
+    ? isFertilisationSheetEditing &&
+      ((fertilisationSheetMode === "soil"
+        ? hasFertilisationSoilChanges
+        : hasFertilisationApportChanges) ||
+        initialFertilisationCurrentDateEnd !== isFertilisationCurrentDateEnd)
+    : false;
+  const hasActiveIrrigationSheetChanges = isIrrigationSheetOpen
+    ? isIrrigationSheetEditing &&
+      (irrigationSheetMode === "program"
+        ? hasIrrigationProgramChanges
+        : hasIrrigationStressChanges)
+    : false;
+  const observationFormStatus = isFertilisationScreen
+    ? getDerivedFertilisationStatus(selectedFertilisationState)
+    : isIrrigationScreen
+      ? getDerivedIrrigationStatus(selectedIrrigationState)
+    : getObservationDerivedStatus(savedObservationFormForPhase ?? null);
   const isObservationReadOnly = observationFormStatus === "Terminé" && !isObservationEditMode;
   const hasObservationChanges = isObservationScreen && isObservationEditMode
-    ? !areObservationFormsEqual(fleuraisonForm, initialObservationFormForPhase)
+    ? isFertilisationScreen
+      ? hasActiveFertilisationSheetChanges
+      : isIrrigationScreen
+        ? hasActiveIrrigationSheetChanges
+      : !areObservationFormsEqual(fleuraisonForm, initialObservationFormForPhase)
     : false;
   let fleuraisonValidationError: string | null = null;
-  if (!fleuraisonForm.startDate) {
+  if (!isFertilisationScreen && !fleuraisonForm.startDate) {
     fleuraisonValidationError = "La date de début est requise.";
   } else if (
+    !isFertilisationScreen &&
     fleuraisonForm.endDate &&
     parseIsoDateToTime(fleuraisonForm.endDate) < parseIsoDateToTime(fleuraisonForm.startDate)
   ) {
@@ -1180,6 +2159,70 @@ export function WorkerAppPostFixePage({
       "La date finale doit être postérieure ou égale à la date de début.";
   }
   const hasFleuraisonValidationError = fleuraisonValidationError != null;
+  const soilFertilisationValidationError =
+    !fertilisationSoilForm.date ? "La date de l'observation est requise." : null;
+  const apportDose = Number.parseFloat(fertilisationApportForm.dose);
+  const hasApportDoseValue = fertilisationApportForm.dose.trim() !== "";
+  const hasValidApportDose = hasApportDoseValue && Number.isFinite(apportDose) && apportDose > 0;
+  const apportFertilisationValidationError = !fertilisationApportForm.date
+    ? "La date de l'apport est requise."
+    : hasApportDoseValue && !hasValidApportDose
+        ? "Dose invalide."
+        : null;
+  const activeFertilisationValidationError =
+    fertilisationSheetMode === "soil"
+      ? soilFertilisationValidationError
+      : apportFertilisationValidationError;
+  const isActiveFertilisationSaveDisabled =
+    fertilisationSheetMode === "soil"
+      ? activeFertilisationValidationError != null
+      : !fertilisationApportForm.date || activeFertilisationValidationError != null;
+  const isFertilisationSheetReadOnly = isFertilisationSheetOpen && !isFertilisationSheetEditing;
+  const irrigationFrequency = Number.parseFloat(irrigationProgramForm.frequencyDays);
+  const irrigationVolume = Number.parseFloat(irrigationProgramForm.volumePerIrrigation);
+  const irrigationStressDuration = Number.parseFloat(irrigationStressForm.durationDays);
+  const hasIrrigationFrequencyValue = irrigationProgramForm.frequencyDays.trim() !== "";
+  const hasIrrigationVolumeValue = irrigationProgramForm.volumePerIrrigation.trim() !== "";
+  const hasIrrigationStressDurationValue = irrigationStressForm.durationDays.trim() !== "";
+  const hasValidIrrigationFrequency =
+    hasIrrigationFrequencyValue && Number.isFinite(irrigationFrequency) && irrigationFrequency > 0;
+  const hasValidIrrigationVolume =
+    hasIrrigationVolumeValue && Number.isFinite(irrigationVolume) && irrigationVolume > 0;
+  const hasValidIrrigationStressDuration =
+    hasIrrigationStressDurationValue &&
+    Number.isFinite(irrigationStressDuration) &&
+    irrigationStressDuration > 0;
+  const irrigationProgramValidationError = !irrigationProgramForm.startDate
+    ? "La date de début est requise."
+    : irrigationProgramForm.endDate &&
+        parseIsoDateToTime(irrigationProgramForm.endDate) <
+          parseIsoDateToTime(irrigationProgramForm.startDate)
+      ? "La date fin doit être postérieure ou égale à la date de début."
+    : hasIrrigationFrequencyValue && !hasValidIrrigationFrequency
+      ? "La fréquence d’irrigation doit être supérieure à 0."
+      : hasIrrigationVolumeValue && !hasValidIrrigationVolume
+        ? "Le volume par irrigation doit être supérieure à 0."
+        : null;
+  const irrigationStressValidationError = !irrigationStressForm.startDate
+    ? "La date de début est requise."
+    : irrigationStressForm.endDate &&
+        parseIsoDateToTime(irrigationStressForm.endDate) <
+          parseIsoDateToTime(irrigationStressForm.startDate)
+      ? "La date fin doit être postérieure ou égale à la date de début."
+    : hasIrrigationStressDurationValue && !hasValidIrrigationStressDuration
+      ? "La durée doit être supérieure à 0."
+      : null;
+  const activeIrrigationValidationError =
+    irrigationSheetMode === "program"
+      ? irrigationProgramValidationError
+      : irrigationStressValidationError;
+  const isActiveIrrigationSaveDisabled =
+    irrigationSheetMode === "program"
+      ? !irrigationProgramForm.startDate || activeIrrigationValidationError != null
+      : !irrigationStressForm.startDate ||
+        activeIrrigationValidationError != null ||
+        (hasIrrigationStressDurationValue && !hasValidIrrigationStressDuration);
+  const isIrrigationSheetReadOnly = isIrrigationSheetOpen && !isIrrigationSheetEditing;
   const hasSavedConfig = selectedPoste != null ? Boolean(posteConfigs[selectedPoste.name]) : false;
   const shouldShowPosteDetailLoading = Boolean(
     selectedPoste && frameView === "loading" && !isEditingConfig && !isObservationScreen
@@ -1203,6 +2246,60 @@ export function WorkerAppPostFixePage({
   const getPosteObservationsWithFleuraisonState = (posteName: string): ObservationItem[] => {
     const baseObservations = getPosteObservations(posteName);
     return baseObservations.map((observation) => {
+      if (observation.name === "Fertilisation") {
+        const fertilisationState = fertilisationByPoste[posteName] ?? {
+          trackingStartDate: "",
+          trackingEndDate: "",
+          soilObservations: [],
+          apports: [],
+        };
+        const latestSoilDate = fertilisationState.soilObservations
+          .map((item) => item.date)
+          .filter(Boolean)
+          .sort((a, b) => parseIsoDateToTime(b) - parseIsoDateToTime(a))[0];
+        const latestApportDate = fertilisationState.apports
+          .map((item) => item.date)
+          .filter(Boolean)
+          .sort((a, b) => parseIsoDateToTime(b) - parseIsoDateToTime(a))[0];
+        const latestDate = [latestSoilDate, latestApportDate]
+          .filter((value): value is string => Boolean(value))
+          .sort((a, b) => parseIsoDateToTime(b) - parseIsoDateToTime(a))[0];
+        const fertilisationStatus = getDerivedFertilisationStatus(fertilisationState);
+
+        return {
+          ...observation,
+          status: fertilisationStatus,
+          lastUpdate: latestDate ? formatDateShortFr(latestDate) : observation.lastUpdate,
+        };
+      }
+
+      if (observation.name === "Irrigation") {
+        const irrigationState = irrigationByPoste[posteName] ?? {
+          trackingStartDate: "",
+          trackingEndDate: "",
+          programs: [],
+          stressObservations: [],
+        };
+        const latestProgramDate = irrigationState.programs
+          .map((item) => item.startDate)
+          .filter(Boolean)
+          .sort((a, b) => parseIsoDateToTime(b) - parseIsoDateToTime(a))[0];
+        const latestStressDate = irrigationState.stressObservations
+          .flatMap((item) => [item.startDate, item.endDate])
+          .filter(Boolean)
+          .sort((a, b) => parseIsoDateToTime(b) - parseIsoDateToTime(a))[0];
+        const latestDate = [latestProgramDate, latestStressDate]
+          .filter((value): value is string => Boolean(value))
+          .sort((a, b) => parseIsoDateToTime(b) - parseIsoDateToTime(a))[0];
+        const irrigationStatus = getDerivedIrrigationStatus(irrigationState);
+
+        return {
+          ...observation,
+          status: irrigationStatus,
+          lastUpdate: latestDate ? formatDateShortFr(latestDate) : observation.lastUpdate,
+        };
+      }
+
       if (!isObservationPhaseName(observation.name)) {
         return observation;
       }
@@ -1223,16 +2320,25 @@ export function WorkerAppPostFixePage({
     selectedPoste != null
       ? getPosteObservationsWithFleuraisonState(selectedPoste.name)
       : defaultPosteObservations;
-  const selectedPosteCompletedCount = getCompletedCount(selectedPosteObservations);
-  const selectedPosteProgress = getProgressFromObservations(selectedPosteObservations);
+  const selectedPostePhaseObservations = selectedPosteObservations.filter(
+    (observation) => !groupedTrackingObservationNames.has(observation.name as ObservationPhaseName)
+  );
+  const selectedPosteTrackingObservations = selectedPosteObservations.filter((observation) =>
+    groupedTrackingObservationNames.has(observation.name as ObservationPhaseName)
+  );
+  const selectedPosteCompletedCount = getCompletedCount(selectedPostePhaseObservations);
+  const selectedPosteProgress = getProgressFromObservations(selectedPostePhaseObservations);
   const campaignHeaderMeta = "Campagne 2025-2026";
   const posteCards = postesFixes.map((poste) => {
     const observations = getPosteObservationsWithFleuraisonState(poste.name);
-    const progress = getProgressFromObservations(observations);
-    const completedCount = getCompletedCount(observations);
+    const phaseObservations = observations.filter(
+      (observation) => !groupedTrackingObservationNames.has(observation.name as ObservationPhaseName)
+    );
+    const progress = getProgressFromObservations(phaseObservations);
+    const completedCount = getCompletedCount(phaseObservations);
     const status = getPosteStatus(progress);
 
-    return { poste, observations, progress, completedCount, status };
+    return { poste, observations, phaseObservations, progress, completedCount, status };
   });
   const selectedPosteConfig =
     selectedPoste != null
@@ -1242,7 +2348,89 @@ export function WorkerAppPostFixePage({
     configDraft.irrigationType !== selectedPosteConfig.irrigationType ||
     configDraft.waterSource !== selectedPosteConfig.waterSource ||
     configDraft.waterQuality !== selectedPosteConfig.waterQuality;
+  const handleObservationSelect = (observation: ObservationItem) => {
+    if (!selectedPoste || !isObservationPhaseName(observation.name)) {
+      return;
+    }
+
+    setSelectedObservation(observation);
+    setShowObservationUnsavedModal(false);
+
+    if (observation.name === "Fertilisation") {
+      const fertilisationState = fertilisationByPoste[selectedPoste.name] ?? {
+        soilObservations: [],
+        apports: [],
+      };
+      const firstSoilObservation = fertilisationState.soilObservations[0] ?? null;
+      const firstApport = fertilisationState.apports[0] ?? null;
+      setIsFertilisationSheetOpen(false);
+      setIsFertilisationSheetEditing(false);
+      setActiveFertilisationTab("soil");
+      setFertilisationSheetMode("soil");
+      setSelectedFertilisationSoilId(firstSoilObservation?.id ?? null);
+      setSelectedFertilisationApportId(firstApport?.id ?? null);
+      setIsCreatingFertilisationSoil(false);
+      setIsCreatingFertilisationApport(false);
+      setFertilisationSoilForm(
+        firstSoilObservation
+          ? createFertilisationSoilFormFromRecord(firstSoilObservation)
+          : createDefaultFertilisationSoilForm()
+      );
+      setFertilisationApportForm(
+        firstApport
+          ? createFertilisationApportFormFromRecord(firstApport)
+          : createDefaultFertilisationApportForm()
+      );
+      setIsObservationEditMode(true);
+      return;
+    }
+
+    if (observation.name === "Irrigation") {
+      const irrigationState = irrigationByPoste[selectedPoste.name] ?? {
+        trackingStartDate: "",
+        trackingEndDate: "",
+        programs: [],
+        stressObservations: [],
+      };
+      const firstProgram = irrigationState.programs[0] ?? null;
+      const firstStressObservation = irrigationState.stressObservations[0] ?? null;
+      setIsIrrigationSheetOpen(false);
+      setIsIrrigationSheetEditing(false);
+      setActiveIrrigationTab("program");
+      setIrrigationSheetMode("program");
+      setSelectedIrrigationProgramId(firstProgram?.id ?? null);
+      setSelectedIrrigationStressId(firstStressObservation?.id ?? null);
+      setIsCreatingIrrigationProgram(false);
+      setIsCreatingIrrigationStress(false);
+      setIrrigationProgramForm(
+        firstProgram
+          ? createIrrigationProgramFormFromRecord(firstProgram)
+          : createDefaultIrrigationProgramForm()
+      );
+      setIrrigationStressForm(
+        firstStressObservation
+          ? createIrrigationStressFormFromRecord(firstStressObservation)
+          : createDefaultIrrigationStressForm()
+      );
+      setIsObservationEditMode(true);
+      return;
+    }
+
+    const observationKey = getObservationNotesKey(selectedPoste.name, observation.name);
+    const existingForm = observationFormsByKey[observationKey] ?? null;
+    const existingStatus = getObservationDerivedStatus(existingForm);
+    setIsObservationEditMode(existingStatus !== "Terminé");
+    setFleuraisonForm(
+      existingForm
+        ? { ...existingForm, images: [...existingForm.images] }
+        : createDefaultFleuraisonForm(observation.name)
+    );
+  };
   const saveFleuraisonNote = () => {
+    if (isFertilisationScreen || !selectedPoste) {
+      return false;
+    }
+
     if (!selectedObservationNotesKey || hasFleuraisonValidationError) {
       return false;
     }
@@ -1257,8 +2445,480 @@ export function WorkerAppPostFixePage({
     setShowObservationUnsavedModal(false);
     setIsObservationEditMode(true);
     setSelectedObservation(null);
+    resetFertilisationDrafts();
 
     return true;
+  };
+  const saveFertilisationSoilObservation = () => {
+    if (!selectedPoste || soilFertilisationValidationError) {
+      return false;
+    }
+
+    setFertilisationByPoste((prev) => {
+      const currentState = prev[selectedPoste.name] ?? { soilObservations: [], apports: [] };
+      let nextSoilObservations = currentState.soilObservations;
+
+      if (isCreatingFertilisationSoil) {
+        const nextTitle = `Observation ${currentState.soilObservations.length + 1}`;
+        const nextRecord: FertilisationSoilObservation = {
+          id: `${selectedPoste.name.toLowerCase().replace(/\s+/g, "-")}-soil-${Date.now()}`,
+          title: nextTitle,
+          ...fertilisationSoilForm,
+        };
+        nextSoilObservations = [nextRecord, ...currentState.soilObservations];
+        setSelectedFertilisationSoilId(nextRecord.id);
+        setFertilisationSoilForm(createFertilisationSoilFormFromRecord(nextRecord));
+        setIsCreatingFertilisationSoil(false);
+      } else if (selectedFertilisationSoilRecord) {
+        nextSoilObservations = currentState.soilObservations.map((record) =>
+          record.id === selectedFertilisationSoilRecord.id
+            ? { ...record, ...fertilisationSoilForm }
+            : record
+        );
+      }
+
+      const nextTrackingStartDate = getFertilisationTrackingStartDate(
+        nextSoilObservations,
+        currentState.apports
+      );
+      const selectedRecordWasTrackingEnd =
+        selectedFertilisationSoilRecord?.date === currentState.trackingEndDate;
+      let nextTrackingEndDate = currentState.trackingEndDate;
+
+      const canCompleteFertilisation =
+        nextSoilObservations.length > 0 && currentState.apports.length > 0;
+
+      if (isFertilisationCurrentDateEnd && canCompleteFertilisation) {
+        nextTrackingEndDate = fertilisationSoilForm.date;
+      } else if (selectedRecordWasTrackingEnd) {
+        nextTrackingEndDate = "";
+      }
+
+      if (
+        nextTrackingStartDate &&
+        nextTrackingEndDate &&
+        parseIsoDateToTime(nextTrackingEndDate) < parseIsoDateToTime(nextTrackingStartDate)
+      ) {
+        nextTrackingEndDate = nextTrackingStartDate;
+      }
+
+      return {
+        ...prev,
+        [selectedPoste.name]: {
+          ...currentState,
+          trackingStartDate: nextTrackingStartDate,
+          trackingEndDate: nextTrackingStartDate ? nextTrackingEndDate : "",
+          soilObservations: nextSoilObservations,
+        },
+      };
+    });
+
+    return true;
+  };
+  const saveFertilisationApport = () => {
+    if (
+      !selectedPoste ||
+      !fertilisationApportForm.date ||
+      (hasApportDoseValue && !hasValidApportDose)
+    ) {
+      return false;
+    }
+
+    setFertilisationByPoste((prev) => {
+      const currentState = prev[selectedPoste.name] ?? { soilObservations: [], apports: [] };
+      let nextApports = currentState.apports;
+
+      if (isCreatingFertilisationApport) {
+        const nextTitle = `Apport ${currentState.apports.length + 1}`;
+        const nextRecord: FertilisationApportIntervention = {
+          id: `${selectedPoste.name.toLowerCase().replace(/\s+/g, "-")}-apport-${Date.now()}`,
+          title: nextTitle,
+          ...fertilisationApportForm,
+        };
+        nextApports = [nextRecord, ...currentState.apports];
+        setSelectedFertilisationApportId(nextRecord.id);
+        setFertilisationApportForm(createFertilisationApportFormFromRecord(nextRecord));
+        setIsCreatingFertilisationApport(false);
+      } else if (selectedFertilisationApportRecord) {
+        nextApports = currentState.apports.map((record) =>
+          record.id === selectedFertilisationApportRecord.id
+            ? { ...record, ...fertilisationApportForm }
+            : record
+        );
+      }
+
+      const nextTrackingStartDate = getFertilisationTrackingStartDate(
+        currentState.soilObservations,
+        nextApports
+      );
+      const selectedRecordWasTrackingEnd =
+        selectedFertilisationApportRecord?.date === currentState.trackingEndDate;
+      let nextTrackingEndDate = currentState.trackingEndDate;
+
+      const canCompleteFertilisation =
+        currentState.soilObservations.length > 0 && nextApports.length > 0;
+
+      if (isFertilisationCurrentDateEnd && canCompleteFertilisation) {
+        nextTrackingEndDate = fertilisationApportForm.date;
+      } else if (selectedRecordWasTrackingEnd) {
+        nextTrackingEndDate = "";
+      }
+
+      if (
+        nextTrackingStartDate &&
+        nextTrackingEndDate &&
+        parseIsoDateToTime(nextTrackingEndDate) < parseIsoDateToTime(nextTrackingStartDate)
+      ) {
+        nextTrackingEndDate = nextTrackingStartDate;
+      }
+
+      return {
+        ...prev,
+        [selectedPoste.name]: {
+          ...currentState,
+          trackingStartDate: nextTrackingStartDate,
+          trackingEndDate: nextTrackingStartDate ? nextTrackingEndDate : "",
+          apports: nextApports,
+        },
+      };
+    });
+
+    return true;
+  };
+  const saveFertilisationChanges = () => {
+    const soilSaved = hasFertilisationSoilChanges ? saveFertilisationSoilObservation() : true;
+    const apportSaved = hasFertilisationApportChanges ? saveFertilisationApport() : true;
+
+    if (!soilSaved || !apportSaved) {
+      return false;
+    }
+
+    setShowObservationUnsavedModal(false);
+    setIsObservationEditMode(true);
+    setSelectedObservation(null);
+    resetFertilisationDrafts();
+    return true;
+  };
+  const saveIrrigationProgram = () => {
+    if (!selectedPoste || irrigationProgramValidationError) {
+      return false;
+    }
+
+    setIrrigationByPoste((prev) => {
+      const currentState = prev[selectedPoste.name] ?? {
+        trackingStartDate: "",
+        trackingEndDate: "",
+        programs: [],
+        stressObservations: [],
+      };
+      let nextPrograms = currentState.programs;
+
+      if (isCreatingIrrigationProgram) {
+        const nextTitle = `Programme ${currentState.programs.length + 1}`;
+        const nextRecord: IrrigationProgram = {
+          id: `${selectedPoste.name.toLowerCase().replace(/\s+/g, "-")}-program-${Date.now()}`,
+          title: nextTitle,
+          ...irrigationProgramForm,
+        };
+        nextPrograms = [nextRecord, ...currentState.programs];
+        setSelectedIrrigationProgramId(nextRecord.id);
+        setIrrigationProgramForm(createIrrigationProgramFormFromRecord(nextRecord));
+        setIsCreatingIrrigationProgram(false);
+      } else if (selectedIrrigationProgramRecord) {
+        nextPrograms = currentState.programs.map((record) =>
+          record.id === selectedIrrigationProgramRecord.id
+            ? { ...record, ...irrigationProgramForm }
+            : record
+        );
+      }
+
+      const nextTrackingStartDate = getIrrigationTrackingStartDate(
+        nextPrograms,
+        currentState.stressObservations
+      );
+      let nextTrackingEndDate =
+        nextPrograms.length > 0 && currentState.stressObservations.length > 0
+          ? currentState.stressObservations
+              .map((record) => record.endDate)
+              .filter(Boolean)
+              .sort((a, b) => parseIsoDateToTime(b) - parseIsoDateToTime(a))[0] ?? ""
+          : "";
+
+      if (
+        nextTrackingStartDate &&
+        nextTrackingEndDate &&
+        parseIsoDateToTime(nextTrackingEndDate) < parseIsoDateToTime(nextTrackingStartDate)
+      ) {
+        nextTrackingEndDate = nextTrackingStartDate;
+      }
+
+      return {
+        ...prev,
+        [selectedPoste.name]: {
+          ...currentState,
+          trackingStartDate: nextTrackingStartDate,
+          trackingEndDate: nextTrackingStartDate ? nextTrackingEndDate : "",
+          programs: nextPrograms,
+        },
+      };
+    });
+
+    return true;
+  };
+  const saveIrrigationStressObservation = () => {
+    if (!selectedPoste || irrigationStressValidationError) {
+      return false;
+    }
+
+    setIrrigationByPoste((prev) => {
+      const currentState = prev[selectedPoste.name] ?? {
+        trackingStartDate: "",
+        trackingEndDate: "",
+        programs: [],
+        stressObservations: [],
+      };
+      let nextStressObservations = currentState.stressObservations;
+
+      if (isCreatingIrrigationStress) {
+        const nextTitle = `Observation ${currentState.stressObservations.length + 1}`;
+        const nextRecord: IrrigationStressObservation = {
+          id: `${selectedPoste.name.toLowerCase().replace(/\s+/g, "-")}-stress-${Date.now()}`,
+          title: nextTitle,
+          ...irrigationStressForm,
+        };
+        nextStressObservations = [nextRecord, ...currentState.stressObservations];
+        setSelectedIrrigationStressId(nextRecord.id);
+        setIrrigationStressForm(createIrrigationStressFormFromRecord(nextRecord));
+        setIsCreatingIrrigationStress(false);
+      } else if (selectedIrrigationStressRecord) {
+        nextStressObservations = currentState.stressObservations.map((record) =>
+          record.id === selectedIrrigationStressRecord.id
+            ? { ...record, ...irrigationStressForm }
+            : record
+        );
+      }
+
+      const nextTrackingStartDate = getIrrigationTrackingStartDate(
+        currentState.programs,
+        nextStressObservations
+      );
+      let nextTrackingEndDate =
+        currentState.programs.length > 0 && nextStressObservations.length > 0
+          ? nextStressObservations
+              .map((record) => record.endDate)
+              .filter(Boolean)
+              .sort((a, b) => parseIsoDateToTime(b) - parseIsoDateToTime(a))[0] ?? ""
+          : "";
+
+      if (
+        nextTrackingStartDate &&
+        nextTrackingEndDate &&
+        parseIsoDateToTime(nextTrackingEndDate) < parseIsoDateToTime(nextTrackingStartDate)
+      ) {
+        nextTrackingEndDate = nextTrackingStartDate;
+      }
+
+      return {
+        ...prev,
+        [selectedPoste.name]: {
+          ...currentState,
+          trackingStartDate: nextTrackingStartDate,
+          trackingEndDate: nextTrackingStartDate ? nextTrackingEndDate : "",
+          stressObservations: nextStressObservations,
+        },
+      };
+    });
+
+    return true;
+  };
+  const saveIrrigationChanges = () => {
+    const programSaved = hasIrrigationProgramChanges ? saveIrrigationProgram() : true;
+    const stressSaved = hasIrrigationStressChanges ? saveIrrigationStressObservation() : true;
+
+    if (!programSaved || !stressSaved) {
+      return false;
+    }
+
+    setShowObservationUnsavedModal(false);
+    setIsObservationEditMode(true);
+    setSelectedObservation(null);
+    resetIrrigationDrafts();
+    return true;
+  };
+  const resetFertilisationDrafts = () => {
+    setIsFertilisationSheetOpen(false);
+    setIsFertilisationSheetEditing(false);
+    setActiveFertilisationTab("soil");
+    setFertilisationSheetMode("soil");
+    setSelectedFertilisationSoilId(null);
+    setSelectedFertilisationApportId(null);
+    setIsCreatingFertilisationSoil(false);
+    setIsCreatingFertilisationApport(false);
+    setFertilisationSoilForm(createDefaultFertilisationSoilForm());
+    setFertilisationApportForm(createDefaultFertilisationApportForm());
+    setIsFertilisationCurrentDateEnd(false);
+  };
+  const resetIrrigationDrafts = () => {
+    setIsIrrigationSheetOpen(false);
+    setIsIrrigationSheetEditing(false);
+    setActiveIrrigationTab("program");
+    setIrrigationSheetMode("program");
+    setSelectedIrrigationProgramId(null);
+    setSelectedIrrigationStressId(null);
+    setIsCreatingIrrigationProgram(false);
+    setIsCreatingIrrigationStress(false);
+    setIrrigationProgramForm(createDefaultIrrigationProgramForm());
+    setIrrigationStressForm(createDefaultIrrigationStressForm());
+  };
+  const openFertilisationSoilSheetForCreate = () => {
+    setActiveFertilisationTab("soil");
+    setFertilisationSheetMode("soil");
+    setIsFertilisationSheetEditing(true);
+    setIsCreatingFertilisationSoil(true);
+    setSelectedFertilisationSoilId(null);
+    setFertilisationSoilForm(createDefaultFertilisationSoilForm());
+    setIsFertilisationCurrentDateEnd(false);
+    setIsFertilisationSheetOpen(true);
+  };
+  const openFertilisationSoilSheetForEdit = (record: FertilisationSoilObservation) => {
+    setActiveFertilisationTab("soil");
+    setFertilisationSheetMode("soil");
+    setIsFertilisationSheetEditing(false);
+    setIsCreatingFertilisationSoil(false);
+    setSelectedFertilisationSoilId(record.id);
+    setFertilisationSoilForm(createFertilisationSoilFormFromRecord(record));
+    setIsFertilisationCurrentDateEnd(record.date === selectedFertilisationState.trackingEndDate);
+    setIsFertilisationSheetOpen(true);
+  };
+  const openFertilisationApportSheetForCreate = () => {
+    setActiveFertilisationTab("apport");
+    setFertilisationSheetMode("apport");
+    setIsFertilisationSheetEditing(true);
+    setIsCreatingFertilisationApport(true);
+    setSelectedFertilisationApportId(null);
+    setFertilisationApportForm(createDefaultFertilisationApportForm());
+    setIsFertilisationCurrentDateEnd(false);
+    setIsFertilisationSheetOpen(true);
+  };
+  const openFertilisationApportSheetForEdit = (record: FertilisationApportIntervention) => {
+    setActiveFertilisationTab("apport");
+    setFertilisationSheetMode("apport");
+    setIsFertilisationSheetEditing(false);
+    setIsCreatingFertilisationApport(false);
+    setSelectedFertilisationApportId(record.id);
+    setFertilisationApportForm(createFertilisationApportFormFromRecord(record));
+    setIsFertilisationCurrentDateEnd(record.date === selectedFertilisationState.trackingEndDate);
+    setIsFertilisationSheetOpen(true);
+  };
+  const openIrrigationProgramSheetForCreate = () => {
+    setActiveIrrigationTab("program");
+    setIrrigationSheetMode("program");
+    setIsIrrigationSheetEditing(true);
+    setIsCreatingIrrigationProgram(true);
+    setSelectedIrrigationProgramId(null);
+    setIrrigationProgramForm(createDefaultIrrigationProgramForm());
+    setIsIrrigationSheetOpen(true);
+  };
+  const openIrrigationProgramSheetForEdit = (record: IrrigationProgram) => {
+    setActiveIrrigationTab("program");
+    setIrrigationSheetMode("program");
+    setIsIrrigationSheetEditing(false);
+    setIsCreatingIrrigationProgram(false);
+    setSelectedIrrigationProgramId(record.id);
+    setIrrigationProgramForm(createIrrigationProgramFormFromRecord(record));
+    setIsIrrigationSheetOpen(true);
+  };
+  const openIrrigationStressSheetForCreate = () => {
+    setActiveIrrigationTab("stress");
+    setIrrigationSheetMode("stress");
+    setIsIrrigationSheetEditing(true);
+    setIsCreatingIrrigationStress(true);
+    setSelectedIrrigationStressId(null);
+    setIrrigationStressForm(createDefaultIrrigationStressForm());
+    setIsIrrigationSheetOpen(true);
+  };
+  const openIrrigationStressSheetForEdit = (record: IrrigationStressObservation) => {
+    setActiveIrrigationTab("stress");
+    setIrrigationSheetMode("stress");
+    setIsIrrigationSheetEditing(false);
+    setIsCreatingIrrigationStress(false);
+    setSelectedIrrigationStressId(record.id);
+    setIrrigationStressForm(createIrrigationStressFormFromRecord(record));
+    setIsIrrigationSheetOpen(true);
+  };
+  const closeFertilisationSheet = () => {
+    if (hasActiveFertilisationSheetChanges) {
+      setObservationUnsavedContext("close-fertilisation-sheet");
+      setShowObservationUnsavedModal(true);
+      return;
+    }
+
+    if (fertilisationSheetMode === "soil") {
+      if (selectedFertilisationSoilRecord) {
+        setFertilisationSoilForm(createFertilisationSoilFormFromRecord(selectedFertilisationSoilRecord));
+      } else {
+        setFertilisationSoilForm(createDefaultFertilisationSoilForm());
+      }
+      setIsCreatingFertilisationSoil(false);
+    } else {
+      if (selectedFertilisationApportRecord) {
+        setFertilisationApportForm(
+          createFertilisationApportFormFromRecord(selectedFertilisationApportRecord)
+        );
+      } else {
+        setFertilisationApportForm(createDefaultFertilisationApportForm());
+      }
+      setIsCreatingFertilisationApport(false);
+    }
+    setIsFertilisationSheetOpen(false);
+    setIsFertilisationSheetEditing(false);
+  };
+  const closeIrrigationSheet = () => {
+    if (hasActiveIrrigationSheetChanges) {
+      setObservationUnsavedContext("close-irrigation-sheet");
+      setShowObservationUnsavedModal(true);
+      return;
+    }
+
+    if (irrigationSheetMode === "program") {
+      if (selectedIrrigationProgramRecord) {
+        setIrrigationProgramForm(createIrrigationProgramFormFromRecord(selectedIrrigationProgramRecord));
+      } else {
+        setIrrigationProgramForm(createDefaultIrrigationProgramForm());
+      }
+      setIsCreatingIrrigationProgram(false);
+    } else {
+      if (selectedIrrigationStressRecord) {
+        setIrrigationStressForm(createIrrigationStressFormFromRecord(selectedIrrigationStressRecord));
+      } else {
+        setIrrigationStressForm(createDefaultIrrigationStressForm());
+      }
+      setIsCreatingIrrigationStress(false);
+    }
+    setIsIrrigationSheetOpen(false);
+    setIsIrrigationSheetEditing(false);
+  };
+  const saveFertilisationSheet = () => {
+    const saved =
+      fertilisationSheetMode === "soil"
+        ? saveFertilisationSoilObservation()
+        : saveFertilisationApport();
+    if (!saved) {
+      return;
+    }
+
+    setIsFertilisationSheetOpen(false);
+    setIsFertilisationSheetEditing(false);
+  };
+  const saveIrrigationSheet = () => {
+    const saved =
+      irrigationSheetMode === "program" ? saveIrrigationProgram() : saveIrrigationStressObservation();
+    if (!saved) {
+      return;
+    }
+
+    setIsIrrigationSheetOpen(false);
+    setIsIrrigationSheetEditing(false);
   };
 
   const content = (
@@ -1287,6 +2947,7 @@ export function WorkerAppPostFixePage({
                           setSelectedPoste(null);
                           setIsEditingConfig(false);
                           setSelectedObservation(null);
+                          resetFertilisationDrafts();
                           setIsObservationEditMode(true);
                           setShowObservationUnsavedModal(false);
                         }}
@@ -1357,12 +3018,37 @@ export function WorkerAppPostFixePage({
                       type="button"
                       aria-label="Retour"
                       onClick={() => {
+                        if (isFertilisationScreen && isFertilisationSheetOpen) {
+                          if (hasObservationChanges) {
+                            setObservationUnsavedContext("exit-observation");
+                            setShowObservationUnsavedModal(true);
+                            return;
+                          }
+
+                          closeFertilisationSheet();
+                          return;
+                        }
+
+                        if (isIrrigationScreen && isIrrigationSheetOpen) {
+                          if (hasObservationChanges) {
+                            setObservationUnsavedContext("exit-observation");
+                            setShowObservationUnsavedModal(true);
+                            return;
+                          }
+
+                          closeIrrigationSheet();
+                          return;
+                        }
+
                         if (hasObservationChanges) {
+                          setObservationUnsavedContext("exit-observation");
                           setShowObservationUnsavedModal(true);
                           return;
                         }
 
                         setSelectedObservation(null);
+                        resetFertilisationDrafts();
+                        resetIrrigationDrafts();
                         setIsObservationEditMode(true);
                       }}
                     >
@@ -1380,25 +3066,1073 @@ export function WorkerAppPostFixePage({
                     </div>
                   </div>
                   <div className={styles.fleuraisonSection}>
-                    <div className={styles.fleuraisonSectionHeader}>
-                      <h3 className={styles.fleuraisonSectionTitle}>Observation status</h3>
-                      <span
-                        className={`${styles.observationStatus} ${
-                          observationFormStatus === "En cours"
-                            ? styles.observationStatusInProgress
-                            : observationFormStatus === "Terminé"
-                              ? styles.observationStatusDone
-                              : styles.observationStatusNotStarted
-                        } ${
-                          observationFormStatus === "Pas commencé"
-                            ? styles.observationStatusNotStartedForm
-                            : ""
-                        }`}
-                      >
-                        {observationFormStatus}
-                      </span>
-                    </div>
-                    <div className={styles.fleuraisonCard}>
+                    {isFertilisationScreen ? (
+                      <div className={styles.fertilisationOverview}>
+                        <div className={styles.fleuraisonSectionHeader}>
+                          <h3 className={styles.fleuraisonSectionTitle}>Observation</h3>
+                        </div>
+                        <div className={styles.fertilisationTabs} role="tablist" aria-label="Fertilisation">
+                          <button
+                            className={`${styles.fertilisationTab} ${
+                              activeFertilisationTab === "soil" ? styles.fertilisationTabActive : ""
+                            }`}
+                            role="tab"
+                            aria-selected={activeFertilisationTab === "soil"}
+                            type="button"
+                            onClick={() => setActiveFertilisationTab("soil")}
+                          >
+                            Analyse de sol
+                          </button>
+                          <button
+                            className={`${styles.fertilisationTab} ${
+                              activeFertilisationTab === "apport" ? styles.fertilisationTabActive : ""
+                            }`}
+                            role="tab"
+                            aria-selected={activeFertilisationTab === "apport"}
+                            type="button"
+                            onClick={() => setActiveFertilisationTab("apport")}
+                          >
+                            Apports
+                          </button>
+                        </div>
+                        <div className={styles.fertilisationPanel}>
+                          {activeFertilisationTab === "soil" ? (
+                            <>
+                              {selectedFertilisationState.soilObservations.length > 0 ? (
+                                <div className={styles.fertilisationRecordList}>
+                                  {selectedFertilisationState.soilObservations.map((observation) => (
+                                    <button
+                                      key={observation.id}
+                                      className={styles.fertilisationRecordButton}
+                                      type="button"
+                                      onClick={() => openFertilisationSoilSheetForEdit(observation)}
+                                    >
+                                      <span className={styles.fertilisationRecordContent}>
+                                        <span className={styles.fertilisationRecordTop}>
+                                          <span className={styles.fertilisationRecordTitle}>
+                                            {observation.title}
+                                          </span>
+                                          <span className={styles.fertilisationRecordDate}>
+                                            {formatDateLongFr(observation.date)}
+                                          </span>
+                                        </span>
+                                      </span>
+                                    </button>
+                                  ))}
+                                </div>
+                              ) : (
+                                <p className={styles.fertilisationEmpty}>
+                                  Aucune observation enregistrée pour l&apos;analyse de sol.
+                                </p>
+                              )}
+                            </>
+                          ) : (
+                            <>
+                              {selectedFertilisationState.apports.length > 0 ? (
+                                <div className={styles.fertilisationRecordList}>
+                                  {selectedFertilisationState.apports.map((apport) => (
+                                    <button
+                                      key={apport.id}
+                                      className={styles.fertilisationRecordButton}
+                                      type="button"
+                                      onClick={() => openFertilisationApportSheetForEdit(apport)}
+                                    >
+                                      <span className={styles.fertilisationRecordContent}>
+                                        <span className={styles.fertilisationRecordTop}>
+                                          <span className={styles.fertilisationRecordTitle}>
+                                            {apport.title}
+                                          </span>
+                                          <span className={styles.fertilisationRecordDate}>
+                                            {formatDateLongFr(apport.date)}
+                                          </span>
+                                        </span>
+                                      </span>
+                                    </button>
+                                  ))}
+                                </div>
+                              ) : (
+                                <p className={styles.fertilisationEmpty}>
+                                  Aucun apport enregistré pour cette campagne.
+                                </p>
+                              )}
+                            </>
+                          )}
+                        </div>
+
+                        <div className={styles.fertilisationBottomAction}>
+                          <button
+                            className={`${styles.fertilisationAddButton} ${styles.fertilisationAddButtonPrimary}`}
+                            type="button"
+                            onClick={
+                              activeFertilisationTab === "soil"
+                                ? openFertilisationSoilSheetForCreate
+                                : openFertilisationApportSheetForCreate
+                            }
+                          >
+                            Ajouter une observation
+                          </button>
+                        </div>
+
+                        {isFertilisationSheetOpen ? (
+                          <div
+                            className={styles.fertilisationSheetOverlay}
+                            role="dialog"
+                            aria-modal="true"
+                            onClick={closeFertilisationSheet}
+                          >
+                            <div
+                              className={styles.fertilisationSheet}
+                              onClick={(event) => event.stopPropagation()}
+                            >
+                              <span className={styles.fleuraisonSheetHandle} aria-hidden="true" />
+                              <div className={styles.fertilisationSheetHeader}>
+                                <h4 className={styles.fertilisationSheetTitle}>
+                                  {fertilisationSheetMode === "soil"
+                                    ? isCreatingFertilisationSoil
+                                      ? "Nouvelle observation"
+                                      : selectedFertilisationSoilRecord?.title ?? "Observation"
+                                    : isCreatingFertilisationApport
+                                      ? "Nouvel apport"
+                                      : selectedFertilisationApportRecord?.title ?? "Apport"}
+                                </h4>
+                                <p className={styles.fertilisationSheetSubTitle}>
+                                  {fertilisationSheetMode === "soil"
+                                    ? "Analyse de sol"
+                                    : "Intervention d'apport"}
+                                  {isFertilisationSheetReadOnly ? " · aperçu" : ""}
+                                </p>
+                              </div>
+
+                              <div className={styles.fertilisationSheetBody}>
+                                {isFertilisationSheetReadOnly ? (
+                                  <div className={styles.fertilisationPreviewList}>
+                                    <div className={styles.fertilisationPreviewItem}>
+                                      <span className={styles.fertilisationPreviewKey}>Date</span>
+                                      <span className={styles.fertilisationPreviewValue}>
+                                        {formatDateLongFr(
+                                          fertilisationSheetMode === "soil"
+                                            ? fertilisationSoilForm.date
+                                            : fertilisationApportForm.date
+                                        )}
+                                      </span>
+                                    </div>
+                                    {fertilisationSheetMode === "soil" ? (
+                                      <>
+                                        <div className={styles.fertilisationPreviewItem}>
+                                          <span className={styles.fertilisationPreviewKey}>
+                                            Teneur en matière organique
+                                          </span>
+                                          <span className={styles.fertilisationPreviewValue}>
+                                            {fertilisationSoilForm.organicMatter}
+                                          </span>
+                                        </div>
+                                        <div className={styles.fertilisationPreviewItem}>
+                                          <span className={styles.fertilisationPreviewKey}>pH du sol</span>
+                                          <span className={styles.fertilisationPreviewValue}>
+                                            {fertilisationSoilForm.soilPh}
+                                          </span>
+                                        </div>
+                                        <div className={styles.fertilisationPreviewItem}>
+                                          <span className={styles.fertilisationPreviewKey}>
+                                            Capacité de rétention d&apos;eau
+                                          </span>
+                                          <span className={styles.fertilisationPreviewValue}>
+                                            {fertilisationSoilForm.waterRetention}
+                                          </span>
+                                        </div>
+                                        <div className={styles.fertilisationPreviewItem}>
+                                          <span className={styles.fertilisationPreviewKey}>
+                                            Teneur en N, P, K
+                                          </span>
+                                          <span className={styles.fertilisationPreviewValue}>
+                                            {fertilisationSoilForm.npkLevel}
+                                          </span>
+                                        </div>
+                                        <div className={styles.fertilisationPreviewItem}>
+                                          <span className={styles.fertilisationPreviewKey}>
+                                            Risque de carence
+                                          </span>
+                                          <span className={styles.fertilisationPreviewValue}>
+                                            {fertilisationSoilForm.deficiencyRisk}
+                                          </span>
+                                        </div>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <div className={styles.fertilisationPreviewItem}>
+                                          <span className={styles.fertilisationPreviewKey}>Produit</span>
+                                          <span className={styles.fertilisationPreviewValue}>
+                                            {fertilisationApportForm.product}
+                                          </span>
+                                        </div>
+                                        <div className={styles.fertilisationPreviewItem}>
+                                          <span className={styles.fertilisationPreviewKey}>Quantité</span>
+                                          <span className={styles.fertilisationPreviewValue}>
+                                            {fertilisationApportForm.quantity || "Non renseignée"}
+                                          </span>
+                                        </div>
+                                        <div className={styles.fertilisationPreviewItem}>
+                                          <span className={styles.fertilisationPreviewKey}>Dose</span>
+                                          <span className={styles.fertilisationPreviewValue}>
+                                            {fertilisationApportForm.dose || "Non renseignée"}
+                                          </span>
+                                        </div>
+                                      </>
+                                    )}
+                                  </div>
+                                ) : (
+                                  <>
+                                    <label className={styles.fleuraisonField}>
+                                      <span className={styles.fleuraisonLabel}>Date</span>
+                                      <span className={styles.fleuraisonTimeField}>
+                                        <span className={styles.fleuraisonTimeValue}>
+                                          {formatDateLongFr(
+                                            fertilisationSheetMode === "soil"
+                                              ? fertilisationSoilForm.date
+                                              : fertilisationApportForm.date
+                                          )}
+                                        </span>
+                                        <span className={styles.fleuraisonTimeIcon} aria-hidden="true">
+                                          event
+                                        </span>
+                                        <input
+                                          className={styles.fleuraisonTimeNative}
+                                          type="date"
+                                          aria-label="Date"
+                                          value={
+                                            fertilisationSheetMode === "soil"
+                                              ? fertilisationSoilForm.date
+                                              : fertilisationApportForm.date
+                                          }
+                                          onChange={(event) => {
+                                            const nextDate = event.target.value;
+                                            if (fertilisationSheetMode === "soil") {
+                                              setFertilisationSoilForm((prev) => ({
+                                                ...prev,
+                                                date: nextDate,
+                                              }));
+                                            } else {
+                                              setFertilisationApportForm((prev) => ({
+                                                ...prev,
+                                                date: nextDate,
+                                              }));
+                                            }
+                                          }}
+                                        />
+                                      </span>
+                                    </label>
+
+                                    {fertilisationSheetMode === "soil" ? (
+                                      <>
+                                        <div className={styles.fleuraisonField}>
+                                          <span className={styles.fleuraisonLabel}>
+                                            Teneur en matière organique
+                                          </span>
+                                          <div className={styles.posteEditChips}>
+                                            {fertilisationOrganicMatterOptions.map((option) => {
+                                              const isActive = fertilisationSoilForm.organicMatter === option;
+                                              return (
+                                                <button
+                                                  key={option}
+                                                  type="button"
+                                                  className={`${styles.posteEditChip} ${
+                                                    isActive ? styles.posteEditChipActive : ""
+                                                  }`}
+                                                  onClick={() =>
+                                                    setFertilisationSoilForm((prev) => ({
+                                                      ...prev,
+                                                      organicMatter: option,
+                                                    }))
+                                                  }
+                                                >
+                                                  {isActive ? (
+                                                    <span className={styles.posteEditChipCheck} aria-hidden="true">
+                                                      check
+                                                    </span>
+                                                  ) : null}
+                                                  {option}
+                                                </button>
+                                              );
+                                            })}
+                                          </div>
+                                        </div>
+
+                                        <div className={styles.fleuraisonField}>
+                                          <span className={styles.fleuraisonLabel}>pH du sol</span>
+                                          <div className={styles.posteEditChips}>
+                                            {fertilisationSoilPhOptions.map((option) => {
+                                              const isActive = fertilisationSoilForm.soilPh === option;
+                                              return (
+                                                <button
+                                                  key={option}
+                                                  type="button"
+                                                  className={`${styles.posteEditChip} ${
+                                                    isActive ? styles.posteEditChipActive : ""
+                                                  }`}
+                                                  onClick={() =>
+                                                    setFertilisationSoilForm((prev) => ({
+                                                      ...prev,
+                                                      soilPh: option,
+                                                    }))
+                                                  }
+                                                >
+                                                  {isActive ? (
+                                                    <span className={styles.posteEditChipCheck} aria-hidden="true">
+                                                      check
+                                                    </span>
+                                                  ) : null}
+                                                  {option}
+                                                </button>
+                                              );
+                                            })}
+                                          </div>
+                                        </div>
+
+                                        <div className={styles.fleuraisonField}>
+                                          <span className={styles.fleuraisonLabel}>
+                                            Capacité de rétention d&apos;eau
+                                          </span>
+                                          <div className={styles.posteEditChips}>
+                                            {fertilisationQualityOptions.map((option) => {
+                                              const isActive = fertilisationSoilForm.waterRetention === option;
+                                              return (
+                                                <button
+                                                  key={option}
+                                                  type="button"
+                                                  className={`${styles.posteEditChip} ${
+                                                    isActive ? styles.posteEditChipActive : ""
+                                                  }`}
+                                                  onClick={() =>
+                                                    setFertilisationSoilForm((prev) => ({
+                                                      ...prev,
+                                                      waterRetention: option,
+                                                    }))
+                                                  }
+                                                >
+                                                  {isActive ? (
+                                                    <span className={styles.posteEditChipCheck} aria-hidden="true">
+                                                      check
+                                                    </span>
+                                                  ) : null}
+                                                  {option}
+                                                </button>
+                                              );
+                                            })}
+                                          </div>
+                                        </div>
+
+                                        <div className={styles.fleuraisonField}>
+                                          <span className={styles.fleuraisonLabel}>Teneur en N, P, K</span>
+                                          <div className={styles.posteEditChips}>
+                                            {fertilisationQualityOptions.map((option) => {
+                                              const isActive = fertilisationSoilForm.npkLevel === option;
+                                              return (
+                                                <button
+                                                  key={option}
+                                                  type="button"
+                                                  className={`${styles.posteEditChip} ${
+                                                    isActive ? styles.posteEditChipActive : ""
+                                                  }`}
+                                                  onClick={() =>
+                                                    setFertilisationSoilForm((prev) => ({
+                                                      ...prev,
+                                                      npkLevel: option,
+                                                    }))
+                                                  }
+                                                >
+                                                  {isActive ? (
+                                                    <span className={styles.posteEditChipCheck} aria-hidden="true">
+                                                      check
+                                                    </span>
+                                                  ) : null}
+                                                  {option}
+                                                </button>
+                                              );
+                                            })}
+                                          </div>
+                                        </div>
+
+                                        <div className={styles.fleuraisonField}>
+                                          <span className={styles.fleuraisonLabel}>Risque de carence</span>
+                                          <div className={styles.posteEditChips}>
+                                            {fertilisationDeficiencyRiskOptions.map((option) => {
+                                              const isActive = fertilisationSoilForm.deficiencyRisk === option;
+                                              return (
+                                                <button
+                                                  key={option}
+                                                  type="button"
+                                                  className={`${styles.posteEditChip} ${
+                                                    isActive ? styles.posteEditChipActive : ""
+                                                  }`}
+                                                  onClick={() =>
+                                                    setFertilisationSoilForm((prev) => ({
+                                                      ...prev,
+                                                      deficiencyRisk: option,
+                                                    }))
+                                                  }
+                                                >
+                                                  {isActive ? (
+                                                    <span className={styles.posteEditChipCheck} aria-hidden="true">
+                                                      check
+                                                    </span>
+                                                  ) : null}
+                                                  {option}
+                                                </button>
+                                              );
+                                            })}
+                                          </div>
+                                        </div>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <div className={styles.fleuraisonField}>
+                                          <span className={styles.fleuraisonLabel}>Produit</span>
+                                          <div className={styles.posteEditChips}>
+                                            {fertilisationProductOptions.map((option) => {
+                                              const isActive = fertilisationApportForm.product === option;
+                                              return (
+                                                <button
+                                                  key={option}
+                                                  type="button"
+                                                  className={`${styles.posteEditChip} ${
+                                                    isActive ? styles.posteEditChipActive : ""
+                                                  }`}
+                                                  onClick={() =>
+                                                    setFertilisationApportForm((prev) => ({
+                                                      ...prev,
+                                                      product: option,
+                                                    }))
+                                                  }
+                                                >
+                                                  {isActive ? (
+                                                    <span className={styles.posteEditChipCheck} aria-hidden="true">
+                                                      check
+                                                    </span>
+                                                  ) : null}
+                                                  {option}
+                                                </button>
+                                              );
+                                            })}
+                                          </div>
+                                        </div>
+                                        <div className={styles.irrigationProgramFields}>
+                                          <label className={styles.fleuraisonField}>
+                                            <span className={styles.fleuraisonLabel}>Quantité</span>
+                                            <input
+                                              className={styles.fleuraisonInput}
+                                              type="number"
+                                              inputMode="decimal"
+                                              step="0.1"
+                                              min="0"
+                                              placeholder="Ex. 5,8"
+                                              value={fertilisationApportForm.quantity}
+                                              onChange={(event) => {
+                                                setFertilisationApportForm((prev) => ({
+                                                  ...prev,
+                                                  quantity: event.target.value,
+                                                }));
+                                              }}
+                                            />
+                                          </label>
+                                          <label className={styles.fleuraisonField}>
+                                            <span className={styles.fleuraisonLabel}>Dose</span>
+                                            <input
+                                              className={styles.fleuraisonInput}
+                                              type="number"
+                                              inputMode="decimal"
+                                              step="0.1"
+                                              min="0"
+                                              placeholder="Ex. 1,5"
+                                              value={fertilisationApportForm.dose}
+                                              onChange={(event) => {
+                                                setFertilisationApportForm((prev) => ({
+                                                  ...prev,
+                                                  dose: event.target.value,
+                                                }));
+                                              }}
+                                            />
+                                          </label>
+                                        </div>
+                                      </>
+                                    )}
+                                  </>
+                                )}
+
+                                {isFertilisationSheetEditing && activeFertilisationValidationError ? (
+                                  <p className={styles.fleuraisonInlineError}>
+                                    {activeFertilisationValidationError}
+                                  </p>
+                                ) : null}
+                              </div>
+
+                              <div className={styles.fertilisationSheetFooter}>
+                                <div className={styles.fertilisationSheetActions}>
+                                  {isFertilisationSheetReadOnly ? (
+                                    <button
+                                      className={`${styles.posteSaveButton} ${styles.fertilisationSheetSingleAction}`}
+                                      type="button"
+                                      onClick={() => setIsFertilisationSheetEditing(true)}
+                                    >
+                                      Modifier
+                                    </button>
+                                  ) : (
+                                    <>
+                                      <button
+                                        className={styles.posteCancelButton}
+                                        type="button"
+                                        onClick={closeFertilisationSheet}
+                                      >
+                                        Annuler
+                                      </button>
+                                      <button
+                                      className={`${styles.posteSaveButton} ${
+                                        isActiveFertilisationSaveDisabled
+                                          ? styles.posteButtonDisabled
+                                          : ""
+                                      }`}
+                                      type="button"
+                                      disabled={isActiveFertilisationSaveDisabled}
+                                      onClick={saveFertilisationSheet}
+                                    >
+                                        Enregistrer
+                                      </button>
+                                    </>
+                                  )}
+                                </div>
+                                <span
+                                  className={styles.fertilisationBottomIndicator}
+                                  aria-hidden="true"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ) : null}
+                      </div>
+
+                    ) : isIrrigationScreen ? (
+                      <div className={styles.fertilisationOverview}>
+                        <div className={styles.fleuraisonSectionHeader}>
+                          <h3 className={styles.fleuraisonSectionTitle}>Observation</h3>
+                        </div>
+                        <div className={styles.fertilisationTabs} role="tablist" aria-label="Irrigation">
+                          <button
+                            className={`${styles.fertilisationTab} ${
+                              activeIrrigationTab === "program" ? styles.fertilisationTabActive : ""
+                            }`}
+                            role="tab"
+                            aria-selected={activeIrrigationTab === "program"}
+                            type="button"
+                            onClick={() => setActiveIrrigationTab("program")}
+                          >
+                            Programme d&apos;arrosage
+                          </button>
+                          <button
+                            className={`${styles.fertilisationTab} ${
+                              activeIrrigationTab === "stress" ? styles.fertilisationTabActive : ""
+                            }`}
+                            role="tab"
+                            aria-selected={activeIrrigationTab === "stress"}
+                            type="button"
+                            onClick={() => setActiveIrrigationTab("stress")}
+                          >
+                            Stress hydrique
+                          </button>
+                        </div>
+                        <div className={styles.fertilisationPanel}>
+                          {activeIrrigationTab === "program" ? (
+                            selectedIrrigationState.programs.length > 0 ? (
+                              <div className={styles.fertilisationRecordList}>
+                                {selectedIrrigationState.programs.map((program) => (
+                                  <button
+                                    key={program.id}
+                                    className={styles.fertilisationRecordButton}
+                                    type="button"
+                                    onClick={() => openIrrigationProgramSheetForEdit(program)}
+                                  >
+                                    <span className={styles.fertilisationRecordContent}>
+                                      <span className={styles.fertilisationRecordTop}>
+                                        <span className={styles.fertilisationRecordTitle}>
+                                          {program.title}
+                                        </span>
+                                        <span className={styles.fertilisationRecordDate}>
+                                          {formatDateLongFr(program.startDate)}
+                                        </span>
+                                      </span>
+                                    </span>
+                                  </button>
+                                ))}
+                              </div>
+                            ) : (
+                              <p className={styles.fertilisationEmpty}>
+                                Aucun programme d&apos;arrosage enregistré.
+                              </p>
+                            )
+                          ) : selectedIrrigationState.stressObservations.length > 0 ? (
+                            <div className={styles.fertilisationRecordList}>
+                              {selectedIrrigationState.stressObservations.map((observation) => (
+                                <button
+                                  key={observation.id}
+                                  className={styles.fertilisationRecordButton}
+                                  type="button"
+                                  onClick={() => openIrrigationStressSheetForEdit(observation)}
+                                >
+                                  <span className={styles.fertilisationRecordContent}>
+                                    <span className={styles.fertilisationRecordTop}>
+                                      <span className={styles.fertilisationRecordTitle}>
+                                        {observation.title}
+                                      </span>
+                                      <span className={styles.fertilisationRecordDate}>
+                                        {formatDateLongFr(observation.startDate)}
+                                      </span>
+                                    </span>
+                                  </span>
+                                </button>
+                              ))}
+                            </div>
+                          ) : (
+                            <p className={styles.fertilisationEmpty}>
+                              Aucune observation de stress hydrique enregistrée.
+                            </p>
+                          )}
+                        </div>
+
+                        <div className={styles.fertilisationBottomAction}>
+                          <button
+                            className={`${styles.fertilisationAddButton} ${styles.fertilisationAddButtonPrimary}`}
+                            type="button"
+                            onClick={
+                              activeIrrigationTab === "program"
+                                ? openIrrigationProgramSheetForCreate
+                                : openIrrigationStressSheetForCreate
+                            }
+                          >
+                            Ajouter une observation
+                          </button>
+                        </div>
+
+                        {isIrrigationSheetOpen ? (
+                          <div
+                            className={styles.fertilisationSheetOverlay}
+                            role="dialog"
+                            aria-modal="true"
+                            onClick={closeIrrigationSheet}
+                          >
+                            <div
+                              className={styles.fertilisationSheet}
+                              onClick={(event) => event.stopPropagation()}
+                            >
+                              <span className={styles.fleuraisonSheetHandle} aria-hidden="true" />
+                              <div className={styles.fertilisationSheetHeader}>
+                                <h4 className={styles.fertilisationSheetTitle}>
+                                  {irrigationSheetMode === "program"
+                                    ? isCreatingIrrigationProgram
+                                      ? "Nouveau programme"
+                                      : selectedIrrigationProgramRecord?.title ?? "Programme"
+                                    : isCreatingIrrigationStress
+                                      ? "Nouvelle observation"
+                                      : selectedIrrigationStressRecord?.title ?? "Observation"}
+                                </h4>
+                                <p className={styles.fertilisationSheetSubTitle}>
+                                  {irrigationSheetMode === "program"
+                                    ? "Programme d'arrosage"
+                                    : "Stress hydrique"}
+                                  {isIrrigationSheetReadOnly ? " · aperçu" : ""}
+                                </p>
+                              </div>
+
+                              <div className={styles.fertilisationSheetBody}>
+                                {isIrrigationSheetReadOnly ? (
+                                  <>
+                                    <div className={styles.fertilisationPreviewList}>
+                                      {irrigationSheetMode === "program" ? (
+                                        <>
+                                          <div className={styles.fertilisationPreviewItem}>
+                                            <span className={styles.fertilisationPreviewKey}>Date début</span>
+                                            <span className={styles.fertilisationPreviewValue}>
+                                              {formatDateLongFr(irrigationProgramForm.startDate)}
+                                            </span>
+                                          </div>
+                                          <div className={styles.fertilisationPreviewItem}>
+                                            <span className={styles.fertilisationPreviewKey}>Date fin</span>
+                                            <span className={styles.fertilisationPreviewValue}>
+                                              {irrigationProgramForm.endDate
+                                                ? formatDateLongFr(irrigationProgramForm.endDate)
+                                                : "Non définie"}
+                                            </span>
+                                          </div>
+                                          <div className={styles.fertilisationPreviewItem}>
+                                            <span className={styles.fertilisationPreviewKey}>
+                                              Fréquence d’irrigation (jours)
+                                            </span>
+                                            <span className={styles.fertilisationPreviewValue}>
+                                              {irrigationProgramForm.frequencyDays}
+                                            </span>
+                                          </div>
+                                          <div className={styles.fertilisationPreviewItem}>
+                                            <span className={styles.fertilisationPreviewKey}>
+                                              Volume par irrigation (m3/ha)
+                                            </span>
+                                            <span className={styles.fertilisationPreviewValue}>
+                                              {irrigationProgramForm.volumePerIrrigation}
+                                            </span>
+                                          </div>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <div className={styles.fertilisationPreviewItem}>
+                                            <span className={styles.fertilisationPreviewKey}>Date début</span>
+                                            <span className={styles.fertilisationPreviewValue}>
+                                              {formatDateLongFr(irrigationStressForm.startDate)}
+                                            </span>
+                                          </div>
+                                          <div className={styles.fertilisationPreviewItem}>
+                                            <span className={styles.fertilisationPreviewKey}>Date fin</span>
+                                            <span className={styles.fertilisationPreviewValue}>
+                                              {irrigationStressForm.endDate
+                                                ? formatDateLongFr(irrigationStressForm.endDate)
+                                                : "Non définie"}
+                                            </span>
+                                          </div>
+                                          <div className={styles.fertilisationPreviewItem}>
+                                            <span className={styles.fertilisationPreviewKey}>Type</span>
+                                            <span className={styles.fertilisationPreviewValue}>
+                                              {irrigationStressForm.type}
+                                            </span>
+                                          </div>
+                                          <div className={styles.fertilisationPreviewItem}>
+                                            <span className={styles.fertilisationPreviewKey}>
+                                              Durée (jours)
+                                            </span>
+                                            <span className={styles.fertilisationPreviewValue}>
+                                              {irrigationStressForm.durationDays || "Non renseignée"}
+                                            </span>
+                                          </div>
+                                        </>
+                                      )}
+                                    </div>
+                                    {irrigationSheetMode === "stress" ? (
+                                      <div className={styles.fertilisationPreviewNoteCard}>
+                                        <span className={styles.fertilisationPreviewNoteLabel}>Note</span>
+                                        <p className={styles.fertilisationPreviewNoteBody}>
+                                          {irrigationStressForm.note || "Non renseignée"}
+                                        </p>
+                                      </div>
+                                    ) : null}
+                                  </>
+                                ) : (
+                                  <>
+                                    {irrigationSheetMode === "program" ? (
+                                      <>
+                                        <div className={styles.irrigationProgramFields}>
+                                          <label className={styles.fleuraisonField}>
+                                            <span className={styles.fleuraisonLabel}>Date début</span>
+                                            <span className={styles.fleuraisonTimeField}>
+                                              <span
+                                                className={`${styles.fleuraisonTimeValue} ${
+                                                  !irrigationProgramForm.startDate
+                                                    ? styles.fleuraisonInputPlaceholder
+                                                    : ""
+                                                }`}
+                                              >
+                                                {irrigationProgramForm.startDate
+                                                  ? formatDateLongFr(irrigationProgramForm.startDate)
+                                                  : compactDatePlaceholder}
+                                              </span>
+                                              <span className={styles.fleuraisonTimeIcon} aria-hidden="true">
+                                                event
+                                              </span>
+                                              <input
+                                                className={styles.fleuraisonTimeNative}
+                                                type="date"
+                                                aria-label="Date début"
+                                                value={irrigationProgramForm.startDate}
+                                                onChange={(event) =>
+                                                  setIrrigationProgramForm((prev) => ({
+                                                    ...prev,
+                                                    startDate: event.target.value,
+                                                  }))
+                                                }
+                                              />
+                                            </span>
+                                          </label>
+                                          <label className={styles.fleuraisonField}>
+                                            <span className={styles.fleuraisonLabel}>Date fin</span>
+                                            <span className={styles.fleuraisonTimeField}>
+                                              <span
+                                                className={`${styles.fleuraisonTimeValue} ${
+                                                  !irrigationProgramForm.endDate
+                                                    ? styles.fleuraisonInputPlaceholder
+                                                    : ""
+                                                }`}
+                                              >
+                                                {irrigationProgramForm.endDate
+                                                  ? formatDateLongFr(irrigationProgramForm.endDate)
+                                                  : compactDatePlaceholder}
+                                              </span>
+                                              <span className={styles.fleuraisonTimeIcon} aria-hidden="true">
+                                                event
+                                              </span>
+                                              <input
+                                                className={styles.fleuraisonTimeNative}
+                                                type="date"
+                                                aria-label="Date fin"
+                                                min={irrigationProgramForm.startDate || undefined}
+                                                value={irrigationProgramForm.endDate}
+                                                onChange={(event) =>
+                                                  setIrrigationProgramForm((prev) => ({
+                                                    ...prev,
+                                                    endDate: event.target.value,
+                                                  }))
+                                                }
+                                              />
+                                            </span>
+                                          </label>
+                                          <label className={styles.fleuraisonField}>
+                                            <span className={styles.fleuraisonLabel}>
+                                              Fréquence d’irrigation (jours)
+                                            </span>
+                                            <input
+                                              className={styles.fleuraisonInput}
+                                              type="number"
+                                              min="1"
+                                              step="1"
+                                              placeholder="Ex. 3"
+                                              value={irrigationProgramForm.frequencyDays}
+                                              onChange={(event) =>
+                                                setIrrigationProgramForm((prev) => ({
+                                                  ...prev,
+                                                  frequencyDays: event.target.value,
+                                                }))
+                                              }
+                                            />
+                                          </label>
+                                          <label className={styles.fleuraisonField}>
+                                            <span className={styles.fleuraisonLabel}>
+                                              Volume par irrigation (m3/ha)
+                                            </span>
+                                            <input
+                                              className={styles.fleuraisonInput}
+                                              type="number"
+                                              inputMode="decimal"
+                                              min="0"
+                                              step="0.1"
+                                              placeholder="Ex. 50"
+                                              value={irrigationProgramForm.volumePerIrrigation}
+                                              onChange={(event) =>
+                                                setIrrigationProgramForm((prev) => ({
+                                                  ...prev,
+                                                  volumePerIrrigation: event.target.value,
+                                                }))
+                                              }
+                                            />
+                                          </label>
+                                        </div>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <div className={styles.irrigationProgramFields}>
+                                          <label className={styles.fleuraisonField}>
+                                            <span className={styles.fleuraisonLabel}>Date début</span>
+                                            <span className={styles.fleuraisonTimeField}>
+                                              <span
+                                                className={`${styles.fleuraisonTimeValue} ${
+                                                  !irrigationStressForm.startDate
+                                                    ? styles.fleuraisonInputPlaceholder
+                                                    : ""
+                                                }`}
+                                              >
+                                                {irrigationStressForm.startDate
+                                                  ? formatDateLongFr(irrigationStressForm.startDate)
+                                                  : compactDatePlaceholder}
+                                              </span>
+                                              <span className={styles.fleuraisonTimeIcon} aria-hidden="true">
+                                                event
+                                              </span>
+                                              <input
+                                                className={styles.fleuraisonTimeNative}
+                                                type="date"
+                                                aria-label="Date début"
+                                                value={irrigationStressForm.startDate}
+                                                onChange={(event) =>
+                                                  setIrrigationStressForm((prev) => ({
+                                                    ...prev,
+                                                    startDate: event.target.value,
+                                                  }))
+                                                }
+                                              />
+                                            </span>
+                                          </label>
+                                          <label className={styles.fleuraisonField}>
+                                            <span className={styles.fleuraisonLabel}>Date fin</span>
+                                            <span className={styles.fleuraisonTimeField}>
+                                              <span
+                                                className={`${styles.fleuraisonTimeValue} ${
+                                                  !irrigationStressForm.endDate
+                                                    ? styles.fleuraisonInputPlaceholder
+                                                    : ""
+                                                }`}
+                                              >
+                                                {irrigationStressForm.endDate
+                                                  ? formatDateLongFr(irrigationStressForm.endDate)
+                                                  : compactDatePlaceholder}
+                                              </span>
+                                              <span className={styles.fleuraisonTimeIcon} aria-hidden="true">
+                                                event
+                                              </span>
+                                              <input
+                                                className={styles.fleuraisonTimeNative}
+                                                type="date"
+                                                aria-label="Date fin"
+                                                min={irrigationStressForm.startDate || undefined}
+                                                value={irrigationStressForm.endDate}
+                                                onChange={(event) =>
+                                                  setIrrigationStressForm((prev) => ({
+                                                    ...prev,
+                                                    endDate: event.target.value,
+                                                  }))
+                                                }
+                                              />
+                                            </span>
+                                          </label>
+                                        </div>
+                                        <div className={styles.fleuraisonField}>
+                                          <span className={styles.fleuraisonLabel}>Type</span>
+                                          <div className={styles.posteEditChips}>
+                                            {irrigationStressTypeOptions.map((option) => {
+                                              const isActive = irrigationStressForm.type === option;
+                                              return (
+                                                <button
+                                                  key={option}
+                                                  type="button"
+                                                  className={`${styles.posteEditChip} ${
+                                                    isActive ? styles.posteEditChipActive : ""
+                                                  }`}
+                                                  onClick={() =>
+                                                    setIrrigationStressForm((prev) => ({
+                                                      ...prev,
+                                                      type: option,
+                                                    }))
+                                                  }
+                                                >
+                                                  {isActive ? (
+                                                    <span className={styles.posteEditChipCheck} aria-hidden="true">
+                                                      check
+                                                    </span>
+                                                  ) : null}
+                                                  {option}
+                                                </button>
+                                              );
+                                            })}
+                                          </div>
+                                        </div>
+                                        <label className={styles.fleuraisonField}>
+                                          <span className={styles.fleuraisonLabel}>Durée (jours)</span>
+                                          <input
+                                            className={styles.fleuraisonInput}
+                                            type="number"
+                                            min="0"
+                                            step="1"
+                                            placeholder="Ex. 3"
+                                            value={irrigationStressForm.durationDays}
+                                            onChange={(event) =>
+                                              setIrrigationStressForm((prev) => ({
+                                                ...prev,
+                                                durationDays: event.target.value,
+                                              }))
+                                            }
+                                          />
+                                        </label>
+                                        <label className={styles.fleuraisonField}>
+                                          <span className={styles.fleuraisonLabel}>Note</span>
+                                          <textarea
+                                            className={styles.fleuraisonTextarea}
+                                            placeholder="Ajouter une note..."
+                                            value={irrigationStressForm.note}
+                                            onChange={(event) =>
+                                              setIrrigationStressForm((prev) => ({
+                                                ...prev,
+                                                note: event.target.value,
+                                              }))
+                                            }
+                                          />
+                                        </label>
+                                      </>
+                                    )}
+                                  </>
+                                )}
+
+                                {isIrrigationSheetEditing && activeIrrigationValidationError ? (
+                                  <p className={styles.fleuraisonInlineError}>
+                                    {activeIrrigationValidationError}
+                                  </p>
+                                ) : null}
+                              </div>
+
+                              <div className={styles.fertilisationSheetFooter}>
+                                <div className={styles.fertilisationSheetActions}>
+                                  {isIrrigationSheetReadOnly ? (
+                                    <button
+                                      className={`${styles.posteSaveButton} ${styles.fertilisationSheetSingleAction}`}
+                                      type="button"
+                                      onClick={() => setIsIrrigationSheetEditing(true)}
+                                    >
+                                      Modifier
+                                    </button>
+                                  ) : (
+                                    <>
+                                      <button
+                                        className={styles.posteCancelButton}
+                                        type="button"
+                                        onClick={closeIrrigationSheet}
+                                      >
+                                        Annuler
+                                      </button>
+                                      <button
+                                        className={`${styles.posteSaveButton} ${
+                                          isActiveIrrigationSaveDisabled
+                                            ? styles.posteButtonDisabled
+                                            : ""
+                                        }`}
+                                        type="button"
+                                        disabled={isActiveIrrigationSaveDisabled}
+                                        onClick={saveIrrigationSheet}
+                                      >
+                                        Enregistrer
+                                      </button>
+                                    </>
+                                  )}
+                                </div>
+                                <span
+                                  className={styles.fertilisationBottomIndicator}
+                                  aria-hidden="true"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ) : null}
+                      </div>
+
+                    ) : (
+                      <>
+                      <div className={styles.fleuraisonSectionHeader}>
+                        <h3 className={styles.fleuraisonSectionTitle}>Observation</h3>
+                        <span
+                          className={`${styles.observationStatus} ${
+                            observationFormStatus === "En cours"
+                              ? styles.observationStatusInProgress
+                              : observationFormStatus === "Terminé"
+                                ? styles.observationStatusDone
+                                : styles.observationStatusNotStarted
+                          } ${
+                            observationFormStatus === "Pas commencé"
+                              ? styles.observationStatusNotStartedForm
+                              : ""
+                          }`}
+                        >
+                          {observationFormStatus}
+                        </span>
+                      </div>
+                      <div className={styles.fleuraisonCard}>
                       <div className={styles.fleuraisonField}>
                         <p className={styles.fleuraisonLabel}>
                           {activeObservationPhaseConfig.densityLabel}
@@ -1436,10 +4170,14 @@ export function WorkerAppPostFixePage({
                         <label className={styles.fleuraisonField}>
                           <span className={styles.fleuraisonLabel}>Date début</span>
                           <span className={styles.fleuraisonTimeField}>
-                            <span className={styles.fleuraisonTimeValue}>
+                            <span
+                              className={`${styles.fleuraisonTimeValue} ${
+                                !fleuraisonForm.startDate ? styles.fleuraisonInputPlaceholder : ""
+                              }`}
+                            >
                               {fleuraisonForm.startDate
                                 ? formatDateLongFr(fleuraisonForm.startDate)
-                                : "Sélectionner"}
+                                : compactDatePlaceholder}
                             </span>
                             <span className={styles.fleuraisonTimeIcon} aria-hidden="true">
                               event
@@ -1463,10 +4201,14 @@ export function WorkerAppPostFixePage({
                         <label className={styles.fleuraisonField}>
                           <span className={styles.fleuraisonLabel}>Date fin</span>
                           <span className={styles.fleuraisonTimeField}>
-                            <span className={styles.fleuraisonTimeValue}>
+                            <span
+                              className={`${styles.fleuraisonTimeValue} ${
+                                !fleuraisonForm.endDate ? styles.fleuraisonInputPlaceholder : ""
+                              }`}
+                            >
                               {fleuraisonForm.endDate
                                 ? formatDateLongFr(fleuraisonForm.endDate)
-                                : "Non définie"}
+                                : compactDatePlaceholder}
                             </span>
                             <span className={styles.fleuraisonTimeIcon} aria-hidden="true">
                               event
@@ -1537,6 +4279,7 @@ export function WorkerAppPostFixePage({
                             type="number"
                             min="0"
                             disabled={isObservationReadOnly}
+                            placeholder="Saisir une valeur"
                             value={fleuraisonForm.secondaryValue}
                             onChange={(event) =>
                               setFleuraisonForm((prev) => ({
@@ -1620,32 +4363,36 @@ export function WorkerAppPostFixePage({
                         />
                       </label>
                     </div>
-                  </div>
-
-                  <div className={styles.posteEditActions}>
-                    {isObservationReadOnly ? (
-                      <button
-                        className={styles.posteSaveButton}
-                        type="button"
-                        onClick={() => setIsObservationEditMode(true)}
-                      >
-                        Modifier
-                      </button>
-                    ) : (
-                      <button
-                        className={`${styles.posteSaveButton} ${
-                          hasFleuraisonValidationError ? styles.posteButtonDisabled : ""
-                        }`}
-                        type="button"
-                        disabled={hasFleuraisonValidationError}
-                        onClick={saveFleuraisonNote}
-                      >
-                        {observationFormStatus === "Terminé"
-                          ? "Enregistrer les modifications"
-                          : "Enregistrer"}
-                      </button>
+                    </>
                     )}
                   </div>
+
+                  {!isFertilisationScreen && !isIrrigationScreen ? (
+                    <div className={styles.posteEditActions}>
+                      {isObservationReadOnly ? (
+                        <button
+                          className={styles.posteSaveButton}
+                          type="button"
+                          onClick={() => setIsObservationEditMode(true)}
+                        >
+                          Modifier
+                        </button>
+                      ) : (
+                        <button
+                          className={`${styles.posteSaveButton} ${
+                            hasFleuraisonValidationError ? styles.posteButtonDisabled : ""
+                          }`}
+                          type="button"
+                          disabled={hasFleuraisonValidationError}
+                          onClick={saveFleuraisonNote}
+                        >
+                          {observationFormStatus === "Terminé"
+                            ? "Enregistrer les modifications"
+                            : "Enregistrer"}
+                        </button>
+                      )}
+                    </div>
+                  ) : null}
                   {showObservationUnsavedModal ? (
                     <div className={styles.unsavedOverlay} role="dialog" aria-modal="true">
                       <div className={styles.unsavedCard}>
@@ -1659,7 +4406,67 @@ export function WorkerAppPostFixePage({
                             type="button"
                             onClick={() => {
                               setShowObservationUnsavedModal(false);
+                              if (observationUnsavedContext === "close-fertilisation-sheet") {
+                                if (fertilisationSheetMode === "soil") {
+                                  if (selectedFertilisationSoilRecord) {
+                                    setFertilisationSoilForm(
+                                      createFertilisationSoilFormFromRecord(
+                                        selectedFertilisationSoilRecord
+                                      )
+                                    );
+                                  } else {
+                                    setFertilisationSoilForm(createDefaultFertilisationSoilForm());
+                                  }
+                                  setIsCreatingFertilisationSoil(false);
+                                } else {
+                                  if (selectedFertilisationApportRecord) {
+                                    setFertilisationApportForm(
+                                      createFertilisationApportFormFromRecord(
+                                        selectedFertilisationApportRecord
+                                      )
+                                    );
+                                  } else {
+                                    setFertilisationApportForm(createDefaultFertilisationApportForm());
+                                  }
+                                  setIsCreatingFertilisationApport(false);
+                                }
+                                setIsFertilisationSheetOpen(false);
+                                setIsFertilisationSheetEditing(false);
+                                return;
+                              }
+
+                              if (observationUnsavedContext === "close-irrigation-sheet") {
+                                if (irrigationSheetMode === "program") {
+                                  if (selectedIrrigationProgramRecord) {
+                                    setIrrigationProgramForm(
+                                      createIrrigationProgramFormFromRecord(
+                                        selectedIrrigationProgramRecord
+                                      )
+                                    );
+                                  } else {
+                                    setIrrigationProgramForm(createDefaultIrrigationProgramForm());
+                                  }
+                                  setIsCreatingIrrigationProgram(false);
+                                } else {
+                                  if (selectedIrrigationStressRecord) {
+                                    setIrrigationStressForm(
+                                      createIrrigationStressFormFromRecord(
+                                        selectedIrrigationStressRecord
+                                      )
+                                    );
+                                  } else {
+                                    setIrrigationStressForm(createDefaultIrrigationStressForm());
+                                  }
+                                  setIsCreatingIrrigationStress(false);
+                                }
+                                setIsIrrigationSheetOpen(false);
+                                setIsIrrigationSheetEditing(false);
+                                return;
+                              }
+
                               setSelectedObservation(null);
+                              resetFertilisationDrafts();
+                              resetIrrigationDrafts();
                               setIsObservationEditMode(true);
                             }}
                           >
@@ -1669,7 +4476,17 @@ export function WorkerAppPostFixePage({
                             className={styles.unsavedPrimary}
                             type="button"
                             onClick={() => {
-                              saveFleuraisonNote();
+                              if (observationUnsavedContext === "close-fertilisation-sheet") {
+                                saveFertilisationSheet();
+                              } else if (observationUnsavedContext === "close-irrigation-sheet") {
+                                saveIrrigationSheet();
+                              } else if (isFertilisationScreen) {
+                                saveFertilisationChanges();
+                              } else if (isIrrigationScreen) {
+                                saveIrrigationChanges();
+                              } else {
+                                saveFleuraisonNote();
+                              }
                             }}
                           >
                             Enregistrer
@@ -1903,6 +4720,7 @@ export function WorkerAppPostFixePage({
                           setSelectedPoste(null);
                           setIsEditingConfig(false);
                           setSelectedObservation(null);
+                          resetFertilisationDrafts();
                           setIsObservationEditMode(true);
                           setShowObservationUnsavedModal(false);
                         }}
@@ -1929,7 +4747,7 @@ export function WorkerAppPostFixePage({
                           selectedPosteProgress === 0 ? styles.posteProgressLabelMuted : ""
                         }`}
                       >
-                        {selectedPosteCompletedCount} / {selectedPosteObservations.length}{" "}
+                        {selectedPosteCompletedCount} / {selectedPostePhaseObservations.length}{" "}
                         observations complétées · {selectedPosteProgress}%
                       </p>
                       <div className={styles.posteProgressRow}>
@@ -1941,65 +4759,88 @@ export function WorkerAppPostFixePage({
                   <h3 className={`${styles.posteSectionTitle} ${styles.posteSectionTitleObservations}`}>
                     Observations
                   </h3>
-                  <div className={styles.posteObservationsCard}>
-                    {selectedPosteObservations.map((observation, index) => (
-                      <button
-                        key={observation.name}
-                        type="button"
-                        className={`${styles.observationRow} ${
-                          index < selectedPosteObservations.length - 1
-                            ? styles.observationRowBorder
-                            : ""
-                        }`}
-                        onClick={() => {
-                          if (!isObservationPhaseName(observation.name)) {
-                            return;
-                          }
-
-                          const observationKey = getObservationNotesKey(
-                            selectedPoste.name,
-                            observation.name
-                          );
-                          const existingForm = observationFormsByKey[observationKey] ?? null;
-                          const existingStatus = getObservationDerivedStatus(existingForm);
-                          setSelectedObservation(observation);
-                          setShowObservationUnsavedModal(false);
-                          setIsObservationEditMode(existingStatus !== "Terminé");
-                          setFleuraisonForm(
-                            existingForm
-                              ? { ...existingForm, images: [...existingForm.images] }
-                              : createDefaultFleuraisonForm(observation.name)
-                          );
-                        }}
-                      >
-                        <span
-                          className={`${styles.observationIconWrap} ${observationToneClasses[observation.tone]}`}
-                          aria-hidden="true"
-                        >
-                          <span className={styles.observationIcon}>{observation.icon}</span>
-                        </span>
-                        <div className={styles.observationMain}>
-                          <p className={styles.observationTitle}>{observation.name}</p>
-                          <p className={styles.observationDate}>
-                            Modifié le {observation.lastUpdate}
-                          </p>
-                        </div>
-                        <span
-                          className={`${styles.observationStatus} ${
-                            observation.status === "En cours"
-                              ? styles.observationStatusInProgress
-                              : observation.status === "Terminé"
-                                ? styles.observationStatusDone
-                                : styles.observationStatusNotStarted
+                  <div className={styles.posteObservationGroups}>
+                    <div className={styles.posteObservationsCard}>
+                      {selectedPostePhaseObservations.map((observation, index) => (
+                        <button
+                          key={observation.name}
+                          type="button"
+                          className={`${styles.observationRow} ${
+                            index < selectedPostePhaseObservations.length - 1
+                              ? styles.observationRowBorder
+                              : ""
                           }`}
+                          onClick={() => handleObservationSelect(observation)}
                         >
-                          {observation.status}
-                        </span>
-                        <span className={styles.posteArrow} aria-hidden="true">
-                          chevron_right
-                        </span>
-                      </button>
-                    ))}
+                          <span
+                            className={`${styles.observationIconWrap} ${observationToneClasses[observation.tone]}`}
+                            aria-hidden="true"
+                          >
+                            <span className={styles.observationIcon}>{observation.icon}</span>
+                          </span>
+                          <div className={styles.observationMain}>
+                            <p className={styles.observationTitle}>{observation.name}</p>
+                            <p className={styles.observationDate}>
+                              Modifié le {observation.lastUpdate}
+                            </p>
+                          </div>
+                          <span
+                            className={`${styles.observationStatus} ${
+                              observation.status === "En cours"
+                                ? styles.observationStatusInProgress
+                                : observation.status === "Terminé"
+                                  ? styles.observationStatusDone
+                                  : styles.observationStatusNotStarted
+                            }`}
+                          >
+                            {observation.status}
+                          </span>
+                          <span className={styles.posteArrow} aria-hidden="true">
+                            chevron_right
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+
+                    {selectedPosteTrackingObservations.length > 0 ? (
+                      <div className={styles.posteObservationGroupSection}>
+                        <h3
+                          className={`${styles.posteSectionTitle} ${styles.posteSectionTitleObservations}`}
+                        >
+                          Conduite culturale
+                        </h3>
+                        <div className={styles.posteObservationsCard}>
+                          {selectedPosteTrackingObservations.map((observation, index) => (
+                            <button
+                              key={observation.name}
+                              type="button"
+                              className={`${styles.observationRow} ${
+                                index < selectedPosteTrackingObservations.length - 1
+                                  ? styles.observationRowBorder
+                                  : ""
+                              }`}
+                              onClick={() => handleObservationSelect(observation)}
+                            >
+                              <span
+                                className={`${styles.observationIconWrap} ${observationToneClasses[observation.tone]}`}
+                                aria-hidden="true"
+                              >
+                                <span className={styles.observationIcon}>{observation.icon}</span>
+                              </span>
+                              <div className={styles.observationMain}>
+                                <p className={styles.observationTitle}>{observation.name}</p>
+                                <p className={styles.observationDate}>
+                                  Modifié le {observation.lastUpdate}
+                                </p>
+                              </div>
+                              <span className={styles.posteArrow} aria-hidden="true">
+                                chevron_right
+                              </span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ) : null}
                   </div>
 
                 </>
@@ -2014,7 +4855,7 @@ export function WorkerAppPostFixePage({
                     <p className={styles.posteFixeSubtitle}>{campaignHeaderMeta}</p>
                   </div>
                   <div className={styles.homeHeaderActions}>
-                    {renderSyncBadge()}
+                    {shouldShowSyncBadge ? renderSyncBadge() : null}
                     <span className={styles.homeAvatar} aria-label="User avatar">
                       OE
                     </span>
@@ -2024,7 +4865,13 @@ export function WorkerAppPostFixePage({
 
               <div className={styles.postesFixesList}>
                 {posteCards.map(
-                  ({ poste, observations: posteObservations, progress: posteProgress, completedCount: posteCompletedCount, status: posteStatus }) => {
+                  ({
+                    poste,
+                    phaseObservations: postePhaseObservations,
+                    progress: posteProgress,
+                    completedCount: posteCompletedCount,
+                    status: posteStatus,
+                  }) => {
 
                     return (
                       <button
@@ -2050,7 +4897,7 @@ export function WorkerAppPostFixePage({
                             posteStatus === "Pas commencé" ? styles.posteProgressLabelMuted : ""
                           }`}
                         >
-                          {posteCompletedCount} / {posteObservations.length} observations
+                          {posteCompletedCount} / {postePhaseObservations.length} observations
                           complétées · {posteProgress}%
                         </p>
                         <div className={styles.posteProgressRow}>
@@ -2074,7 +4921,7 @@ export function WorkerAppPostFixePage({
                     <p className={styles.posteFixeSubtitle}>{campaignHeaderMeta}</p>
                   </div>
                   <div className={styles.homeHeaderActions}>
-                    {renderSyncBadge()}
+                    {shouldShowSyncBadge ? renderSyncBadge() : null}
                     <span className={styles.homeAvatar} aria-label="User avatar">
                       OE
                     </span>
@@ -2113,7 +4960,7 @@ export function WorkerAppPostFixePage({
                     <p className={styles.posteFixeSubtitle}>{campaignHeaderMeta}</p>
                   </div>
                   <div className={styles.homeHeaderActions}>
-                    {renderSyncBadge()}
+                    {shouldShowSyncBadge ? renderSyncBadge() : null}
                     <span className={styles.homeAvatar} aria-label="User avatar">
                       OE
                     </span>
@@ -2151,7 +4998,11 @@ export function WorkerAppPostFixePage({
       className={showDeviceFrame ? frameClass : styles.androidCanvasNoFrame}
       style={!isInteractive ? { pointerEvents: "none" } : undefined}
     >
-      <div className={styles.androidScreen}>
+      <div
+        className={`${styles.androidScreen} ${
+          theme === "dark" ? styles.androidScreenDark : styles.androidScreenLight
+        }`}
+      >
         <WorkerAppStatusBar theme={theme} />
         {content}
         {!isFullScreenFlow ? <WorkerAppHomeBottomBarScreen activeIndex={2} /> : null}

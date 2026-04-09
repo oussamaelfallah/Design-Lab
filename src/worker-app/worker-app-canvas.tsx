@@ -25,6 +25,8 @@ export function WorkerAppCanvas({
     <div className={showDeviceFrame ? frameClass : styles.androidCanvasNoFrame}>
       <div
         className={`${styles.androidScreen} ${
+          theme === "dark" ? styles.androidScreenDark : styles.androidScreenLight
+        } ${
           variant === "v2" ? styles.getStartedCanvasV2 : styles.getStartedCanvas
         }`}
       >
