@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import styles from "./worker-app.module.css";
 import { WORKER_APP_POST_FIXE_PAGE_NAME } from "./constants";
 import { WorkerAppPostFixePage } from "./post-fixe";
+import { WorkerAppTravailPage } from "./travail";
 import { WorkerAppNavigationScreen } from "./screens/navigation-screen";
 import { WorkerAppHomeBottomBarScreen } from "./screens/home-bottom-bar-screen";
 import { WorkerAppStatusBar } from "./screens/status-bar";
@@ -74,6 +75,13 @@ export function WorkerAppFullPrototypePage({
             frameView="data"
             embedded
             onLayoutModeChange={setPostFixeLayoutMode}
+          />
+        ) : activeTab === "travail" ? (
+          <WorkerAppTravailPage
+            showDeviceFrame={false}
+            theme={theme}
+            frameTheme={frameTheme}
+            embedded
           />
         ) : (
           <div className={`${styles.homeContent} ${styles.prototypeScreenContent}`}>
