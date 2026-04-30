@@ -802,7 +802,7 @@
 
 .travailSegmentedTabs {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   min-height: 44px;
   border-bottom: 1px solid var(--ds-border);
   background: var(--header-surface);
@@ -1030,97 +1030,123 @@
   padding: 6px 0;
 }
 
-.travailFiltersResultBar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 48px;
-  border-bottom: 1px solid var(--ds-border);
-  padding: 0 18px;
-}
-
-.travailFiltersResultBar span {
-  color: var(--ds-text-secondary);
-  font-family: var(--font-geist-sans), sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.travailFiltersResultBar strong {
-  display: grid;
-  place-items: center;
-  min-width: 26px;
-  height: 26px;
-  border-radius: 8px;
-  background: color-mix(in srgb, var(--ds-brand) 10%, transparent);
-  color: var(--ds-brand);
-  font-family: var(--font-geist-sans), sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  padding: 0 8px;
-}
-
 .travailFiltersGroups {
   display: flex;
   flex: 1;
   min-height: 0;
   flex-direction: column;
-  gap: 30px;
+  gap: 24px;
   overflow-y: auto;
-  padding: 26px 18px 20px;
+  padding: 20px 18px 24px;
 }
 
 .travailFiltersGroup {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 12px;
+  border: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--ds-border) 85%, transparent);
+  background: transparent;
+  padding: 0 0 20px;
 }
 
-.travailFiltersGroup h4 {
+.travailFiltersGroupHeader {
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+.travailFiltersGroupIcon {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+  place-items: center;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ds-brand);
+}
+
+.travailFiltersGroupIcon .googleSymbol {
+  width: 22px;
+  height: 22px;
+  font-size: 20px;
+}
+
+.travailFiltersGroupCopy {
+  flex: 1;
+  min-width: 0;
+}
+
+.travailFiltersGroupHeader h4 {
   margin: 0;
   color: var(--ds-text-primary);
   font-family: var(--font-geist-sans), sans-serif;
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
   line-height: 1.2;
 }
 
-.travailFiltersGroup h4 span {
+.travailFiltersGroupCount {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--ds-brand) 10%, transparent);
   color: var(--ds-brand);
-  font-size: 24px;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 0 6px;
+}
+
+.travailFiltersGroupHeader p {
+  margin: 4px 0 0;
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.35;
 }
 
 .travailFiltersChipGrid {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px 8px;
+  gap: 10px;
+}
+
+.travailFiltersChipGridTight {
+  gap: 10px;
 }
 
 .travailFiltersChip {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0;
-  height: 32px;
+  gap: 8px;
+  min-height: 32px;
   border: 1px solid var(--ds-border-strong);
-  border-radius: var(--radius-full);
-  background: var(--ds-card);
+  border-radius: 999px;
+  background: #fff;
   color: var(--ds-text-secondary);
   font-family: var(--font-geist-sans), sans-serif;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
   line-height: 1;
   padding: 0 16px;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  text-align: center;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.15s;
 }
 
 .travailFiltersChip:focus-visible {
   outline: 2px solid var(--ds-brand);
   outline-offset: 2px;
+}
+
+.travailFiltersChip:hover {
+  transform: translateY(-1px);
 }
 
 .travailFiltersChipCheckmark {
@@ -1129,7 +1155,6 @@
   height: 18px;
   place-items: center;
   flex: 0 0 18px;
-  margin-right: 8px;
   font-family: "Material Symbols Outlined", sans-serif;
   font-size: 18px;
   font-variation-settings:
@@ -1141,12 +1166,20 @@
   color: currentColor;
 }
 
+.travailFiltersChipLabel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
 .travailFiltersChipActive {
   border-color: var(--ds-brand);
   background: var(--ds-brand);
   color: var(--ds-text-inverse);
-  font-weight: 700;
-  padding: 0 16px;
+  font-weight: 600;
+  padding-left: 12px;
+  padding-right: 16px;
 }
 
 .travailFiltersSheetFooter {
@@ -2578,7 +2611,7 @@
 .travailParcelleSheetOverlay {
   position: absolute;
   inset: 0 0 24px;
-  z-index: 18;
+  z-index: 760;
   display: flex;
   align-items: flex-end;
   justify-content: center;

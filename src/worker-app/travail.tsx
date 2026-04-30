@@ -15,13 +15,13 @@ const syncStates = [
 ] as const;
 
 type TravailJobType = "estimation" | "calibre";
-type TravailFilter = "all" | TravailJobType;
+type TravailFilter = TravailJobType;
 type TravailJobStatus = "notStarted" | "inProgress" | "done";
 type EstimationDetailTab = "overview" | "map" | "gallery";
 type GalleryFilter = "all" | "synced" | "unsynced";
 type MapFocus = "all" | "user" | "parcel";
 type MapOverlay = "points" | "heatmap";
-type DueFilter = "planned" | "overdue" | "today" | "upcoming";
+type DueFilter = "overdue" | "today" | "upcoming";
 
 const GALLERY_IMAGE_A =
   "https://www.figma.com/api/mcp/asset/75d16a2c-668e-422d-85a7-eeb5a3b60544";
@@ -163,7 +163,7 @@ function getStatusLabel(status: TravailJobStatus): string {
     case "done":
       return "Terminé";
     default:
-      return "Non commencé";
+      return "Planifié";
   }
 }
 
@@ -382,7 +382,7 @@ function buildTravailJobs(todayIso: string): TravailJob[] {
     return {
       ...seed,
       displayTitle: seed.parcelName,
-      displayMeta: `${seed.type === "estimation" ? "Estimation" : "Calibre"} ${seed.year} • #${seed.yearlySequence} • ${seed.sectorName}`,
+      displayMeta: `${seed.type === "estimation" ? "Estimation Volume" : "Calibre"} ${seed.year} • #${seed.yearlySequence} • ${seed.sectorName}`,
       referenceName: buildReferenceName(seed),
       remainingImages,
       progressRatio,
@@ -468,11 +468,12 @@ export function WorkerAppTravailPage({
   onLayoutModeChange,
 }: WorkerAppTravailPageProps) {
   const [syncStateIndex, setSyncStateIndex] = useState(2);
-  const [activeFilter, setActiveFilter] = useState<TravailFilter>("all");
+  const [activeFilter, setActiveFilter] = useState<TravailFilter>("estimation");
   const [searchQuery, setSearchQuery] = useState("");
   const [isTravailFiltersSheetOpen, setIsTravailFiltersSheetOpen] = useState(false);
   const [selectedStatusFilters, setSelectedStatusFilters] = useState<TravailJobStatus[]>([]);
   const [selectedDueFilters, setSelectedDueFilters] = useState<DueFilter[]>([]);
+  const [selectedEstimationFilters, setSelectedEstimationFilters] = useState<number[]>([]);
   const [selectedSectorFilters, setSelectedSectorFilters] = useState<string[]>([]);
 
   const todayIso = useMemo(() => getCurrentIsoDate(), []);
@@ -504,6 +505,7 @@ export function WorkerAppTravailPage({
   const [isCameraDemoOpen, setIsCameraDemoOpen] = useState(false);
   const [isDetailScrolled, setIsDetailScrolled] = useState(false);
   const [isParcelleSheetOpen, setIsParcelleSheetOpen] = useState(false);
+  const [isEstimationConfigSheetOpen, setIsEstimationConfigSheetOpen] = useState(false);
   const detailContentRef = useRef<HTMLDivElement>(null);
   const syncState = syncStates[syncStateIndex];
   const isOffline = syncState.offline;
@@ -516,6 +518,7 @@ export function WorkerAppTravailPage({
 
   const filterOptions = useMemo(
     () => ({
+      estimations: [1, 2, 3],
       sectors: Array.from(new Set(jobs.map((job) => job.sectorName))).sort((a, b) => a.localeCompare(b, "fr")),
     }),
     [jobs]
@@ -523,13 +526,14 @@ export function WorkerAppTravailPage({
   const activeAdvancedFilterCount =
     selectedStatusFilters.length +
     selectedDueFilters.length +
+    selectedEstimationFilters.length +
     selectedSectorFilters.length;
 
   const visibleJobs = useMemo(() => {
     const normalizedQuery = normalizeSearchValue(searchQuery.trim());
 
     return jobs
-      .filter((job) => activeFilter === "all" || job.type === activeFilter)
+      .filter((job) => job.type === activeFilter)
       .filter((job) => {
         const detail = getEstimationDetail(job);
         const matchesSearch =
@@ -540,18 +544,20 @@ export function WorkerAppTravailPage({
         const matchesStatus =
           selectedStatusFilters.length === 0 || selectedStatusFilters.includes(job.status);
         const dueState: DueFilter =
-          job.status === "notStarted" && parseIsoDateToTime(job.dueDate) > parseIsoDateToTime(todayIso)
-            ? "planned"
-            : job.dueDate === todayIso
+          job.dueDate === todayIso
             ? "today"
             : parseIsoDateToTime(job.dueDate) < parseIsoDateToTime(todayIso)
               ? "overdue"
               : "upcoming";
         const matchesDue = selectedDueFilters.length === 0 || selectedDueFilters.includes(dueState);
+        const matchesEstimation =
+          job.type !== "estimation" ||
+          selectedEstimationFilters.length === 0 ||
+          selectedEstimationFilters.includes(job.yearlySequence);
         const matchesSector =
           selectedSectorFilters.length === 0 || selectedSectorFilters.includes(job.sectorName);
 
-        return matchesSearch && matchesStatus && matchesDue && matchesSector;
+        return matchesSearch && matchesStatus && matchesDue && matchesEstimation && matchesSector;
       })
       .sort(sortTravailJobs);
   }, [
@@ -559,13 +565,13 @@ export function WorkerAppTravailPage({
     jobs,
     searchQuery,
     selectedDueFilters,
+    selectedEstimationFilters,
     selectedSectorFilters,
     selectedStatusFilters,
     todayIso,
   ]);
   const jobCounts = useMemo(
     () => ({
-      all: jobs.length,
       estimation: jobs.filter((job) => job.type === "estimation").length,
       calibre: jobs.filter((job) => job.type === "calibre").length,
     }),
@@ -630,7 +636,7 @@ export function WorkerAppTravailPage({
     </span>
   );
 
-  const toggleFilterValue = useCallback(<T extends string,>(
+  const toggleFilterValue = useCallback(<T extends string | number,>(
     value: T,
     values: T[],
     setter: (nextValues: T[]) => void
@@ -641,6 +647,7 @@ export function WorkerAppTravailPage({
   const clearTravailFilters = useCallback(() => {
     setSelectedStatusFilters([]);
     setSelectedDueFilters([]);
+    setSelectedEstimationFilters([]);
     setSelectedSectorFilters([]);
   }, []);
 
@@ -664,6 +671,7 @@ export function WorkerAppTravailPage({
     setIsMapLayersSheetOpen(false);
     setIsCameraDemoOpen(false);
     setIsParcelleSheetOpen(false);
+    setIsEstimationConfigSheetOpen(false);
   };
 
   const closeEstimationDetail = () => {
@@ -675,6 +683,7 @@ export function WorkerAppTravailPage({
     setIsMapLayersSheetOpen(false);
     setIsCameraDemoOpen(false);
     setIsParcelleSheetOpen(false);
+    setIsEstimationConfigSheetOpen(false);
   };
 
   const handleDetailScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
@@ -795,14 +804,14 @@ export function WorkerAppTravailPage({
                                     dotClass: styles.travailProgressLegendDotSynced,
                                   },
                                   {
+                                    label: "Non Synchronisées",
+                                    value: selectedEstimationDetail.pendingSyncImages,
+                                    dotClass: styles.travailProgressLegendDotPending,
+                                  },
+                                  {
                                     label: "Non capturées",
                                     value: progressionStats.uncapturedImages,
                                     dotClass: styles.travailProgressLegendDotUncaptured,
-                                  },
-                                  {
-                                    label: "En attente",
-                                    value: selectedEstimationDetail.pendingSyncImages,
-                                    dotClass: styles.travailProgressLegendDotPending,
                                   },
                                 ].map((item) => (
                                   <div key={item.label} className={styles.travailProgressRightRow}>
@@ -833,29 +842,22 @@ export function WorkerAppTravailPage({
                         </section>
                       ) : null}
 
-                      {/* ── Infos ── */}
+                      {/* ── Informations ── */}
                       <section className={styles.travailDetailSection}>
-                        <h3 className={styles.posteSectionTitle}>Infos</h3>
+                        <h3 className={styles.posteSectionTitle}>Informations</h3>
                         <div className={styles.posteConfigCard}>
                           {renderDetailRows([
                             {
                               label: "Estimation",
                               value: `Estimation ${selectedEstimationJob.year} #${selectedEstimationJob.yearlySequence}`,
                             },
-                            { label: "Secteur", value: selectedEstimationJob.sectorName },
                             { label: "Échéance", value: selectedEstimationJob.dueLabel.replace("Fin : ", "") },
                           ])}
                           <div className={styles.travailDetailStatusRow}>
                             <span className={styles.travailDetailLabel}>Statut</span>
                             {renderStatusBadge(selectedEstimationJob)}
                           </div>
-                        </div>
-                      </section>
-
-                      {/* ── Informations estimation ── */}
-                      <section className={styles.travailDetailSection}>
-                        <h3 className={styles.posteSectionTitle}>Informations estimation</h3>
-                        <div className={styles.posteConfigCard}>
+                          <div className={styles.travailDetailDivider} />
                           <button
                             type="button"
                             className={styles.travailParcelleNavInline}
@@ -875,15 +877,24 @@ export function WorkerAppTravailPage({
                             <span className={styles.travailParcelleNavChevron} aria-hidden="true">chevron_right</span>
                           </button>
                           <div className={styles.travailDetailDivider} />
-                          {renderDetailRows([
-                            { label: "Pourcentage d’arbres", value: selectedEstimationDetail.settings.treePercentage },
-                            { label: "Orientation", value: selectedEstimationDetail.settings.orientation },
-                            {
-                              label: "Multi-images",
-                              value: selectedEstimationDetail.settings.multiImagesEnabled ? "Activé" : "Désactivé",
-                            },
-                            { label: "Mode", value: selectedEstimationDetail.settings.mode },
-                          ])}
+                          <button
+                            type="button"
+                            className={styles.travailParcelleNavInline}
+                            onClick={() => setIsEstimationConfigSheetOpen(true)}
+                            aria-label="Ouvrir la configuration estimation"
+                          >
+                            <div className={styles.travailParcelleNavIcon} aria-hidden="true">
+                              <span>tune</span>
+                            </div>
+                            <div className={styles.travailParcelleNavText}>
+                              <strong>Configuration estimation</strong>
+                              <span>
+                                {selectedEstimationDetail.settings.treePercentage} • {selectedEstimationDetail.settings.orientation} •{" "}
+                                {selectedEstimationDetail.settings.mode}
+                              </span>
+                            </div>
+                            <span className={styles.travailParcelleNavChevron} aria-hidden="true">chevron_right</span>
+                          </button>
                         </div>
                       </section>
 
@@ -1082,13 +1093,6 @@ export function WorkerAppTravailPage({
                         <span className={styles.travailParcelleSheetTag}>Arboriculteur</span>
                       </div>
                       <div className={styles.travailParcelleSheetDivider} aria-hidden="true" />
-                      <div className={styles.travailParcelleSheetMap}>
-                        <TravailParcelPreviewMap parcelIndex={selectedEstimationJob.yearlySequence - 1} />
-                        <div className={styles.travailParcelleSheetMapHint}>
-                          <span aria-hidden="true">crop_free</span>
-                          <span>Parcelle KML</span>
-                        </div>
-                      </div>
                       <div className={styles.travailParcelleSheetRows}>
                         {[
                           { label: "Type de fruit", value: selectedEstimationDetail.parcel.fruitType, icon: "spa" },
@@ -1098,6 +1102,51 @@ export function WorkerAppTravailPage({
                           { label: "Espacement", value: selectedEstimationDetail.parcel.spacing, icon: "straighten" },
                           { label: "Secteur", value: selectedEstimationJob.sectorName, icon: "map" },
                           { label: "Région", value: "Cap Bon", icon: "location_on" },
+                        ].map((item) => (
+                          <div key={item.label} className={styles.travailParcelleSheetRow}>
+                            <span className={styles.travailParcelleSheetRowIcon} aria-hidden="true">{item.icon}</span>
+                            <span className={styles.travailParcelleSheetRowLabel}>{item.label}</span>
+                            <span className={styles.travailParcelleSheetRowValue}>{item.value}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
+                {isEstimationConfigSheetOpen ? (
+                  <div
+                    className={styles.travailParcelleSheetOverlay}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="Configuration estimation"
+                    onClick={() => setIsEstimationConfigSheetOpen(false)}
+                  >
+                    <div
+                      className={styles.travailParcelleSheet}
+                      onClick={(event) => event.stopPropagation()}
+                    >
+                      <div className={styles.travailParcelleSheetHandle} aria-hidden="true" />
+                      <div className={styles.travailParcelleSheetHeader}>
+                        <div className={styles.travailParcelleSheetHeaderIcon} aria-hidden="true">
+                          <span>tune</span>
+                        </div>
+                        <div className={styles.travailParcelleSheetHeaderText}>
+                          <h3>Estimation configuration</h3>
+                          <p>{selectedEstimationJob.displayTitle}</p>
+                        </div>
+                        <span className={styles.travailParcelleSheetTag}>Capture</span>
+                      </div>
+                      <div className={styles.travailParcelleSheetDivider} aria-hidden="true" />
+                      <div className={styles.travailParcelleSheetRows}>
+                        {[
+                          { label: "Pourcentage d’arbres", value: selectedEstimationDetail.settings.treePercentage, icon: "percent" },
+                          { label: "Orientation", value: selectedEstimationDetail.settings.orientation, icon: "explore" },
+                          {
+                            label: "Multi-images",
+                            value: selectedEstimationDetail.settings.multiImagesEnabled ? "Activé" : "Désactivé",
+                            icon: "photo_library",
+                          },
+                          { label: "Mode", value: selectedEstimationDetail.settings.mode, icon: "crop_portrait" },
                         ].map((item) => (
                           <div key={item.label} className={styles.travailParcelleSheetRow}>
                             <span className={styles.travailParcelleSheetRowIcon} aria-hidden="true">{item.icon}</span>
@@ -1174,8 +1223,7 @@ export function WorkerAppTravailPage({
 
             <div className={styles.travailSegmentedTabs} role="tablist" aria-label="Filtres travail">
               {[
-                { key: "all" as TravailFilter, label: "Tous", count: frameView === "empty" ? 0 : jobCounts.all },
-                { key: "estimation" as TravailFilter, label: "Estimation", count: frameView === "empty" ? 0 : jobCounts.estimation },
+                { key: "estimation" as TravailFilter, label: "Volume", count: frameView === "empty" ? 0 : jobCounts.estimation },
                 { key: "calibre" as TravailFilter, label: "Calibre", count: frameView === "empty" ? 0 : jobCounts.calibre },
               ].map((tab) => (
                 <button
@@ -1309,8 +1357,7 @@ export function WorkerAppTravailPage({
                     </div>
 
                     <div className={styles.travailJobMetaRow}>
-                      <span>{job.type === "estimation" ? "Estimation" : "Calibre"} • #{job.yearlySequence}</span>
-                      <span>{job.sectorName}</span>
+                      <span>{job.displayMeta}</span>
                     </div>
 
                     <div className={styles.travailJobDueRow}>
@@ -1403,19 +1450,21 @@ export function WorkerAppTravailPage({
                     Réinitialiser
                   </button>
                 </div>
-                <div className={styles.travailFiltersResultBar}>
-                  <span>Résultats</span>
-                  <strong>{visibleJobs.length}</strong>
-                </div>
                 <div className={styles.travailFiltersGroups}>
                   <section className={styles.travailFiltersGroup}>
-                    <h4>
-                      <span className={styles.googleSymbol} aria-hidden="true">pending_actions</span>
-                      Progression
-                    </h4>
+                    <div className={styles.travailFiltersGroupHeader}>
+                      <span className={styles.travailFiltersGroupIcon} aria-hidden="true">
+                        <span className={styles.googleSymbol}>progress_activity</span>
+                      </span>
+                      <div className={styles.travailFiltersGroupCopy}>
+                        <h4>Progression</h4>
+                        <p>Filtrer par etat d'avancement</p>
+                      </div>
+                      <span className={styles.travailFiltersGroupCount}>{selectedStatusFilters.length}</span>
+                    </div>
                     <div className={styles.travailFiltersChipGrid}>
                       {[
-                        { value: "notStarted" as TravailJobStatus, label: "Non commencé" },
+                        { value: "notStarted" as TravailJobStatus, label: "Planifié" },
                         { value: "inProgress" as TravailJobStatus, label: "En cours" },
                         { value: "done" as TravailJobStatus, label: "Terminé" },
                       ].map((option) => {
@@ -1428,23 +1477,28 @@ export function WorkerAppTravailPage({
                             onClick={() => toggleFilterValue(option.value, selectedStatusFilters, setSelectedStatusFilters)}
                           >
                             {selected ? <span className={styles.travailFiltersChipCheckmark} aria-hidden="true">check</span> : null}
-                            {option.label}
+                            <span className={styles.travailFiltersChipLabel}>{option.label}</span>
                           </button>
                         );
                       })}
                     </div>
                   </section>
                   <section className={styles.travailFiltersGroup}>
-                    <h4>
-                      <span className={styles.googleSymbol} aria-hidden="true">event</span>
-                      Échéance
-                    </h4>
+                    <div className={styles.travailFiltersGroupHeader}>
+                      <span className={styles.travailFiltersGroupIcon} aria-hidden="true">
+                        <span className={styles.googleSymbol}>schedule</span>
+                      </span>
+                      <div className={styles.travailFiltersGroupCopy}>
+                        <h4>Échéance</h4>
+                        <p>Reperer les taches urgentes</p>
+                      </div>
+                      <span className={styles.travailFiltersGroupCount}>{selectedDueFilters.length}</span>
+                    </div>
                     <div className={styles.travailFiltersChipGrid}>
                       {[
-                        { value: "planned" as DueFilter, label: "Planifié" },
                         { value: "overdue" as DueFilter, label: "En retard" },
-                        { value: "today" as DueFilter, label: "Aujourd’hui" },
-                        { value: "upcoming" as DueFilter, label: "À venir" },
+                        { value: "today" as DueFilter, label: "Aujourd'hui" },
+                        { value: "upcoming" as DueFilter, label: "A venir" },
                       ].map((option) => {
                         const selected = selectedDueFilters.includes(option.value);
                         return (
@@ -1455,18 +1509,58 @@ export function WorkerAppTravailPage({
                             onClick={() => toggleFilterValue(option.value, selectedDueFilters, setSelectedDueFilters)}
                           >
                             {selected ? <span className={styles.travailFiltersChipCheckmark} aria-hidden="true">check</span> : null}
-                            {option.label}
+                            <span className={styles.travailFiltersChipLabel}>{option.label}</span>
                           </button>
                         );
                       })}
                     </div>
                   </section>
                   <section className={styles.travailFiltersGroup}>
-                    <h4>
-                      <span className={styles.googleSymbol} aria-hidden="true">map</span>
-                      Secteurs
-                    </h4>
-                    <div className={styles.travailFiltersChipGrid}>
+                    <div className={styles.travailFiltersGroupHeader}>
+                      <span className={styles.travailFiltersGroupIcon} aria-hidden="true">
+                        <span className={styles.googleSymbol}>filter_3</span>
+                      </span>
+                      <div className={styles.travailFiltersGroupCopy}>
+                        <h4>Estimation</h4>
+                        <p>Choisir la serie d'estimation</p>
+                      </div>
+                      <span className={styles.travailFiltersGroupCount}>{selectedEstimationFilters.length}</span>
+                    </div>
+                    <div className={`${styles.travailFiltersChipGrid} ${styles.travailFiltersChipGridTight}`}>
+                      {filterOptions.estimations.map((estimationNumber) => {
+                        const selected = selectedEstimationFilters.includes(estimationNumber);
+                        return (
+                          <button
+                            key={estimationNumber}
+                            className={`${styles.travailFiltersChip} ${selected ? styles.travailFiltersChipActive : ""}`}
+                            type="button"
+                            onClick={() =>
+                              toggleFilterValue(
+                                estimationNumber,
+                                selectedEstimationFilters,
+                                setSelectedEstimationFilters
+                              )
+                            }
+                          >
+                            {selected ? <span className={styles.travailFiltersChipCheckmark} aria-hidden="true">check</span> : null}
+                            <span className={styles.travailFiltersChipLabel}>{`Estimation ${estimationNumber}`}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </section>
+                  <section className={styles.travailFiltersGroup}>
+                    <div className={styles.travailFiltersGroupHeader}>
+                      <span className={styles.travailFiltersGroupIcon} aria-hidden="true">
+                        <span className={styles.googleSymbol}>location_on</span>
+                      </span>
+                      <div className={styles.travailFiltersGroupCopy}>
+                        <h4>Secteurs</h4>
+                        <p>Limiter la liste par zone</p>
+                      </div>
+                      <span className={styles.travailFiltersGroupCount}>{selectedSectorFilters.length}</span>
+                    </div>
+                    <div className={`${styles.travailFiltersChipGrid} ${styles.travailFiltersChipGridTight}`}>
                       {filterOptions.sectors.map((sector) => {
                         const selected = selectedSectorFilters.includes(sector);
                         return (
@@ -1477,7 +1571,7 @@ export function WorkerAppTravailPage({
                             onClick={() => toggleFilterValue(sector, selectedSectorFilters, setSelectedSectorFilters)}
                           >
                             {selected ? <span className={styles.travailFiltersChipCheckmark} aria-hidden="true">check</span> : null}
-                            {sector}
+                            <span className={styles.travailFiltersChipLabel}>{sector}</span>
                           </button>
                         );
                       })}
@@ -1517,8 +1611,10 @@ export function WorkerAppTravailPage({
       >
         <WorkerAppStatusBar theme={isMapDetail ? "dark" : theme} transparent={isMapDetail} />
         {content}
-        {selectedEstimationJob || isTravailFiltersSheetOpen ? null : <WorkerAppHomeBottomBarScreen activeIndex={1} />}
-        {isTravailFiltersSheetOpen ? null : (
+        {selectedEstimationJob || isTravailFiltersSheetOpen || isEstimationConfigSheetOpen ? null : (
+          <WorkerAppHomeBottomBarScreen activeIndex={1} />
+        )}
+        {isTravailFiltersSheetOpen || isEstimationConfigSheetOpen ? null : (
           <WorkerAppNavigationScreen surface={selectedEstimationJob ? "page" : "default"} />
         )}
       </div>
