@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { Suspense, useMemo } from "react";
 import {
   PostFixePreviewState,
   SecteursFrameView,
@@ -58,7 +58,7 @@ const frameMap: Record<
   detailLoading: { frameView: "loading", previewState: "detail-loading" },
 };
 
-export default function PostFixePreviewPage() {
+function PostFixePreviewContent() {
   const searchParams = useSearchParams();
   const frameId = searchParams.get("frame") ?? "01";
   const themeParam = searchParams.get("theme");
@@ -92,5 +92,13 @@ export default function PostFixePreviewPage() {
         isInteractive={false}
       />
     </main>
+  );
+}
+
+export default function PostFixePreviewPage() {
+  return (
+    <Suspense fallback={null}>
+      <PostFixePreviewContent />
+    </Suspense>
   );
 }
