@@ -7,7 +7,7 @@ type HomeNavItem = {
 
 const navItems: HomeNavItem[] = [
   { iconName: "home", label: "Accueil" },
-  { iconName: "assignment", label: "Travail" },
+  { iconName: "task_alt", label: "Travail" },
   { iconName: "view_timeline", label: "Post Fixe" },
   { iconName: "inbox", label: "Boîte" },
 ];

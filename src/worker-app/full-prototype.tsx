@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import styles from "./worker-app.module.css";
 import { WORKER_APP_POST_FIXE_PAGE_NAME } from "./constants";
 import { WorkerAppPostFixePage } from "./post-fixe";
+import { WorkerAppTravailPage } from "./travail";
 import { WorkerAppNavigationScreen } from "./screens/navigation-screen";
 import { WorkerAppHomeBottomBarScreen } from "./screens/home-bottom-bar-screen";
 import { WorkerAppStatusBar } from "./screens/status-bar";
@@ -51,12 +52,14 @@ export function WorkerAppFullPrototypePage({
 }: WorkerAppFullPrototypePageProps) {
   const [activeTab, setActiveTab] = useState<PrototypeTab>("postFixe");
   const [postFixeLayoutMode, setPostFixeLayoutMode] = useState<"default" | "fullScreen">("default");
+  const [travailLayoutMode, setTravailLayoutMode] = useState<"default" | "fullScreen">("default");
   const resolvedFrameTheme = frameTheme ?? theme;
   const frameClass =
     resolvedFrameTheme === "light" ? styles.androidCanvasLightFrame : styles.androidCanvas;
   const activeTabMeta = useMemo(() => prototypeTabMeta[activeTab], [activeTab]);
   const shouldShowPrototypeBottomBar =
-    !(activeTab === "postFixe" && postFixeLayoutMode === "fullScreen");
+    !(activeTab === "postFixe" && postFixeLayoutMode === "fullScreen") &&
+    !(activeTab === "travail" && travailLayoutMode === "fullScreen");
 
   return (
     <div className={showDeviceFrame ? frameClass : styles.androidCanvasNoFrame}>
@@ -74,6 +77,14 @@ export function WorkerAppFullPrototypePage({
             frameView="data"
             embedded
             onLayoutModeChange={setPostFixeLayoutMode}
+          />
+        ) : activeTab === "travail" ? (
+          <WorkerAppTravailPage
+            showDeviceFrame={false}
+            theme={theme}
+            frameTheme={frameTheme}
+            embedded
+            onLayoutModeChange={setTravailLayoutMode}
           />
         ) : (
           <div className={`${styles.homeContent} ${styles.prototypeScreenContent}`}>
@@ -113,7 +124,12 @@ export function WorkerAppFullPrototypePage({
           />
         ) : null}
         <WorkerAppNavigationScreen
-          surface={activeTab === "postFixe" && postFixeLayoutMode === "fullScreen" ? "page" : "default"}
+          surface={
+            (activeTab === "postFixe" && postFixeLayoutMode === "fullScreen") ||
+            (activeTab === "travail" && travailLayoutMode === "fullScreen")
+              ? "page"
+              : "default"
+          }
         />
       </div>
     </div>

@@ -117,13 +117,14 @@
   --nav-border: var(--color-border-default, #e3e8ee);
   --nav-on-surface: var(--color-text-primary, #17211f);
   --nav-on-surface-variant: var(--color-text-secondary, #5f6f68);
-  --nav-on-surface-disabled: var(--color-text-disabled, #b6c0cb);
+  --nav-on-surface-disabled: var(--color-text-disabled, #7a8898);
   --nav-secondary-container: var(--color-brand-primary-subtle, #e8f8f2);
   --nav-secondary-container-pressed: var(--color-feedback-success-bg, #e8f8f2);
   --nav-on-secondary-container: var(--color-brand-primary, #01a362);
   --nav-on-secondary-container-hover: var(--color-brand-primary-hover, #018b54);
   --nav-label-active: var(--color-brand-primary-text, #016642);
   --nav-focus-ring: var(--elevation-focus-default, 0 0 0 3px rgb(1 163 98 / 35%));
+  --system-status-height: 52px;
 
   position: relative;
   z-index: 2;
@@ -167,7 +168,7 @@
   --nav-border: #e3e8ee;
   --nav-on-surface: #17211f;
   --nav-on-surface-variant: #5f6f68;
-  --nav-on-surface-disabled: #b6c0cb;
+  --nav-on-surface-disabled: #7a8898;
   --nav-secondary-container: #e8f8f2;
   --nav-secondary-container-pressed: #e8f8f2;
   --nav-on-secondary-container: #01a362;
@@ -243,7 +244,7 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  height: 48px;
+  height: var(--system-status-height);
   padding: 10px 24px;
   background: var(--system-status-surface);
 }
@@ -277,7 +278,10 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: var(--system-cutout);
+  background-color: var(--system-cutout);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 24px 24px;
   transform: translateX(-50%);
 }
 
@@ -313,6 +317,12 @@
   margin-left: 5px;
 }
 
+.statusAssetIcon {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
 .statusSymbol {
   font-family: "Material Symbols Outlined", sans-serif;
   font-variation-settings:
@@ -341,13 +351,13 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  height: calc(100% - 48px - 24px);
+  height: calc(100% - var(--system-status-height) - 24px);
   background: transparent;
   padding: var(--screen-margin);
 }
 
 .blankContent {
-  height: calc(100% - 48px - 24px);
+  height: calc(100% - var(--system-status-height) - 24px);
   background: var(--ds-card);
 }
 
@@ -425,7 +435,7 @@
 }
 
 .homeContent {
-  height: calc(100% - 48px - 80px - 24px);
+  height: calc(100% - var(--system-status-height) - 80px - 24px);
   background: var(--ds-surface);
   padding: var(--screen-margin);
 }
@@ -439,7 +449,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  height: calc(100% - 48px - 80px - 24px);
+  height: calc(100% - var(--system-status-height) - 80px - 24px);
   overflow-y: auto;
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -448,7 +458,7 @@
 }
 
 .secteursContentNoBottomBar {
-  height: calc(100% - 48px - 24px);
+  height: calc(100% - var(--system-status-height) - 24px);
   padding-bottom: 12px;
 }
 
@@ -538,16 +548,16 @@
 .posteFixeTitle {
   margin: 0;
   color: var(--header-title);
-  font-size: var(--fs-appbar-title);
-  font-weight: 700;
-  line-height: 1.25;
-  letter-spacing: -0.01em;
+  font-size: var(--fs-headline-small);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 }
 
 .posteFixeTitleBlock {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .posteFixeSubtitle {
@@ -555,7 +565,7 @@
   color: var(--header-subtitle);
   font-family: var(--font-geist-sans), sans-serif;
   font-size: var(--fs-caption);
-  font-weight: 400;
+  font-weight: 500;
   line-height: 1.3;
 }
 
@@ -759,6 +769,2722 @@
   padding: 6px 10px;
 }
 
+.travailContent {
+  position: relative;
+  gap: 12px;
+  padding-top: 0;
+  background: var(--post-fixe-page-surface);
+}
+
+.travailContent .posteFixeTitle {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.travailContent .posteFixeSubtitle {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.travailFilterTabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  margin-right: calc(var(--screen-margin) * -1);
+  margin-left: calc(var(--screen-margin) * -1);
+  padding-right: var(--screen-margin);
+  padding-left: var(--screen-margin);
+  border-bottom: 1px solid var(--ds-border);
+}
+
+.travailSegmentedTabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  min-height: 44px;
+  border-bottom: 1px solid var(--ds-border);
+  background: var(--header-surface);
+}
+
+.travailSegmentedTab {
+  position: relative;
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 0 8px 3px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.travailSegmentedTabActive {
+  color: var(--ds-brand);
+}
+
+.travailSegmentedTabActive::after {
+  position: absolute;
+  right: 18px;
+  bottom: 0;
+  left: 18px;
+  height: 3px;
+  border-radius: 999px 999px 0 0;
+  background: var(--ds-brand);
+  content: "";
+}
+
+.travailSegmentedTab:focus-visible {
+  outline: 2px solid var(--ds-brand);
+  outline-offset: 2px;
+}
+
+.travailSegmentedTabCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--ds-text-secondary) 9%, transparent);
+  color: var(--ds-text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 0 6px;
+}
+
+.travailSegmentedTabActive .travailSegmentedTabCount {
+  background: color-mix(in srgb, var(--ds-brand) 10%, transparent);
+  color: var(--ds-brand);
+}
+
+.travailSearchRow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 44px;
+  border: 1px solid var(--ds-border);
+  border-radius: 14px;
+  background: var(--ds-card);
+  margin-bottom: 4px;
+  overflow: hidden;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.travailSearchRow:focus-within {
+  border-color: color-mix(in srgb, var(--ds-brand) 42%, var(--ds-border));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ds-brand) 10%, transparent);
+}
+
+.travailSearchField {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  color: var(--ds-text-muted);
+  padding: 0 12px;
+  background: transparent;
+}
+
+.travailSearchField span {
+  flex-shrink: 0;
+  font-size: 18px;
+}
+
+.travailSearchField input {
+  width: 100%;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.travailSearchField input::placeholder {
+  color: var(--ds-text-muted);
+  font-weight: 400;
+}
+
+.travailSearchDivider {
+  width: 1px;
+  height: 22px;
+  flex-shrink: 0;
+  background: var(--ds-border);
+}
+
+.travailFilterButton {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 100%;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ds-text-secondary);
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.travailFilterButton span.googleSymbol {
+  font-size: 20px;
+}
+
+.travailFilterButtonActive {
+  color: var(--ds-brand);
+}
+
+.travailFilterButtonCount {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 8px;
+  height: 8px;
+  border: 1.5px solid var(--ds-card);
+  border-radius: var(--radius-full);
+  background: var(--ds-brand);
+}
+
+.travailFiltersSheetOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 760;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: color-mix(in srgb, var(--ds-text-primary) 24%, transparent);
+  padding: 0;
+}
+
+.travailFiltersSheet {
+  display: flex;
+  width: 100%;
+  max-height: calc(100% - var(--system-status-height));
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 28px 28px 0 0;
+  background: var(--ds-card);
+}
+
+.travailFiltersSheetHandle {
+  width: 48px;
+  height: 5px;
+  flex-shrink: 0;
+  align-self: center;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--ds-text-muted) 58%, transparent);
+  margin-top: 10px;
+}
+
+.travailFiltersSheetHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--ds-border);
+  padding: 22px 18px 18px;
+}
+
+.travailFiltersSheetHeader h3 {
+  margin: 0;
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.travailFiltersSheetHeader p {
+  margin: 8px 0 0;
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.travailFiltersResetButton {
+  border: none;
+  background: transparent;
+  color: var(--ds-brand);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 6px 0;
+}
+
+.travailFiltersResultBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 48px;
+  border-bottom: 1px solid var(--ds-border);
+  padding: 0 18px;
+}
+
+.travailFiltersResultBar span {
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.travailFiltersResultBar strong {
+  display: grid;
+  place-items: center;
+  min-width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--ds-brand) 10%, transparent);
+  color: var(--ds-brand);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 0 8px;
+}
+
+.travailFiltersGroups {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+  gap: 30px;
+  overflow-y: auto;
+  padding: 26px 18px 20px;
+}
+
+.travailFiltersGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.travailFiltersGroup h4 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.travailFiltersGroup h4 span {
+  color: var(--ds-brand);
+  font-size: 24px;
+}
+
+.travailFiltersChipGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 8px;
+}
+
+.travailFiltersChip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  height: 32px;
+  border: 1px solid var(--ds-border-strong);
+  border-radius: var(--radius-full);
+  background: var(--ds-card);
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 0 16px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.travailFiltersChip:focus-visible {
+  outline: 2px solid var(--ds-brand);
+  outline-offset: 2px;
+}
+
+.travailFiltersChipCheckmark {
+  display: inline-grid;
+  width: 18px;
+  height: 18px;
+  place-items: center;
+  flex: 0 0 18px;
+  margin-right: 8px;
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 18px;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 18;
+  line-height: 1;
+  color: currentColor;
+}
+
+.travailFiltersChipActive {
+  border-color: var(--ds-brand);
+  background: var(--ds-brand);
+  color: var(--ds-text-inverse);
+  font-weight: 700;
+  padding: 0 16px;
+}
+
+.travailFiltersSheetFooter {
+  border-top: 1px solid var(--ds-border);
+  padding: 12px 18px 18px;
+}
+
+.travailFiltersApplyButton {
+  width: 100%;
+  min-height: 48px;
+  border: none;
+  border-radius: 14px;
+  background: var(--ds-brand);
+  color: var(--ds-text-inverse);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.travailFilterTab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 44px;
+  border: none;
+  background: transparent;
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-button-tab);
+  font-weight: 600;
+  line-height: 1;
+  padding: 0 var(--space-2);
+}
+
+.travailFilterTabActive {
+  color: var(--ds-text-primary);
+}
+
+.travailFilterTabActive::after {
+  content: "";
+  position: absolute;
+  right: var(--space-3);
+  bottom: -1px;
+  left: var(--space-3);
+  height: 3px;
+  border-radius: var(--radius-full);
+  background: var(--ds-brand);
+}
+
+.travailFilterTab:focus-visible {
+  outline: 2px solid var(--ds-brand);
+  outline-offset: -2px;
+}
+
+.travailFilterTabCount {
+  color: var(--ds-text-muted);
+  font-size: var(--fs-chip);
+  font-weight: 600;
+}
+
+.travailFilterTabActive .travailFilterTabCount {
+  color: var(--ds-brand);
+}
+
+.travailDetailContent {
+  position: relative;
+  height: calc(100% - var(--system-status-height) - 24px);
+  padding-top: 0;
+  padding-bottom: 118px;
+}
+
+.travailDetailContentMap {
+  position: absolute;
+  inset: 0;
+  gap: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  padding: 0;
+}
+
+.travailMapScreen .statusBar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 720;
+  color: #fff;
+  background: transparent;
+}
+
+.travailMapScreen .cameraCutout {
+  display: none;
+}
+
+.travailMapScreen .statusAssetIcon {
+  filter: brightness(0) invert(1);
+}
+
+.travailM3Header {
+  min-height: 52px;
+  gap: 17px;
+  margin-right: calc(var(--screen-margin) * -1);
+  margin-left: calc(var(--screen-margin) * -1);
+  padding: 10px 14px;
+  background: transparent;
+}
+
+.travailM3Header .posteDetailHeaderText {
+  gap: 0;
+}
+
+.travailM3Header .posteDetailHeaderTitle {
+  color: var(--ds-text-primary);
+  font-size: var(--fs-appbar-title);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 0;
+}
+
+.travailM3Header .posteDetailHeaderLocation {
+  margin-top: 1px;
+  color: var(--ds-text-secondary);
+  font-size: var(--fs-caption);
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.travailM3Header .posteDetailHeaderText {
+  flex: 1;
+  min-width: 0;
+}
+
+.travailMapHeader {
+  align-items: flex-start;
+  padding-top: 8px;
+  padding-bottom: 12px;
+}
+
+.travailMapHeaderBody {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.travailMapHeaderEyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+  border-radius: 999px;
+  background: var(--ds-success-bg);
+  color: var(--ds-success-text);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 5px 9px;
+}
+
+.travailMapHeaderEyebrow span {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.travailMapHeaderTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.travailMapHeaderParcelTag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  border-radius: 999px;
+  background: #eef2f5;
+  color: #42525e;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 0 10px;
+}
+
+.travailMapHeaderMeta {
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.travailSyncHeaderBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--ds-warning-bg);
+  color: var(--ds-warning-text);
+  padding: 0 10px 0 8px;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.travailSyncHeaderBadge span:first-child {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 16px;
+}
+
+.travailDetailContinueBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  height: 42px;
+  border: none;
+  border-radius: 10px;
+  background: var(--ds-brand);
+  color: #fff;
+  cursor: pointer;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-body-secondary);
+  font-weight: 600;
+  line-height: 1;
+}
+
+.travailDetailContinueBtn span {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 18px;
+}
+
+.travailDetailDoneNote {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--ds-status-done-bg);
+  color: var(--ds-status-done-text);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-body-secondary);
+  font-weight: 500;
+}
+
+.travailDetailDoneNote span {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 16px;
+}
+
+.travailM3BackButton {
+  width: 34px;
+  height: 34px;
+  margin-left: -7px;
+  border-radius: 999px;
+}
+
+.travailM3BackButton .pageBackIcon {
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.travailDetailSection {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Carte tab ── */
+.travailMapSection {
+  display: flex;
+  position: absolute;
+  inset: 0;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  margin-top: 0;
+}
+
+.travailMapControlsCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: fit-content;
+  max-width: 100%;
+  border: 1px solid rgb(255 255 255 / 55%);
+  border-radius: 24px;
+  background: rgb(255 255 255 / 82%);
+  backdrop-filter: blur(14px);
+  padding: 12px;
+  box-shadow: 0 14px 32px rgb(15 23 42 / 14%);
+}
+
+.travailMapRoundButton {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: none;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 96%);
+  color: #2d3a35;
+  box-shadow: 0 4px 14px rgb(15 23 42 / 20%), 0 1px 3px rgb(15 23 42 / 10%);
+  cursor: pointer;
+  pointer-events: auto;
+  backdrop-filter: blur(10px);
+}
+
+.travailMapRoundButton span {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.travailMapTopBar {
+  position: absolute;
+  top: calc(var(--system-status-height) + 12px);
+  left: 16px;
+  z-index: 650;
+  display: inline-flex;
+  align-items: center;
+  max-width: calc(100% - 92px);
+  min-height: 50px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 96%);
+  box-shadow: 0 4px 16px rgb(15 23 42 / 18%), 0 1px 4px rgb(15 23 42 / 10%);
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+}
+
+.travailMapTopBack {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 50px;
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: #4d5557;
+  cursor: pointer;
+}
+
+.travailMapTopBack span {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 25px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.travailMapTopTitle {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 16px 0 0;
+}
+
+.travailMapTopTitle strong {
+  color: #17211f;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.travailMapTopTitle span {
+  color: #5f6f68;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.travailMapControlsLabel {
+  color: #61717b;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.travailMapToggleGroup {
+  display: inline-flex;
+  gap: 4px;
+  width: fit-content;
+  border-radius: 999px;
+  background: #f2f5f7;
+  padding: 4px;
+}
+
+.travailMapToggle {
+  min-height: 34px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: #5f6b66;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 0 18px;
+}
+
+.travailMapToggleActive {
+  background: var(--ds-brand);
+  color: #fff;
+  font-weight: 600;
+}
+
+.travailMapActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.travailMapActionChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  border: 1px solid #d6dde4;
+  border-radius: 999px;
+  background: #fff;
+  color: #33424d;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 0 16px;
+}
+
+.travailMapActionChip span {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 17px;
+  line-height: 1;
+}
+
+.travailMapView {
+  position: absolute;
+  inset: 0;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 0;
+  background: #d1d5db;
+}
+
+.travailMapOverlayTop {
+  position: absolute;
+  top: calc(var(--system-status-height) + 12px);
+  right: 16px;
+  z-index: 650;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.travailMapOverlayBottom {
+  position: absolute;
+  right: 16px;
+  bottom: 108px;
+  left: auto;
+  z-index: 650;
+  pointer-events: auto;
+}
+
+.travailMapInfoCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid rgb(255 255 255 / 45%);
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgb(18 28 26 / 74%), rgb(18 28 26 / 56%));
+  backdrop-filter: blur(14px);
+  color: #fff;
+  padding: 14px 16px;
+  box-shadow: 0 18px 34px rgb(15 23 42 / 18%);
+}
+
+.travailMapInfoTop {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.travailMapInfoTop strong {
+  display: block;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.travailMapInfoTop span {
+  display: block;
+  margin-top: 4px;
+  color: rgb(255 255 255 / 78%);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.travailMapInfoBadge {
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 16%);
+  color: #fff;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0 10px;
+}
+
+.travailMapInfoStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.travailMapInfoStats span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 10%);
+  color: rgb(255 255 255 / 88%);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 0 9px;
+}
+
+.travailMapLayersSheetOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 760;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgb(15 23 42 / 18%);
+  padding: 0;
+}
+
+.travailMapLayersSheet {
+  display: flex;
+  width: 100%;
+  min-height: 330px;
+  flex-direction: column;
+  gap: 18px;
+  border-radius: 28px 28px 0 0;
+  background: #fff;
+  padding: 14px 16px 34px;
+  box-shadow: 0 -18px 42px rgb(15 23 42 / 24%);
+}
+
+.travailMapLayersHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.travailMapLayersHeader h3 {
+  margin: 0;
+  color: #17211f;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.travailMapLayersHeader p {
+  margin: 3px 0 0;
+  color: #5f6f68;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.travailMapLayersClose {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 999px;
+  background: #f3f5f7;
+  color: #5f6f68;
+}
+
+.travailMapLayersClose span {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.travailMapLayerList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.travailMapLayerOption {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 74px;
+  border: 1px solid #e3e8ee;
+  border-radius: 14px;
+  background: #fff;
+  padding: 12px;
+}
+
+.travailMapLayerOption input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--ds-brand);
+}
+
+.travailMapLayerOption input:disabled {
+  opacity: 0.75;
+}
+
+.travailMapLayerIcon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: rgb(1 163 98 / 10%);
+  color: var(--ds-brand);
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.travailMapLayerText {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.travailMapLayerText strong {
+  color: #17211f;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.travailMapLayerText span {
+  color: #5f6f68;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.travailGallerySection {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 12px;
+}
+
+.travailGalleryHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 4px;
+}
+
+.travailGalleryTitle {
+  margin: 0;
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.travailGallerySubtitle {
+  margin: 0;
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.travailGalleryMeta {
+  margin: 8px 0 0;
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-title-medium);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.travailGalleryCount {
+  margin: 0;
+  color: var(--ds-text-muted);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-body-secondary);
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.travailGalleryFilters {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.travailGalleryFilter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  border: 1.5px solid var(--ds-border-strong);
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--ds-text-secondary);
+  cursor: pointer;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-body-secondary);
+  font-weight: 400;
+  line-height: 1;
+  padding: 0 16px;
+}
+
+.travailGalleryFilterActive {
+  border-color: var(--ds-brand);
+  background: var(--ds-brand);
+  color: var(--ds-text-inverse);
+  font-weight: 500;
+}
+
+.travailGalleryDate {
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-body-secondary);
+  font-weight: 600;
+  line-height: 1.2;
+  padding-top: 4px;
+}
+
+.travailGalleryGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.travailGalleryCard {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.travailGalleryImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.travailGalleryBadge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  background: rgb(0 0 0 / 46%);
+  color: var(--ds-text-inverse);
+  backdrop-filter: blur(2px);
+}
+
+.travailGalleryBadge span {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 15px;
+  line-height: 1;
+}
+
+.travailProgressCard {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border-radius: 16px;
+  background: var(--ds-card);
+  box-shadow: none;
+  padding: 16px;
+}
+
+.travailProgressCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.travailProgressCardTitle {
+  margin: 0;
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-title-medium);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.travailProgressCoverageCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 50px;
+  border-radius: 12px;
+  background: var(--ds-surface);
+  padding: 10px;
+}
+
+.travailProgressCoverageLabel {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.travailProgressCoverageIcon {
+  color: var(--ds-brand);
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.travailProgressCoverageValue {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.travailProgressCoverageValue strong {
+  color: var(--ds-brand);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.travailProgressCoverageValue span {
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+/* ── Progression horizontal layout ── */
+.travailProgressLayout {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.travailProgressDonut {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 130px;
+  height: 130px;
+  border-radius: 999px;
+  transform: rotate(-90deg);
+}
+
+.travailProgressDonutInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 90px;
+  height: 90px;
+  border-radius: inherit;
+  background: var(--ds-card);
+  transform: rotate(90deg);
+}
+
+.travailProgressDonutCount {
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-body-secondary);
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.travailProgressDonutLabel {
+  color: var(--ds-text-muted);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.travailProgressRight {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.travailProgressRightRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 22px;
+}
+
+.travailProgressRightLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.travailProgressRightRow strong {
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.travailProgressRightDivider {
+  height: 1px;
+  background: var(--ds-border);
+  margin: 2px 0;
+}
+
+.travailProgressRightMeta {
+  color: var(--ds-text-muted);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.travailProgressLegendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.travailProgressLegendDotSynced {
+  background: var(--ds-brand);
+}
+
+.travailProgressLegendDotUncaptured {
+  background: #d1d5db;
+}
+
+.travailProgressLegendDotUnsynced {
+  background: #ff585b;
+}
+
+/* kept for unused-class safety — no longer rendered */
+.travailProgressLegend,
+.travailProgressLegendItem,
+.travailProgressLegendItemSynced,
+.travailProgressLegendItemUncaptured,
+.travailProgressLegendItemUnsynced,
+.travailProgressLegendLabel,
+.travailProgressChartBlock,
+.travailProgressStats,
+.travailProgressStatRow { display: none; }
+
+.travailEstimationInfoCard {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  border-radius: 16px;
+  background: var(--ds-card);
+  padding: 15px 10px;
+}
+
+.travailEstimationInfoHeader {
+  display: flex;
+  align-items: center;
+}
+
+.travailEstimationInfoTitle {
+  margin: 0;
+  color: #111111;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.travailEstimationInfoHero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 59px;
+  border-radius: 12px;
+  background: rgb(194 194 194 / 11%);
+  padding: 9px 18px;
+}
+
+.travailEstimationInfoHeroText {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.travailEstimationInfoHeroText strong {
+  color: #111111;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.travailEstimationInfoHeroText p {
+  margin: 0;
+  color: #6b7280;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.travailEstimationInfoChevron {
+  color: #6b7280;
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 30px;
+  line-height: 1;
+}
+
+.travailEstimationInfoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 30px;
+  padding: 0 5px;
+}
+
+.travailEstimationInfoItem {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.travailEstimationInfoItem span {
+  color: rgb(17 24 39 / 50%);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.travailEstimationInfoItem strong {
+  color: var(--ds-brand);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.travailDetailInfoTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.travailDetailInfoTitleBlock {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.travailDetailInfoTitle {
+  margin: 0;
+  color: var(--poste-card-title);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-title-medium);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.travailDetailRows {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.travailDetailRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 24px;
+}
+
+.travailDetailStatusRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 24px;
+}
+
+.travailDetailLabel {
+  min-width: 0;
+  color: var(--poste-card-subtitle);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.travailDetailValue {
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-body-secondary);
+  font-weight: 500;
+  line-height: 1.3;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.travailDetailProgressTop {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.travailDetailMetricValue {
+  margin: 0;
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-headline-small);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.travailDetailMetricLabel {
+  margin-top: 3px;
+  color: var(--ds-text-muted);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.travailDetailProgressCount {
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-body-secondary);
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.travailDetailFloatingBar {
+  position: absolute;
+  right: var(--screen-margin);
+  bottom: 28px;
+  left: var(--screen-margin);
+  z-index: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.travailDetailEmptyState {
+  display: flex;
+  min-height: 320px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 16px;
+  background: var(--ds-card);
+  text-align: center;
+  padding: 24px;
+}
+
+.travailDetailEmptyIcon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 34px;
+  color: var(--ds-text-muted);
+  line-height: 1;
+}
+
+.travailDetailEmptyState h3 {
+  margin: 0;
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-title-medium);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.travailDetailEmptyState p {
+  max-width: 250px;
+  margin: 0;
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-body-secondary);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.travailDetailViewTabs {
+  --travail-floating-inset: 5px;
+
+  display: flex;
+  box-sizing: border-box;
+  flex: 0 1 300px;
+  width: min(300px, calc(100% - 74px));
+  min-width: 0;
+  height: 64px;
+  border: 1px solid rgb(151 151 151 / 14%);
+  border-radius: 999px;
+  background: var(--ds-card);
+  box-shadow:
+    0 2px 8px rgb(15 23 42 / 6%),
+    0 8px 24px rgb(15 23 42 / 10%);
+  padding: var(--travail-floating-inset);
+  pointer-events: auto;
+}
+
+.travailDetailViewTab {
+  display: flex;
+  box-sizing: border-box;
+  flex: 1 1 0;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border: none;
+  border-radius: 60px;
+  background: transparent;
+  color: var(--ds-text-muted);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.1px;
+  padding: 6px 8px;
+  cursor: pointer;
+}
+
+.travailDetailViewTabActive {
+  font-weight: 700;
+  background: var(--ds-brand);
+  color: var(--ds-text-inverse);
+}
+
+.travailDetailViewIcon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.travailDetailCameraButton {
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  flex: 0 0 62px;
+  border: 1px solid var(--ds-card);
+  border-radius: 999px;
+  background: var(--ds-brand);
+  color: var(--ds-text-inverse);
+  box-shadow: 0 8px 20px rgb(15 23 42 / 12%);
+  pointer-events: auto;
+}
+
+.travailDetailCameraButton span {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 24px;
+  line-height: 1;
+}
+
+/* ── Detail card divider ── */
+.travailDetailDivider {
+  height: 1px;
+  background: var(--ds-border);
+  margin: 2px 0;
+}
+
+/* ── Inline parcelle nav (inside a card) ── */
+.travailParcelleNavInline {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+/* ── Parcelle nav card ── */
+.travailParcelleNavCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  border: none;
+  border-radius: 16px;
+  background: var(--ds-card);
+  padding: 14px 16px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.travailParcelleNavIcon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: var(--ds-icon-green-bg);
+  color: var(--ds-icon-green-fg);
+}
+
+.travailParcelleNavIcon span {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.travailParcelleNavText {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.travailParcelleNavText strong {
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-body-secondary);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.travailParcelleNavText span {
+  color: var(--poste-card-subtitle);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 400;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.travailParcelleNavChevron {
+  color: var(--ds-text-muted);
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 22px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.travailParcelleSheetOverlay {
+  position: absolute;
+  inset: 0 0 24px;
+  z-index: 18;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: color-mix(in srgb, var(--ds-text-primary) 24%, transparent);
+  padding: 0;
+}
+
+.travailParcelleSheet {
+  display: flex;
+  width: 100%;
+  max-height: calc(100% - 8px);
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+  border-radius: 28px 28px 0 0;
+  background: #fff;
+  padding: 12px 14px 34px;
+}
+
+.travailParcelleSheetHandle {
+  width: 48px;
+  height: 5px;
+  align-self: center;
+  border-radius: 999px;
+  background: #9e9e9e;
+}
+
+.travailParcelleSheetHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.travailParcelleSheetHeaderIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--ds-brand) 12%, transparent);
+  color: var(--ds-brand);
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 22px;
+}
+
+.travailParcelleSheetHeaderText {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.travailParcelleSheetHeader h3 {
+  margin: 0;
+  color: #111111;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.travailParcelleSheetHeaderText p {
+  margin: 0;
+  color: #6b7280;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.travailParcelleSheetTag {
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 9px;
+  background: rgb(238 238 238 / 70%);
+  color: #6b7280;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 0 10px;
+  white-space: nowrap;
+}
+
+.travailParcelleSheetDivider {
+  height: 1px;
+  background: #f0f0f0;
+  margin: 2px 0;
+}
+
+.travailParcelleSheetMap {
+  position: relative;
+  min-height: 300px;
+  overflow: hidden;
+  border-radius: 24px;
+  background: #d1d5db;
+}
+
+.travailParcelleSheetMapHint {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transform: translateX(-50%);
+  border-radius: var(--radius-full);
+  background: rgb(23 33 31 / 38%);
+  color: var(--ds-text-inverse);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 500;
+  line-height: 1;
+  padding: 10px 16px;
+  white-space: nowrap;
+}
+
+.travailParcelleSheetMapHint span:first-child {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.travailParcelleSheetRows {
+  display: flex;
+  flex-direction: column;
+}
+
+.travailParcelleSheetRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.travailParcelleSheetRow:last-child {
+  border-bottom: none;
+}
+
+.travailParcelleSheetRowIcon {
+  color: var(--ds-brand);
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 18px;
+  line-height: 1;
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.travailParcelleSheetRowLabel {
+  flex: 1;
+  color: #6b7280;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.travailParcelleSheetRowValue {
+  color: #111827;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: right;
+}
+
+.travailParcelleSheetAction {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+  border: none;
+  border-radius: 13px;
+  background: var(--ds-brand);
+  color: #fff;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* ── Failed sync banner ── */
+.travailSyncFailedBanner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+  background: var(--ds-error-bg);
+  color: var(--ds-error-text);
+  padding: 10px 12px;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-body-secondary);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.travailSyncFailedIcon {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 18px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+/* ── Pending legend item ── */
+.travailProgressLegendItemPending {
+  background: color-mix(in srgb, #f59e0b 10%, white);
+}
+
+.travailProgressLegendDotPending {
+  background: #f59e0b;
+}
+
+/* ── Sticky bar ── */
+.travailDetailStickyBar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  border-bottom: 1px solid var(--ds-border);
+  background: var(--header-surface);
+  padding: 0 16px;
+}
+
+.travailDetailStickyBack {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ds-text-primary);
+  cursor: pointer;
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 20px;
+}
+
+.travailDetailStickyTitle {
+  flex: 1;
+  min-width: 0;
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-body-secondary);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.travailDetailStickyProgress {
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.travailCameraOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  background:
+    linear-gradient(180deg, rgb(6 12 10 / 88%) 0%, rgb(9 14 13 / 94%) 100%),
+    var(--ds-text-primary);
+  color: var(--ds-text-inverse);
+  padding: 54px var(--screen-margin) 28px;
+}
+
+.travailCameraHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.travailCameraHeader .pageBackButton {
+  color: var(--ds-text-inverse);
+}
+
+.travailCameraHeaderText {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.travailCameraHeaderText h3 {
+  margin: 0;
+  color: var(--ds-text-inverse);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-appbar-title);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.travailCameraHeaderText p {
+  margin: 0;
+  color: rgb(255 255 255 / 64%);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.travailCameraPreview {
+  position: relative;
+  flex: 1;
+  margin: 18px 0;
+  border: 1px solid rgb(255 255 255 / 18%);
+  border-radius: 22px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 32% 24%, rgb(1 163 98 / 26%), transparent 28%),
+    radial-gradient(circle at 70% 68%, rgb(255 255 255 / 14%), transparent 30%),
+    linear-gradient(135deg, #1b3028 0%, #0c1513 58%, #101817 100%);
+}
+
+.travailCameraGridLine,
+.travailCameraGridLineVertical {
+  position: absolute;
+  background: rgb(255 255 255 / 16%);
+}
+
+.travailCameraGridLine {
+  right: 0;
+  left: 0;
+  height: 1px;
+}
+
+.travailCameraGridLine:nth-child(1) {
+  top: 33.33%;
+}
+
+.travailCameraGridLine:nth-child(2) {
+  top: 66.66%;
+}
+
+.travailCameraGridLineVertical {
+  top: 0;
+  bottom: 0;
+  width: 1px;
+}
+
+.travailCameraGridLineVertical:nth-child(3) {
+  left: 33.33%;
+}
+
+.travailCameraGridLineVertical:nth-child(4) {
+  left: 66.66%;
+}
+
+.travailCameraFocus {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 96px;
+  height: 96px;
+  transform: translate(-50%, -50%);
+  border: 2px solid rgb(255 255 255 / 72%);
+  border-radius: 18px;
+  color: rgb(255 255 255 / 80%);
+}
+
+.travailCameraFocus span {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.travailCameraFooter {
+  display: grid;
+  grid-template-columns: 1fr 76px 1fr;
+  align-items: center;
+  gap: 16px;
+}
+
+.travailCameraMode {
+  color: rgb(255 255 255 / 70%);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-body-secondary);
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+}
+
+.travailCameraShutter {
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  border: 3px solid rgb(255 255 255 / 86%);
+  border-radius: 999px;
+  background: transparent;
+}
+
+.travailCameraShutter span {
+  display: block;
+  width: 56px;
+  height: 56px;
+  border-radius: inherit;
+  background: var(--ds-brand);
+}
+
+.travailSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.travailSectionHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.travailSectionTitle {
+  margin: 0;
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-appbar-title);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.travailSectionCount {
+  color: var(--ds-text-muted);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-body-secondary);
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.travailJobList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.travailJobCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  border: none;
+  border-radius: 16px;
+  background: var(--poste-card-surface);
+  box-shadow: none;
+  padding: 16px;
+}
+
+.travailJobCardClickable {
+  cursor: pointer;
+}
+
+.travailJobCardClickable:active {
+  transform: translateY(1px);
+}
+
+.travailJobCardLocked {
+  cursor: default;
+}
+
+.travailJobCardLocked .travailJobMetric {
+  color: var(--ds-text-muted);
+}
+
+.travailJobCardLocked .travailJobMetricBubble,
+.travailJobMetricIdle .travailJobMetricBubble {
+  border: 1px solid var(--ds-border-strong);
+  background: var(--ds-card);
+  color: var(--ds-text-muted);
+}
+
+.travailJobCardLocked .travailJobMetricConnector {
+  background: var(--ds-border-strong);
+}
+
+.travailJobCard .posteFixeCardTitle {
+  color: var(--poste-card-title);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: 0;
+}
+
+.travailJobCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.travailJobCardTitleBlock {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.travailJobCardActions {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+.travailJobStatusBadge {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  height: 24px;
+  border-radius: 999px;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 0 9px;
+  white-space: nowrap;
+}
+
+.travailJobStatusDueToday {
+  background: var(--ds-status-in-progress-bg);
+  color: var(--ds-status-in-progress-text);
+}
+
+.travailJobStatusScheduled {
+  background: var(--ds-status-not-started-bg);
+  color: var(--ds-status-not-started-text);
+}
+
+.travailJobStatusDone {
+  background: var(--ds-status-done-bg);
+  color: var(--ds-status-done-text);
+}
+
+.travailJobMetaRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--poste-card-subtitle);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.travailJobMetaRow span:first-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.travailJobMetaRow span:last-child {
+  flex-shrink: 0;
+  color: var(--ds-text-muted);
+}
+
+.travailJobDueChip {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  min-height: 20px;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1;
+  padding: 0;
+}
+
+.travailJobDueRow {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.travailJobDueChipUrgent {
+  color: var(--ds-error-text);
+  font-weight: 600;
+}
+
+.travailJobDueChipSoon {
+  color: var(--ds-warning-text);
+  font-weight: 600;
+}
+
+.travailJobDueChip strong {
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--ds-error-text) 10%, transparent);
+  color: var(--ds-error-text);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 4px 7px;
+}
+
+.travailJobDueLabel {
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 13px;
+  font-weight: inherit;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.travailJobMetricRow {
+  display: grid;
+  grid-template-columns: 58px minmax(20px, 1fr) 58px minmax(20px, 1fr) 58px;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 0 4px;
+}
+
+.travailJobMetric {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  color: var(--ds-brand);
+}
+
+.travailJobMetricBubble {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ds-brand) 92%, #0b5f43);
+  color: var(--ds-text-inverse);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.travailJobMetricBubble span {
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.travailJobMetricLabel {
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.travailJobMetricWarning {
+  color: #c2410c;
+}
+
+.travailJobMetricWarning .travailJobMetricBubble {
+  background: #f59e0b;
+}
+
+.travailJobMetricRemaining {
+  color: var(--ds-text-secondary);
+}
+
+.travailJobMetricRemaining .travailJobMetricBubble {
+  border: 1px solid var(--ds-border-strong);
+  background: var(--ds-card);
+  color: var(--ds-text-secondary);
+}
+
+.travailJobMetricConnector {
+  display: block;
+  height: 2px;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--ds-brand) 80%, transparent);
+  align-self: start;
+  margin-top: 22px;
+}
+
+.travailJobMetricConnectorMuted {
+  background: var(--ds-border-strong);
+}
+
+.travailJobProgressBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 0 2px;
+}
+
+.travailJobProgressHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.travailJobProgressCount {
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.travailJobProgressCount strong {
+  color: var(--ds-text-primary);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.travailJobProgressPercent {
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.travailJobProgressTrack {
+  display: flex;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--ds-border);
+  overflow: hidden;
+}
+
+.travailJobProgressSynced {
+  display: block;
+  height: 100%;
+  background: var(--ds-brand);
+}
+
+.travailJobProgressPending {
+  display: block;
+  height: 100%;
+  background: #f59e0b;
+}
+
+.travailJobProgressLegend {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.travailJobProgressLegendItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.travailJobProgressDot {
+  display: block;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.travailJobProgressDotSynced {
+  background: var(--ds-brand);
+}
+
+.travailJobProgressDotPending {
+  background: #f59e0b;
+}
+
+.travailJobDueBadge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--ds-brand) 10%, transparent);
+  color: var(--ds-brand);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0 9px;
+  white-space: nowrap;
+}
+
+.travailJobDueBadgeUrgent {
+  background: var(--ds-error-bg);
+  color: var(--ds-error-text);
+}
+
+.travailJobDueBadgeSoon {
+  background: var(--ds-warning-bg);
+  color: var(--ds-warning-text);
+}
+
+.travailSummaryBar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-radius: 14px;
+  background: var(--ds-card);
+  padding: 14px;
+}
+
+.travailSummaryTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.travailSummaryProgress {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+}
+
+.travailSummaryDone {
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-headline-small);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.travailSummaryTotal {
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-body-secondary);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.travailSummaryChips {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.travailSummaryLateChip {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  border-radius: 999px;
+  padding: 0 8px;
+  background: var(--ds-error-bg);
+  color: var(--ds-error-text);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.travailSummaryDueChip {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  border-radius: 999px;
+  padding: 0 8px;
+  background: var(--ds-warning-bg);
+  color: var(--ds-warning-text);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.travailSummaryTrack {
+  position: relative;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--ds-border);
+  overflow: hidden;
+}
+
+.travailSummaryFill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: inherit;
+  background: var(--ds-brand);
+}
+
 .postesFixesList {
   display: flex;
   flex-direction: column;
@@ -819,6 +3545,16 @@
   font-size: var(--fs-caption);
   font-weight: 400;
   line-height: 1.35;
+}
+
+.posteFixeDatesUrgent {
+  color: var(--ds-error-text);
+  font-weight: 600;
+}
+
+.posteFixeDatesWarning {
+  color: var(--ds-warning-text);
+  font-weight: 600;
 }
 
 .posteStatusBadge {
@@ -1185,6 +3921,13 @@
   line-height: 1.4;
 }
 
+.emptyStateCompact {
+  flex: 1;
+  justify-content: center;
+  align-self: stretch;
+  margin: 0;
+}
+
 .selectedPosteHint {
   color: var(--ds-text-secondary);
   font-size: 12px;
@@ -1218,13 +3961,13 @@
   z-index: 10;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding-bottom: 6px;
+  gap: 10px;
+  padding-bottom: 8px;
   background: var(--header-surface);
 }
 
 .posteStickyTop .homeHeaderRow {
-  padding-top: 8px;
+  padding-top: 10px;
 }
 
 .posteDetailTopBlock {
@@ -3011,7 +5754,7 @@
 }
 
 .detailContent {
-  height: calc(100% - 48px - 24px);
+  height: calc(100% - var(--system-status-height) - 24px);
   background: var(--ds-surface);
   padding: var(--screen-margin);
 }

@@ -39,7 +39,11 @@ import {
 } from "../worker-app/post-fixe";
 import { WorkerAppProfilePage } from "../worker-app/profile";
 import { WorkerAppSynchronisationPage } from "../worker-app/synchronisation";
-import { WorkerAppTravailPage } from "../worker-app/travail";
+import {
+  TravailFrameView,
+  TravailPreviewState,
+  WorkerAppTravailPage,
+} from "../worker-app/travail";
 
 const posteFixeComponentStates = [
   {
@@ -394,6 +398,69 @@ const postFixeSystemFrames = [
     note: "Detail page loading state after selecting a poste.",
     frameView: "loading" as SecteursFrameView,
     previewState: "detail-loading" as PostFixePreviewState,
+  },
+] as const;
+
+const travailCoreFrames = [
+  {
+    id: "T01",
+    title: "Travail List (Data)",
+    note: "Main job list with progress cards.",
+    frameView: "data" as TravailFrameView,
+    previewState: "list-data" as TravailPreviewState,
+  },
+  {
+    id: "T02",
+    title: "Job Detail (Overview)",
+    note: "Estimation detail with progression donut and infos.",
+    frameView: "data" as TravailFrameView,
+    previewState: "detail-overview" as TravailPreviewState,
+  },
+  {
+    id: "T03",
+    title: "Job Detail (Carte)",
+    note: "Map view for a selected estimation job.",
+    frameView: "data" as TravailFrameView,
+    previewState: "detail-map" as TravailPreviewState,
+  },
+  {
+    id: "T04",
+    title: "Job Detail (Galerie)",
+    note: "Gallery of captured images for a job.",
+    frameView: "data" as TravailFrameView,
+    previewState: "detail-gallery" as TravailPreviewState,
+  },
+] as const;
+
+const travailCoreFrameGroups = [
+  {
+    id: "journey",
+    title: "Main Journey",
+    note: "Primary path from the job list to job detail.",
+    frameIds: ["T01", "T02"],
+  },
+  {
+    id: "detail-views",
+    title: "Detail Views",
+    note: "Map and gallery tabs inside a job.",
+    frameIds: ["T03", "T04"],
+  },
+] as const;
+
+const travailSystemFrames = [
+  {
+    id: "TS1",
+    title: "Travail List (Loading)",
+    note: "Skeleton state while the job list loads.",
+    frameView: "loading" as TravailFrameView,
+    previewState: "list-loading" as TravailPreviewState,
+  },
+  {
+    id: "TS2",
+    title: "Travail List (Empty)",
+    note: "No jobs assigned state.",
+    frameView: "empty" as TravailFrameView,
+    previewState: "list-empty" as TravailPreviewState,
   },
 ] as const;
 
@@ -1251,7 +1318,7 @@ function resolveWorkerCanvasView(
     | "synchronisation",
   canvasView: CanvasView
 ): CanvasView {
-  if (activeScreen === "postFixe") {
+  if (activeScreen === "postFixe" || activeScreen === "travail") {
     return canvasView === "frames" ? "frames" : "design";
   }
 
@@ -1376,6 +1443,7 @@ export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isWorkerAppOpen, setIsWorkerAppOpen] = useState(true);
   const [postFixeFrameView, setPostFixeFrameView] = useState<SecteursFrameView>("data");
+  const [travailFrameView, setTravailFrameView] = useState<TravailFrameView>("data");
   const [canvasView, setCanvasView] = useState<CanvasView>("design");
   const [showDevAnnotations] = useState(false);
   const [designSystemTab, setDesignSystemTab] = useState<DesignSystemTab>("colors");
@@ -2342,6 +2410,8 @@ export default function Home() {
                 type="button"
                 onClick={() => {
                   setActiveScreen("travail");
+                  setTravailFrameView("data");
+                  setCanvasView("design");
                   setIsWorkerAppOpen(true);
                 }}
               >
@@ -2405,7 +2475,7 @@ export default function Home() {
           <div className={styles.canvasTopBar}>
             <div className={styles.canvasTopLeft}>
               <p className={styles.canvasPageTitle}>{activePageTitle}</p>
-              {resolvedActiveScreen === "postFixe" ? (
+              {resolvedActiveScreen === "postFixe" || resolvedActiveScreen === "travail" ? (
                 <div className={styles.canvasViewSwitch} role="tablist" aria-label="Canvas view">
                   <button
                     type="button"
@@ -2469,9 +2539,117 @@ export default function Home() {
                 Empty
               </button>
             </div>
+          ) : resolvedActiveScreen === "travail" && resolvedCanvasView !== "frames" ? (
+            <div className={styles.frameViewRail} role="tablist" aria-label="Travail states">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={travailFrameView === "data"}
+                className={`${styles.frameViewRailTab} ${
+                  travailFrameView === "data" ? styles.frameViewRailTabActive : ""
+                }`}
+                onClick={() => setTravailFrameView("data")}
+              >
+                Design
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={travailFrameView === "loading"}
+                className={`${styles.frameViewRailTab} ${
+                  travailFrameView === "loading" ? styles.frameViewRailTabActive : ""
+                }`}
+                onClick={() => setTravailFrameView("loading")}
+              >
+                Loading
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={travailFrameView === "empty"}
+                className={`${styles.frameViewRailTab} ${
+                  travailFrameView === "empty" ? styles.frameViewRailTabActive : ""
+                }`}
+                onClick={() => setTravailFrameView("empty")}
+              >
+                Empty
+              </button>
+            </div>
           ) : null}
 
-          {resolvedCanvasView === "frames" ? (
+          {resolvedCanvasView === "frames" && resolvedActiveScreen === "travail" ? (
+            <div className={styles.componentsCanvas}>
+              <section className={styles.componentsPanel}>
+                <div className={styles.componentsPanelHeader}>
+                  <h3>Core Flow</h3>
+                  <p>Travail frames in user journey order</p>
+                </div>
+                <div className={styles.framesGroups}>
+                  {travailCoreFrameGroups.map((group) => (
+                    <div key={group.id} className={styles.framesGroup}>
+                      <div className={styles.framesGroupHeader}>
+                        <h4>{group.title}</h4>
+                        <p>{group.note}</p>
+                      </div>
+                      <div className={styles.componentsCardsGrid}>
+                        {group.frameIds.map((frameId) => {
+                          const frame = travailCoreFrames.find((item) => item.id === frameId);
+                          if (!frame) return null;
+                          return (
+                            <article key={frame.id} className={styles.componentCardItem}>
+                              <p className={styles.componentCardStateLabel}>{frame.id}</p>
+                              <div className={styles.componentPosteCard}>
+                                <h4>{frame.title}</h4>
+                                <p className={styles.componentPosteCardMeta}>{frame.note}</p>
+                              </div>
+                              <div className={styles.detailPreviewWidth}>
+                                <WorkerAppTravailPage
+                                  showDeviceFrame={showDeviceFrame}
+                                  theme={canvasTheme}
+                                  frameTheme={canvasFrameTheme}
+                                  frameView={frame.frameView}
+                                  previewState={frame.previewState}
+                                  isInteractive={false}
+                                />
+                              </div>
+                            </article>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className={styles.componentsPanel}>
+                <div className={styles.componentsPanelHeader}>
+                  <h3>System States</h3>
+                  <p>Supporting frames outside the main happy path</p>
+                </div>
+                <div className={styles.componentsCardsGrid}>
+                  {travailSystemFrames.map((frame) => (
+                    <article key={frame.id} className={styles.componentCardItem}>
+                      <p className={styles.componentCardStateLabel}>{frame.id}</p>
+                      <div className={styles.componentPosteCard}>
+                        <h4>{frame.title}</h4>
+                        <p className={styles.componentPosteCardMeta}>{frame.note}</p>
+                      </div>
+                      <div className={styles.detailPreviewWidth}>
+                        <WorkerAppTravailPage
+                          showDeviceFrame={showDeviceFrame}
+                          theme={canvasTheme}
+                          frameTheme={canvasFrameTheme}
+                          frameView={frame.frameView}
+                          previewState={frame.previewState}
+                          isInteractive={false}
+                        />
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
+            </div>
+          ) : resolvedCanvasView === "frames" ? (
             <div className={styles.componentsCanvas}>
               <section className={styles.componentsPanel}>
                 <div className={styles.componentsPanelHeader}>
@@ -3279,6 +3457,7 @@ export default function Home() {
               showDeviceFrame={showDeviceFrame}
               theme={canvasTheme}
               frameTheme={canvasFrameTheme}
+              frameView={travailFrameView}
             />
           ) : resolvedActiveScreen === "postFixe" ? (
             <div className={styles.centeredCanvasScreen}>
