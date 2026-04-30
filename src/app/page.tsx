@@ -2387,13 +2387,7 @@ export default function Home() {
                   setIsWorkerAppOpen(true);
                 }}
               >
-                <span className={`${styles.subTabLabelRow} ${styles.subTabLabelRowCentered}`}>
-                  <span>{WORKER_APP_POST_FIXE_PAGE_NAME}</span>
-                  <span className={styles.devReadyBadge}>
-                    <span className={styles.devReadyDot} aria-hidden="true" />
-                    Ready For Dev
-                  </span>
-                </span>
+                {WORKER_APP_POST_FIXE_PAGE_NAME}
               </button>
               <button
                 className={`${styles.subTab} ${activeScreen === "home" ? styles.activeSubTab : ""}`}
@@ -2415,7 +2409,13 @@ export default function Home() {
                   setIsWorkerAppOpen(true);
                 }}
               >
-                {WORKER_APP_TRAVAIL_PAGE_NAME}
+                <span className={`${styles.subTabLabelRow} ${styles.subTabLabelRowCentered}`}>
+                  <span>{WORKER_APP_TRAVAIL_PAGE_NAME}</span>
+                  <span className={styles.devReadyBadge}>
+                    <span className={styles.devReadyDot} aria-hidden="true" />
+                    Ready For Dev
+                  </span>
+                </span>
               </button>
               <button
                 className={`${styles.subTab} ${activeScreen === "boite" ? styles.activeSubTab : ""}`}
