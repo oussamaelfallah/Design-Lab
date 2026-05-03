@@ -870,36 +870,66 @@
 .travailSearchRow {
   display: flex;
   align-items: center;
-  gap: 0;
-  height: 44px;
-  border: 1px solid var(--ds-border);
-  border-radius: 14px;
+  gap: 4px;
+  min-height: 56px;
+  border: none;
+  border-radius: 28px;
   background: var(--ds-card);
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   overflow: hidden;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  padding: 4px;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 5%);
+  transition: box-shadow 0.15s, transform 0.15s;
 }
 
 .travailSearchRow:focus-within {
-  border-color: color-mix(in srgb, var(--ds-brand) 42%, var(--ds-border));
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ds-brand) 10%, transparent);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--ds-brand) 12%, transparent),
+    0 10px 24px rgb(15 23 42 / 8%);
 }
 
 .travailSearchField {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   flex: 1;
   min-width: 0;
   height: 100%;
-  color: var(--ds-text-muted);
-  padding: 0 12px;
+  color: var(--ds-text-secondary);
+  padding: 0 14px 0 16px;
   background: transparent;
+}
+
+.travailSearchTrigger {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  align-self: stretch;
+  border: none;
+  background: transparent;
+  color: var(--ds-text-secondary);
+  padding: 0 20px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.travailSearchPlaceholder {
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .travailSearchField span {
   flex-shrink: 0;
-  font-size: 18px;
+  font-size: 20px;
+  color: var(--ds-brand);
 }
 
 .travailSearchField input {
@@ -911,43 +941,46 @@
   color: var(--ds-text-primary);
   font-family: var(--font-geist-sans), sans-serif;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 500;
   line-height: 1;
 }
 
 .travailSearchField input::placeholder {
   color: var(--ds-text-muted);
   font-weight: 400;
+  letter-spacing: -0.01em;
 }
 
 .travailSearchDivider {
   width: 1px;
-  height: 22px;
+  height: 24px;
   flex-shrink: 0;
   background: var(--ds-border);
 }
 
 .travailFilterButton {
   position: relative;
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 48px;
-  height: 100%;
+  height: 48px;
   flex-shrink: 0;
   border: none;
-  border-radius: 0;
+  border-radius: 999px;
   background: transparent;
   color: var(--ds-text-secondary);
   cursor: pointer;
-  transition: color 0.15s;
+  transition: background-color 0.15s, color 0.15s;
 }
 
 .travailFilterButton span.googleSymbol {
-  font-size: 20px;
+  font-size: 24px;
 }
 
 .travailFilterButtonActive {
   color: var(--ds-brand);
+  background: color-mix(in srgb, var(--ds-brand) 10%, transparent);
 }
 
 .travailFilterButtonCount {
@@ -959,6 +992,159 @@
   border: 1.5px solid var(--ds-card);
   border-radius: var(--radius-full);
   background: var(--ds-brand);
+}
+
+.travailSearchScreen {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  background: var(--ds-surface);
+  margin: 0 calc(var(--screen-margin) * -1) calc(var(--screen-margin) * -1);
+}
+
+.travailSearchTopBar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 72px;
+  background: var(--ds-surface);
+  padding: 5px 4px;
+}
+
+.travailSearchBack {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ds-text-secondary);
+  cursor: pointer;
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.travailSearchScreenField {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  min-height: 48px;
+  padding: 0;
+}
+
+.travailSearchScreenField span {
+  flex-shrink: 0;
+  color: var(--ds-brand);
+  font-size: 20px;
+}
+
+.travailSearchScreenField input {
+  width: 100%;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--ds-text-primary);
+  font-family: Roboto, var(--font-geist-sans), sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0.5px;
+}
+
+.travailSearchScreenField input::placeholder {
+  color: var(--ds-text-secondary);
+  font-weight: 400;
+}
+
+.travailSearchClear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ds-text-secondary);
+  cursor: pointer;
+}
+
+.travailSearchClear span {
+  font-size: 24px;
+}
+
+.travailSearchDividerLine {
+  height: 1px;
+  background: color-mix(in srgb, var(--ds-text-secondary) 36%, transparent);
+}
+
+.travailSearchResultsList {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.travailSearchListItem {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 72px;
+  border: none;
+  background: transparent;
+  padding: 8px 16px;
+  text-align: left;
+}
+
+.travailSearchListLeading {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ds-brand) 16%, white);
+  color: var(--ds-brand);
+  font-family: Roboto, var(--font-geist-sans), sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: 0.15px;
+}
+
+.travailSearchListText {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.travailSearchListTitle {
+  color: var(--ds-text-primary);
+  font-family: Roboto, var(--font-geist-sans), sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0.5px;
+}
+
+.travailSearchListSupporting {
+  color: var(--ds-text-secondary);
+  font-family: Roboto, var(--font-geist-sans), sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0.25px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .travailFiltersSheetOverlay {
@@ -2360,6 +2546,15 @@
   line-height: 1.3;
   text-align: right;
   white-space: nowrap;
+}
+
+.travailDetailDueValue {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.travailDetailDueValue .travailJobDueRow {
+  margin-top: 0;
 }
 
 .travailDetailProgressTop {

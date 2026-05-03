@@ -157,6 +157,45 @@ const posteFixeDetailIcons = [
   { icon: "water_drop", name: "water_drop", usage: "Irrigation" },
 ] as const;
 
+const travailDetailIcons = [
+  { icon: "home", name: "home", usage: "Accueil icon in the Travail bottom app bar." },
+  { icon: "assignment", name: "assignment", usage: "Travail icon in the bottom app bar and empty assigned-work state." },
+  { icon: "view_timeline", name: "view_timeline", usage: "Post Fixe icon in the Travail bottom app bar." },
+  { icon: "inbox", name: "inbox", usage: "Boite icon in the Travail bottom app bar." },
+  { icon: "wifi_off", name: "wifi_off", usage: "Offline sync banner state." },
+  { icon: "tune", name: "tune", usage: "List filters trigger and estimation config entry." },
+  { icon: "progress_activity", name: "progress_activity", usage: "Progression filter group icon." },
+  { icon: "schedule", name: "schedule", usage: "Échéance filter group icon." },
+  { icon: "filter_3", name: "filter_3", usage: "Estimation filter group icon." },
+  { icon: "location_on", name: "location_on", usage: "Secteur filter group icon." },
+  { icon: "travel_explore", name: "travel_explore", usage: "Search empty state icon." },
+  { icon: "arrow_back", name: "arrow_back", usage: "Back action in search, detail, and map header." },
+  { icon: "close", name: "close", usage: "Search clear action and sheet dismiss action." },
+  { icon: "check", name: "check", usage: "Selected chip state inside filters." },
+  { icon: "crop", name: "crop", usage: "Parcel detail entry and parcel sheet header." },
+  { icon: "chevron_right", name: "chevron_right", usage: "Inline navigation rows in estimation infos." },
+  { icon: "photo_camera", name: "photo_camera", usage: "Floating capture action in estimation detail." },
+  { icon: "overview_key", name: "overview_key", usage: "Overview tab inside estimation detail." },
+  { icon: "map", name: "map", usage: "Map tab and parcel geography references." },
+  { icon: "image", name: "image", usage: "Gallery tab in estimation detail." },
+  { icon: "layers", name: "layers", usage: "Map layers action." },
+  { icon: "crop_free", name: "crop_free", usage: "Center on parcel map action." },
+  { icon: "my_location", name: "my_location", usage: "Center on user map action." },
+  { icon: "blur_on", name: "blur_on", usage: "Heatmap/intensity layer option." },
+  { icon: "cloud_done", name: "cloud_done", usage: "Synced image badge in the gallery view." },
+  { icon: "cloud_off", name: "cloud_off", usage: "Unsynced image badge in the gallery view." },
+  { icon: "check_circle", name: "check_circle", usage: "Completed capture confirmation state." },
+  { icon: "percent", name: "percent", usage: "Tree percentage row in estimation config sheet." },
+  { icon: "explore", name: "explore", usage: "Orientation row in estimation config sheet." },
+  { icon: "photo_library", name: "photo_library", usage: "Multi-images row in estimation config sheet." },
+  { icon: "crop_portrait", name: "crop_portrait", usage: "Capture mode row in estimation config sheet." },
+  { icon: "spa", name: "spa", usage: "Fruit type row in parcel sheet." },
+  { icon: "eco", name: "eco", usage: "Variety row in parcel sheet." },
+  { icon: "agriculture", name: "agriculture", usage: "Rootstock row in parcel sheet." },
+  { icon: "park", name: "park", usage: "Tree count row in parcel sheet." },
+  { icon: "straighten", name: "straighten", usage: "Spacing row in parcel sheet." },
+] as const;
+
 const postFixeCoreFrames = [
   {
     id: "01",
@@ -411,39 +450,130 @@ const travailCoreFrames = [
   },
   {
     id: "T02",
+    title: "Travail Search (Results)",
+    note: "Search page with matching jobs.",
+    frameView: "data" as TravailFrameView,
+    previewState: "list-search-results" as TravailPreviewState,
+  },
+  {
+    id: "T03",
+    title: "Travail Search (Empty)",
+    note: "Search page with no matching jobs.",
+    frameView: "data" as TravailFrameView,
+    previewState: "list-search-empty" as TravailPreviewState,
+  },
+  {
+    id: "T04",
     title: "Job Detail (Overview)",
     note: "Estimation detail with progression donut and infos.",
     frameView: "data" as TravailFrameView,
     previewState: "detail-overview" as TravailPreviewState,
   },
   {
-    id: "T03",
+    id: "T05",
     title: "Job Detail (Carte)",
     note: "Map view for a selected estimation job.",
     frameView: "data" as TravailFrameView,
     previewState: "detail-map" as TravailPreviewState,
   },
   {
-    id: "T04",
+    id: "T06",
     title: "Job Detail (Galerie)",
     note: "Gallery of captured images for a job.",
     frameView: "data" as TravailFrameView,
     previewState: "detail-gallery" as TravailPreviewState,
   },
+  {
+    id: "T07",
+    title: "Travail List (Filters Active)",
+    note: "Filtered list with active criteria applied.",
+    frameView: "data" as TravailFrameView,
+    previewState: "list-filters-active" as TravailPreviewState,
+  },
+  {
+    id: "T08",
+    title: "Filters Sheet",
+    note: "Advanced filters for progression, échéance, estimation, and secteur.",
+    frameView: "data" as TravailFrameView,
+    previewState: "list-filters-sheet" as TravailPreviewState,
+  },
+  {
+    id: "T09",
+    title: "Parcelle Sheet",
+    note: "Parcel details opened from the estimation overview.",
+    frameView: "data" as TravailFrameView,
+    previewState: "detail-sheet-parcel" as TravailPreviewState,
+  },
+  {
+    id: "T10",
+    title: "Estimation Config Sheet",
+    note: "Capture settings sheet opened from the estimation overview.",
+    frameView: "data" as TravailFrameView,
+    previewState: "detail-sheet-config" as TravailPreviewState,
+  },
 ] as const;
 
 const travailCoreFrameGroups = [
   {
-    id: "journey",
-    title: "Main Journey",
-    note: "Primary path from the job list to job detail.",
-    frameIds: ["T01", "T02"],
+    id: "list-pages",
+    title: "List Pages",
+    note: "Entry surfaces around the Travail queue.",
+    frameIds: ["T01", "T02", "T03", "T07", "T08"],
   },
   {
-    id: "detail-views",
-    title: "Detail Views",
-    note: "Map and gallery tabs inside a job.",
-    frameIds: ["T03", "T04"],
+    id: "detail-pages",
+    title: "Detail Pages",
+    note: "Primary estimation detail surfaces in journey order.",
+    frameIds: ["T04", "T05", "T06"],
+  },
+  {
+    id: "detail-sheets",
+    title: "Detail Sheets",
+    note: "Supporting sheets opened from the estimation overview.",
+    frameIds: ["T09", "T10"],
+  },
+] as const;
+
+const travailCardStateFrames = [
+  {
+    id: "TC1",
+    title: "Card State (Overdue)",
+    note: "Estimation card with an overdue échéance.",
+    frameView: "data" as TravailFrameView,
+    previewState: "list-data" as TravailPreviewState,
+    previewJobId: "est-10112-2",
+  },
+  {
+    id: "TC2",
+    title: "Card State (Due Today)",
+    note: "Estimation card due today.",
+    frameView: "data" as TravailFrameView,
+    previewState: "list-data" as TravailPreviewState,
+    previewJobId: "est-10118-1",
+  },
+  {
+    id: "TC3",
+    title: "Card State (Upcoming)",
+    note: "In-progress estimation card with an upcoming échéance.",
+    frameView: "data" as TravailFrameView,
+    previewState: "list-data" as TravailPreviewState,
+    previewJobId: "est-10250-3",
+  },
+  {
+    id: "TC4",
+    title: "Card State (Done)",
+    note: "Completed estimation card kept visible in the list.",
+    frameView: "data" as TravailFrameView,
+    previewState: "list-data" as TravailPreviewState,
+    previewJobId: "est-10089-2",
+  },
+  {
+    id: "TC5",
+    title: "Card State (Locked Future Start)",
+    note: "Scheduled estimation card that cannot be opened yet.",
+    frameView: "data" as TravailFrameView,
+    previewState: "list-data" as TravailPreviewState,
+    previewJobId: "est-10300-1",
   },
 ] as const;
 
@@ -1319,7 +1449,7 @@ function resolveWorkerCanvasView(
   canvasView: CanvasView
 ): CanvasView {
   if (activeScreen === "postFixe" || activeScreen === "travail") {
-    return canvasView === "frames" ? "frames" : "design";
+    return canvasView === "frames" || canvasView === "iconography" ? canvasView : "design";
   }
 
   return "design";
@@ -2499,6 +2629,17 @@ export default function Home() {
                   >
                     Frames
                   </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={resolvedCanvasView === "iconography"}
+                    className={`${styles.canvasViewTab} ${
+                      resolvedCanvasView === "iconography" ? styles.canvasViewTabActive : ""
+                    }`}
+                    onClick={() => setCanvasView("iconography")}
+                  >
+                    Icons
+                  </button>
                 </div>
               ) : null}
             </div>
@@ -2581,8 +2722,8 @@ export default function Home() {
             <div className={styles.componentsCanvas}>
               <section className={styles.componentsPanel}>
                 <div className={styles.componentsPanelHeader}>
-                  <h3>Core Flow</h3>
-                  <p>Travail frames in user journey order</p>
+                  <h3>User Flow</h3>
+                  <p>Travail pages and sheets in user journey order</p>
                 </div>
                 <div className={styles.framesGroups}>
                   {travailCoreFrameGroups.map((group) => (
@@ -2617,6 +2758,35 @@ export default function Home() {
                         })}
                       </div>
                     </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className={styles.componentsPanel}>
+                <div className={styles.componentsPanelHeader}>
+                  <h3>Cards & Echeance</h3>
+                  <p>Grouped Travail card variants for status and due-date coverage</p>
+                </div>
+                <div className={styles.componentsCardsGrid}>
+                  {travailCardStateFrames.map((frame) => (
+                    <article key={frame.id} className={styles.componentCardItem}>
+                      <p className={styles.componentCardStateLabel}>{frame.id}</p>
+                      <div className={styles.componentPosteCard}>
+                        <h4>{frame.title}</h4>
+                        <p className={styles.componentPosteCardMeta}>{frame.note}</p>
+                      </div>
+                      <div className={styles.detailPreviewWidth}>
+                        <WorkerAppTravailPage
+                          showDeviceFrame={showDeviceFrame}
+                          theme={canvasTheme}
+                          frameTheme={canvasFrameTheme}
+                          frameView={frame.frameView}
+                          previewState={frame.previewState}
+                          previewJobId={frame.previewJobId}
+                          isInteractive={false}
+                        />
+                      </div>
+                    </article>
                   ))}
                 </div>
               </section>
@@ -3401,18 +3571,24 @@ export default function Home() {
               <section className={styles.componentsPanel}>
                 <div className={styles.componentsPanelHeader}>
                   <h3>Iconography</h3>
-                  <p>Icons used in the current worker app UI</p>
+                  <p>
+                    {resolvedActiveScreen === "travail"
+                      ? "Icons used in the Travail screens and sheets"
+                      : "Icons used in the current worker app UI"}
+                  </p>
                 </div>
                 <div className={styles.componentsMetaRow}>
                   <span className={styles.componentsMetaChip}>
                     Library: Material Symbols Outlined
                   </span>
-                  <span className={styles.componentsMetaChip}>Icon size 20px</span>
+                  <span className={styles.componentsMetaChip}>
+                    {resolvedActiveScreen === "travail" ? "Mixed sizes 18px to 24px" : "Icon size 20px"}
+                  </span>
                   <span className={styles.componentsMetaChip}>Wrap 34px / 40px</span>
                 </div>
                 <div className={styles.detailIconsSection}>
                   <div className={styles.detailIconsGrid}>
-                    {posteFixeDetailIcons.map((iconItem) => (
+                    {(resolvedActiveScreen === "travail" ? travailDetailIcons : posteFixeDetailIcons).map((iconItem) => (
                       <article key={iconItem.name} className={styles.detailIconItem}>
                         <span className={styles.detailIconGlyph} aria-hidden="true">
                           {iconItem.icon}

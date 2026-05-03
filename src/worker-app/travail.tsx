@@ -91,9 +91,15 @@ export type TravailPreviewState =
   | "list-data"
   | "list-loading"
   | "list-empty"
+  | "list-search-results"
+  | "list-search-empty"
+  | "list-filters-active"
+  | "list-filters-sheet"
   | "detail-overview"
   | "detail-map"
-  | "detail-gallery";
+  | "detail-gallery"
+  | "detail-sheet-parcel"
+  | "detail-sheet-config";
 
 type WorkerAppTravailPageProps = {
   showDeviceFrame: boolean;
@@ -102,6 +108,7 @@ type WorkerAppTravailPageProps = {
   embedded?: boolean;
   frameView?: TravailFrameView;
   previewState?: TravailPreviewState;
+  previewJobId?: string;
   isInteractive?: boolean;
   onLayoutModeChange?: (mode: "default" | "fullScreen") => void;
 };
@@ -457,6 +464,36 @@ function buildGalleryImages(job: TravailJob) {
   };
 }
 
+function getPreviewSearchQuery(previewState?: TravailPreviewState): string {
+  if (previewState === "list-search-results") {
+    return "Parcelle 101";
+  }
+  if (previewState === "list-search-empty") {
+    return "inexistant";
+  }
+  return "";
+}
+
+function shouldOpenDetailForPreview(previewState?: TravailPreviewState): boolean {
+  return (
+    previewState === "detail-overview" ||
+    previewState === "detail-map" ||
+    previewState === "detail-gallery" ||
+    previewState === "detail-sheet-parcel" ||
+    previewState === "detail-sheet-config"
+  );
+}
+
+function getPreviewDetailTab(previewState?: TravailPreviewState): EstimationDetailTab {
+  if (previewState === "detail-map") {
+    return "map";
+  }
+  if (previewState === "detail-gallery") {
+    return "gallery";
+  }
+  return "overview";
+}
+
 export function WorkerAppTravailPage({
   showDeviceFrame,
   theme,
@@ -464,12 +501,14 @@ export function WorkerAppTravailPage({
   embedded = false,
   frameView = "data",
   previewState,
+  previewJobId,
   isInteractive = true,
   onLayoutModeChange,
 }: WorkerAppTravailPageProps) {
   const [syncStateIndex, setSyncStateIndex] = useState(2);
   const [activeFilter, setActiveFilter] = useState<TravailFilter>("estimation");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isTravailFiltersSheetOpen, setIsTravailFiltersSheetOpen] = useState(false);
   const [selectedStatusFilters, setSelectedStatusFilters] = useState<TravailJobStatus[]>([]);
   const [selectedDueFilters, setSelectedDueFilters] = useState<DueFilter[]>([]);
@@ -478,26 +517,25 @@ export function WorkerAppTravailPage({
 
   const todayIso = useMemo(() => getCurrentIsoDate(), []);
   const jobs = useMemo(() => buildTravailJobs(todayIso), [todayIso]);
+  const previewJob = useMemo(() => {
+    if (previewJobId) {
+      const matchedJob = jobs.find((job) => job.id === previewJobId);
+      if (matchedJob) {
+        return matchedJob;
+      }
+    }
+    return jobs.find((job) => job.type === "estimation") ?? null;
+  }, [jobs, previewJobId]);
 
   const initialJob = useMemo(() => {
-    if (
-      previewState === "detail-overview" ||
-      previewState === "detail-map" ||
-      previewState === "detail-gallery"
-    ) {
-      return jobs.find((j) => j.type === "estimation") ?? null;
+    if (shouldOpenDetailForPreview(previewState)) {
+      return previewJob;
     }
     return null;
-  }, [previewState, jobs]);
+  }, [previewJob, previewState]);
 
   const [selectedEstimationJob, setSelectedEstimationJob] = useState<TravailJob | null>(initialJob);
-  const [activeDetailTab, setActiveDetailTab] = useState<EstimationDetailTab>(
-    previewState === "detail-map"
-      ? "map"
-      : previewState === "detail-gallery"
-        ? "gallery"
-        : "overview"
-  );
+  const [activeDetailTab, setActiveDetailTab] = useState<EstimationDetailTab>(getPreviewDetailTab(previewState));
   const [galleryFilter, setGalleryFilter] = useState<GalleryFilter>("all");
   const [mapFocus, setMapFocus] = useState<MapFocus>("all");
   const [mapOverlay, setMapOverlay] = useState<MapOverlay>("points");
@@ -510,6 +548,7 @@ export function WorkerAppTravailPage({
   const syncState = syncStates[syncStateIndex];
   const isOffline = syncState.offline;
   const isMapDetail = Boolean(selectedEstimationJob && activeDetailTab === "map");
+  const previewSearchQuery = getPreviewSearchQuery(previewState);
 
 
   const resolvedFrameTheme = frameTheme ?? theme;
@@ -530,17 +569,9 @@ export function WorkerAppTravailPage({
     selectedSectorFilters.length;
 
   const visibleJobs = useMemo(() => {
-    const normalizedQuery = normalizeSearchValue(searchQuery.trim());
-
     return jobs
       .filter((job) => job.type === activeFilter)
       .filter((job) => {
-        const detail = getEstimationDetail(job);
-        const matchesSearch =
-          normalizedQuery.length === 0 ||
-          normalizeSearchValue(
-            `${job.displayTitle} ${job.displayMeta} ${job.sectorName} ${job.statusLabel} ${detail.parcel.fruitType} ${detail.parcel.variety}`
-          ).includes(normalizedQuery);
         const matchesStatus =
           selectedStatusFilters.length === 0 || selectedStatusFilters.includes(job.status);
         const dueState: DueFilter =
@@ -557,19 +588,38 @@ export function WorkerAppTravailPage({
         const matchesSector =
           selectedSectorFilters.length === 0 || selectedSectorFilters.includes(job.sectorName);
 
-        return matchesSearch && matchesStatus && matchesDue && matchesEstimation && matchesSector;
+        return matchesStatus && matchesDue && matchesEstimation && matchesSector;
       })
       .sort(sortTravailJobs);
   }, [
     activeFilter,
     jobs,
-    searchQuery,
     selectedDueFilters,
     selectedEstimationFilters,
     selectedSectorFilters,
     selectedStatusFilters,
     todayIso,
   ]);
+  const listJobs = useMemo(() => {
+    if (!previewJobId || selectedEstimationJob) {
+      return visibleJobs;
+    }
+
+    const matchedJob = visibleJobs.find((job) => job.id === previewJobId);
+    return matchedJob ? [matchedJob] : visibleJobs;
+  }, [previewJobId, selectedEstimationJob, visibleJobs]);
+  const searchVisibleJobs = useMemo(() => {
+    const normalizedQuery = normalizeSearchValue(searchQuery.trim());
+    if (normalizedQuery.length === 0) return [];
+
+    return visibleJobs.filter((job) => {
+      const detail = getEstimationDetail(job);
+      return normalizeSearchValue(
+        `${job.displayTitle} ${job.displayMeta} ${job.sectorName} ${job.statusLabel} ${detail.parcel.fruitType} ${detail.parcel.variety}`
+      ).includes(normalizedQuery);
+    });
+  }, [searchQuery, visibleJobs]);
+  const suggestedSearchJobs = useMemo(() => visibleJobs.slice(0, 6), [visibleJobs]);
   const jobCounts = useMemo(
     () => ({
       estimation: jobs.filter((job) => job.type === "estimation").length,
@@ -595,6 +645,30 @@ export function WorkerAppTravailPage({
           progressPercentage: Math.round(selectedEstimationJob.progressRatio * 100),
         }
       : null;
+  const selectedEstimationDueMeta = selectedEstimationJob
+    ? (() => {
+        const dueTime = parseIsoDateToTime(selectedEstimationJob.dueDate);
+        const todayTime = parseIsoDateToTime(todayIso);
+        const daysUntilDue = Math.ceil((dueTime - todayTime) / 86400000);
+        const isOverdue = selectedEstimationJob.status !== "done" && daysUntilDue < 0;
+        const isDueSoon = selectedEstimationJob.status !== "done" && daysUntilDue >= 0 && daysUntilDue <= 3;
+        const isLockedUntilDate = selectedEstimationJob.status === "notStarted" && daysUntilDue > 0;
+        const daysLate = Math.abs(daysUntilDue);
+        const dueBadgeLabel =
+          selectedEstimationJob.status === "done"
+            ? null
+            : isLockedUntilDate
+              ? `dans ${daysUntilDue} j`
+              : isOverdue
+                ? `${daysLate} j retard`
+                : `${Math.max(daysUntilDue, 0)} j restants`;
+        const dueText = isLockedUntilDate
+          ? `Début ${formatShortDateFr(selectedEstimationJob.dueDate)}`
+          : selectedEstimationJob.dueLabel.replace("Fin : ", "Fin ");
+
+        return { dueText, dueBadgeLabel, isOverdue, isDueSoon };
+      })()
+    : null;
   const galleryData = selectedEstimationJob ? buildGalleryImages(selectedEstimationJob) : null;
   const visibleGalleryImages = useMemo(() => {
     if (!galleryData) return [];
@@ -694,6 +768,46 @@ export function WorkerAppTravailPage({
     closeEstimationDetail();
   }, []);
 
+  const closeSearch = useCallback(() => {
+    setIsSearchOpen(false);
+    setSearchQuery("");
+  }, []);
+
+  const searchInputValue = searchQuery.trim();
+  const isSearchIdle = searchInputValue.length === 0;
+  const searchScreenJobs = isSearchIdle ? suggestedSearchJobs : searchVisibleJobs;
+
+  useEffect(() => {
+    if (isInteractive) {
+      return;
+    }
+
+    const showFiltersSheet = previewState === "list-filters-sheet";
+    const showActiveFilters =
+      previewState === "list-filters-sheet" || previewState === "list-filters-active";
+
+    setActiveFilter(previewJob?.type ?? "estimation");
+    setSearchQuery(previewSearchQuery);
+    setIsSearchOpen(
+      previewState === "list-search-results" || previewState === "list-search-empty"
+    );
+    setIsTravailFiltersSheetOpen(showFiltersSheet);
+    setSelectedStatusFilters(showActiveFilters ? ["inProgress"] : []);
+    setSelectedDueFilters(showActiveFilters ? ["overdue", "today"] : []);
+    setSelectedEstimationFilters(showActiveFilters ? [1, 2] : []);
+    setSelectedSectorFilters(showActiveFilters ? ["Secteur S1", "Secteur S4"] : []);
+    setSelectedEstimationJob(shouldOpenDetailForPreview(previewState) ? previewJob : null);
+    setActiveDetailTab(getPreviewDetailTab(previewState));
+    setGalleryFilter("all");
+    setMapFocus("all");
+    setMapOverlay("points");
+    setIsMapLayersSheetOpen(false);
+    setIsCameraDemoOpen(false);
+    setIsDetailScrolled(false);
+    setIsParcelleSheetOpen(previewState === "detail-sheet-parcel");
+    setIsEstimationConfigSheetOpen(previewState === "detail-sheet-config");
+  }, [isInteractive, previewJob, previewSearchQuery, previewState]);
+
   useEffect(() => {
     onLayoutModeChange?.(selectedEstimationJob ? "fullScreen" : "default");
   }, [onLayoutModeChange, selectedEstimationJob]);
@@ -746,7 +860,11 @@ export function WorkerAppTravailPage({
                     </button>
                     <div className={styles.posteDetailHeaderText}>
                       <h2 className={styles.posteDetailHeaderTitle}>{detailHeaderTitle}</h2>
-                      <p className={styles.posteDetailHeaderLocation}>{detailHeaderSubtitle}</p>
+                      <p className={styles.posteDetailHeaderLocation}>
+                        {activeDetailTab === "overview"
+                          ? selectedEstimationJob?.displayMeta ?? ""
+                          : detailHeaderSubtitle}
+                      </p>
                     </div>
                     </div>
                   ) : null}
@@ -851,8 +969,42 @@ export function WorkerAppTravailPage({
                               label: "Estimation",
                               value: `Estimation ${selectedEstimationJob.year} #${selectedEstimationJob.yearlySequence}`,
                             },
-                            { label: "Échéance", value: selectedEstimationJob.dueLabel.replace("Fin : ", "") },
                           ])}
+                          {selectedEstimationDueMeta ? (
+                            <div className={styles.travailDetailRow}>
+                              <span className={styles.travailDetailLabel}>Échéance</span>
+                              <div className={styles.travailDetailDueValue}>
+                                <div className={styles.travailJobDueRow}>
+                                  <div
+                                    className={`${styles.travailJobDueChip} ${
+                                      selectedEstimationDueMeta.isOverdue
+                                        ? styles.travailJobDueChipUrgent
+                                        : selectedEstimationDueMeta.isDueSoon
+                                          ? styles.travailJobDueChipSoon
+                                          : ""
+                                    }`}
+                                  >
+                                    <span className={styles.travailJobDueLabel}>
+                                      {selectedEstimationDueMeta.dueText}
+                                    </span>
+                                  </div>
+                                  {selectedEstimationDueMeta.dueBadgeLabel ? (
+                                    <span
+                                      className={`${styles.travailJobDueBadge} ${
+                                        selectedEstimationDueMeta.isOverdue
+                                          ? styles.travailJobDueBadgeUrgent
+                                          : selectedEstimationDueMeta.isDueSoon
+                                            ? styles.travailJobDueBadgeSoon
+                                            : ""
+                                      }`}
+                                    >
+                                      {selectedEstimationDueMeta.dueBadgeLabel}
+                                    </span>
+                                  ) : null}
+                                </div>
+                              </div>
+                            </div>
+                          ) : null}
                           <div className={styles.travailDetailStatusRow}>
                             <span className={styles.travailDetailLabel}>Statut</span>
                             {renderStatusBadge(selectedEstimationJob)}
@@ -902,10 +1054,14 @@ export function WorkerAppTravailPage({
                   ) : activeDetailTab === "map" ? (
                     <section className={styles.travailMapSection}>
                       <div className={styles.travailMapView}>
-                        <TravailLiveMap
-                          focus={mapFocus}
-                          overlay={mapOverlay}
-                        />
+                        {isInteractive ? (
+                          <TravailLiveMap
+                            focus={mapFocus}
+                            overlay={mapOverlay}
+                          />
+                        ) : (
+                          <TravailParcelPreviewMap />
+                        )}
                         <div className={styles.travailMapTopBar}>
                           <button
                             className={styles.travailMapTopBack}
@@ -1197,81 +1353,275 @@ export function WorkerAppTravailPage({
           </>
         ) : (
         <>
-        <div className={`${styles.secteursContent} ${styles.travailContent}`}>
-          <div className={styles.posteStickyTop}>
-            <div className={styles.homeHeaderRow}>
-              <div className={styles.posteFixeTitleBlock}>
-                <h2 className={styles.posteFixeTitle}>Travail</h2>
-                <p className={styles.posteFixeSubtitle}>Campagne 2025-2026</p>
-              </div>
-              <div className={styles.homeHeaderActions}>
-<button
-                  className={styles.syncBadge}
-                  type="button"
-                  aria-label={syncState.label}
-                  onClick={() => setSyncStateIndex((prev) => (prev + 1) % syncStates.length)}
-                >
-                  <span className={styles.googleSymbol} aria-hidden="true">
-                    {syncState.icon}
+        <div
+          className={`${styles.secteursContent} ${styles.travailContent} ${
+            isSearchOpen ? styles.secteursContentNoBottomBar : ""
+          }`}
+        >
+          {isSearchOpen ? null : (
+            <div className={styles.posteStickyTop}>
+              <div className={styles.homeHeaderRow}>
+                <div className={styles.posteFixeTitleBlock}>
+                  <h2 className={styles.posteFixeTitle}>Travail</h2>
+                  <p className={styles.posteFixeSubtitle}>Campagne 2025-2026</p>
+                </div>
+                <div className={styles.homeHeaderActions}>
+  <button
+                    className={styles.syncBadge}
+                    type="button"
+                    aria-label={syncState.label}
+                    onClick={() => setSyncStateIndex((prev) => (prev + 1) % syncStates.length)}
+                  >
+                    <span className={styles.googleSymbol} aria-hidden="true">
+                      {syncState.icon}
+                    </span>
+                  </button>
+                  <span className={styles.homeAvatar} aria-label="User avatar">
+                    OE
                   </span>
-                </button>
-                <span className={styles.homeAvatar} aria-label="User avatar">
-                  OE
-                </span>
+                </div>
               </div>
-            </div>
 
-            <div className={styles.travailSegmentedTabs} role="tablist" aria-label="Filtres travail">
-              {[
-                { key: "estimation" as TravailFilter, label: "Volume", count: frameView === "empty" ? 0 : jobCounts.estimation },
-                { key: "calibre" as TravailFilter, label: "Calibre", count: frameView === "empty" ? 0 : jobCounts.calibre },
-              ].map((tab) => (
+              <div className={styles.travailSegmentedTabs} role="tablist" aria-label="Filtres travail">
+                {[
+                  { key: "estimation" as TravailFilter, label: "Volume", count: frameView === "empty" ? 0 : jobCounts.estimation },
+                  { key: "calibre" as TravailFilter, label: "Calibre", count: frameView === "empty" ? 0 : jobCounts.calibre },
+                ].map((tab) => (
+                  <button
+                    key={tab.key}
+                    className={`${styles.travailSegmentedTab} ${
+                      activeFilter === tab.key ? styles.travailSegmentedTabActive : ""
+                    }`}
+                    type="button"
+                    role="tab"
+                    aria-selected={activeFilter === tab.key}
+                    onClick={() => setActiveFilter(tab.key)}
+                  >
+                    <span>{tab.label}</span>
+                    <span className={styles.travailSegmentedTabCount}>{tab.count}</span>
+                  </button>
+                ))}
+              </div>
+              {frameView !== "empty" ? (
+                <div className={styles.travailSearchRow}>
+                  <button
+                    className={styles.travailSearchTrigger}
+                    type="button"
+                    aria-label="Ouvrir la recherche"
+                    onClick={() => setIsSearchOpen(true)}
+                  >
+                    <span className={styles.travailSearchPlaceholder}>Rechercher un travail</span>
+                  </button>
+                  <button
+                    className={`${styles.travailFilterButton} ${
+                      activeAdvancedFilterCount > 0 ? styles.travailFilterButtonActive : ""
+                    }`}
+                    type="button"
+                    aria-label="Ouvrir les filtres"
+                    onClick={() => setIsTravailFiltersSheetOpen(true)}
+                  >
+                    <span className={`${styles.googleSymbol}`} aria-hidden="true">tune</span>
+                    {activeAdvancedFilterCount > 0 ? (
+                      <span className={styles.travailFilterButtonCount} aria-hidden="true" />
+                    ) : null}
+                  </button>
+                </div>
+              ) : null}
+            </div>
+          )}
+
+          {isSearchOpen ? (
+            <div className={styles.travailSearchScreen}>
+              <div className={styles.travailSearchTopBar}>
                 <button
-                  key={tab.key}
-                  className={`${styles.travailSegmentedTab} ${
-                    activeFilter === tab.key ? styles.travailSegmentedTabActive : ""
-                  }`}
+                  className={styles.travailSearchBack}
                   type="button"
-                  role="tab"
-                  aria-selected={activeFilter === tab.key}
-                  onClick={() => setActiveFilter(tab.key)}
+                  aria-label="Retour"
+                  onClick={closeSearch}
                 >
-                  <span>{tab.label}</span>
-                  <span className={styles.travailSegmentedTabCount}>{tab.count}</span>
+                  <span aria-hidden="true">arrow_back</span>
                 </button>
-              ))}
-            </div>
-            {frameView !== "empty" ? (
-            <div className={styles.travailSearchRow}>
-              <label className={styles.travailSearchField}>
-                <span className={`${styles.googleSymbol} ${styles.travailSearchIcon}`} aria-hidden="true">search</span>
-                <input
-                  value={searchQuery}
-                  onChange={(event) => setSearchQuery(event.target.value)}
-                  placeholder="Rechercher une parcelle"
-                  type="search"
-                  aria-label="Rechercher une parcelle"
-                />
-              </label>
-              <span className={styles.travailSearchDivider} aria-hidden="true" />
-              <button
-                className={`${styles.travailFilterButton} ${
-                  activeAdvancedFilterCount > 0 ? styles.travailFilterButtonActive : ""
-                }`}
-                type="button"
-                aria-label="Ouvrir les filtres"
-                onClick={() => setIsTravailFiltersSheetOpen(true)}
-              >
-                <span className={`${styles.googleSymbol}`} aria-hidden="true">tune</span>
-                {activeAdvancedFilterCount > 0 ? (
-                  <span className={styles.travailFilterButtonCount} aria-hidden="true" />
-                ) : null}
-              </button>
-            </div>
-            ) : null}
-          </div>
+                <label className={styles.travailSearchScreenField}>
+                  <input
+                    autoFocus
+                    value={searchQuery}
+                    onChange={(event) => setSearchQuery(event.target.value)}
+                    placeholder="Rechercher par parcelle, secteur ou estimation"
+                    type="search"
+                    aria-label="Rechercher par parcelle, secteur ou estimation"
+                  />
+                </label>
+                <button
+                  className={styles.travailSearchClear}
+                  type="button"
+                  aria-label={isSearchIdle ? "Fermer la recherche" : "Effacer la recherche"}
+                  onClick={() => {
+                    if (isSearchIdle) {
+                      closeSearch();
+                      return;
+                    }
+                    setSearchQuery("");
+                  }}
+                >
+                  <span className={styles.googleSymbol} aria-hidden="true">close</span>
+                </button>
+              </div>
+              <div className={styles.travailSearchDividerLine} aria-hidden="true" />
+              {searchScreenJobs.length > 0 ? (
+                <div className={styles.travailSearchResultsList}>
+                  {searchScreenJobs.map((job) => {
+                    const detail = getEstimationDetail(job);
+                    const searchItemLockedUntilDate =
+                      job.status === "notStarted" &&
+                      parseIsoDateToTime(job.dueDate) > parseIsoDateToTime(todayIso);
+                    const searchSupportingText = isSearchIdle
+                      ? `${job.displayMeta} • ${job.statusLabel}`
+                      : `${job.sectorName} • ${detail.parcel.fruitType} ${detail.parcel.variety}`;
+                    return (
+                      <button
+                        key={job.id}
+                        type="button"
+                        className={styles.travailSearchListItem}
+                        onClick={() => {
+                          if (job.type === "estimation" && !searchItemLockedUntilDate) {
+                            setIsSearchOpen(false);
+                            openEstimationDetail(job);
+                          }
+                        }}
+                      >
+                        <span className={styles.travailSearchListLeading} aria-hidden="true">
+                          {job.type === "estimation" ? "V" : "C"}
+                        </span>
+                        <span className={styles.travailSearchListText}>
+                          <span className={styles.travailSearchListTitle}>{job.displayTitle}</span>
+                          <span className={styles.travailSearchListSupporting}>{searchSupportingText}</span>
+                        </span>
+                      </button>
+                    );
+                    const pendingImages = Math.max(job.capturedImages - job.syncedImages, 0);
+                    const syncedImages = job.syncedImages;
+                    const syncedRatio = job.targetImages === 0 ? 0 : (syncedImages / job.targetImages) * 100;
+                    const pendingRatio = job.targetImages === 0 ? 0 : (pendingImages / job.targetImages) * 100;
+                    const dueTime = parseIsoDateToTime(job.dueDate);
+                    const todayTime = parseIsoDateToTime(todayIso);
+                    const daysUntilDue = Math.ceil((dueTime - todayTime) / 86400000);
+                    const isOverdue = job.status !== "done" && daysUntilDue < 0;
+                    const isDueSoon = job.status !== "done" && daysUntilDue >= 0 && daysUntilDue <= 3;
+                    const isLockedUntilDate = job.status === "notStarted" && daysUntilDue > 0;
+                    const daysLate = Math.abs(daysUntilDue);
+                    const dueBadgeLabel =
+                      job.status === "done"
+                        ? null
+                        : isLockedUntilDate
+                          ? `dans ${daysUntilDue} j`
+                          : isOverdue
+                            ? `${daysLate} j retard`
+                            : `${Math.max(daysUntilDue, 0)} j restants`;
+                    const dueText = isLockedUntilDate
+                      ? `Début ${formatShortDateFr(job.dueDate)}`
+                      : job.dueLabel.replace("Fin : ", "Fin ");
+                    return (
+                      <button
+                        key={job.id}
+                        type="button"
+                        className={`${styles.posteCard} ${styles.travailJobCard} ${job.type === "estimation" && !isLockedUntilDate ? styles.travailJobCardClickable : ""} ${
+                          isLockedUntilDate ? styles.travailJobCardLocked : ""
+                        }`}
+                        onClick={() => {
+                          if (job.type === "estimation" && !isLockedUntilDate) {
+                            setIsSearchOpen(false);
+                            openEstimationDetail(job);
+                          }
+                        }}
+                      >
+                        <div className={styles.travailJobCardHeader}>
+                          <div className={styles.travailJobCardTitleBlock}>
+                            <h4 className={styles.posteFixeCardTitle}>{job.displayTitle}</h4>
+                          </div>
+                          <div className={styles.travailJobCardActions}>
+                            {isLockedUntilDate ? (
+                              <span className={`${styles.travailJobStatusBadge} ${styles.travailJobStatusScheduled}`}>
+                                Planifié
+                              </span>
+                            ) : (
+                              renderStatusBadge(job)
+                            )}
+                          </div>
+                        </div>
 
-          {frameView === "loading" ? (
+                        <div className={styles.travailJobMetaRow}>
+                          <span>{job.displayMeta}</span>
+                        </div>
+
+                        <div className={styles.travailJobDueRow}>
+                          <div
+                            className={`${styles.travailJobDueChip} ${
+                              isOverdue
+                                ? styles.travailJobDueChipUrgent
+                                : isDueSoon
+                                  ? styles.travailJobDueChipSoon
+                                  : ""
+                            }`}
+                          >
+                            <span className={styles.travailJobDueLabel}>{dueText}</span>
+                          </div>
+                          {dueBadgeLabel ? (
+                            <span
+                              className={`${styles.travailJobDueBadge} ${
+                                isOverdue
+                                  ? styles.travailJobDueBadgeUrgent
+                                  : isDueSoon
+                                    ? styles.travailJobDueBadgeSoon
+                                    : ""
+                              }`}
+                            >
+                              {dueBadgeLabel}
+                            </span>
+                          ) : null}
+                        </div>
+
+                        <div className={styles.travailJobProgressBlock}>
+                          <div className={styles.travailJobProgressHeader}>
+                            <span className={styles.travailJobProgressCount}>
+                              <strong>{job.capturedImages}/{job.targetImages}</strong> captures
+                            </span>
+                            <span className={styles.travailJobProgressPercent}>
+                              {Math.round(job.progressRatio * 100)}%
+                            </span>
+                          </div>
+                          <div className={styles.travailJobProgressTrack} aria-hidden="true">
+                            <span className={styles.travailJobProgressSynced} style={{ width: `${syncedRatio}%` }} />
+                            <span className={styles.travailJobProgressPending} style={{ width: `${pendingRatio}%` }} />
+                          </div>
+                          <div className={styles.travailJobProgressLegend}>
+                            <span className={styles.travailJobProgressLegendItem}>
+                              <span className={`${styles.travailJobProgressDot} ${styles.travailJobProgressDotSynced}`} />
+                              {syncedImages} sync
+                            </span>
+                            {pendingImages > 0 && (
+                              <span className={styles.travailJobProgressLegendItem}>
+                                <span className={`${styles.travailJobProgressDot} ${styles.travailJobProgressDotPending}`} />
+                                {pendingImages} non sync
+                              </span>
+                            )}
+                            <span className={styles.travailJobProgressLegendItem}>
+                              {job.remainingImages} restantes
+                            </span>
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className={`${styles.emptyState} ${styles.emptyStateCompact}`}>
+                  <span className={styles.emptyStateIcon} aria-hidden="true">travel_explore</span>
+                  <h3>Aucun résultat</h3>
+                  <p>Aucun travail ne correspond à votre recherche.</p>
+                </div>
+              )}
+            </div>
+          ) : frameView === "loading" ? (
             <div className={styles.travailJobList} aria-busy="true" aria-label="Chargement en cours">
               {[
                 { title: 72, meta: 55, progress: 68 },
@@ -1305,9 +1655,9 @@ export function WorkerAppTravailPage({
                 </div>
               </div>
             </div>
-          ) : visibleJobs.length > 0 ? (
+          ) : listJobs.length > 0 ? (
             <div className={styles.travailJobList}>
-              {visibleJobs.map((job) => {
+              {listJobs.map((job) => {
                 const pendingImages = Math.max(job.capturedImages - job.syncedImages, 0);
                 const syncedImages = job.syncedImages;
                 const syncedRatio = job.targetImages === 0 ? 0 : (syncedImages / job.targetImages) * 100;
@@ -1458,7 +1808,7 @@ export function WorkerAppTravailPage({
                       </span>
                       <div className={styles.travailFiltersGroupCopy}>
                         <h4>Progression</h4>
-                        <p>Filtrer par etat d'avancement</p>
+                        <p>Filtrer par etat d&apos;avancement</p>
                       </div>
                       <span className={styles.travailFiltersGroupCount}>{selectedStatusFilters.length}</span>
                     </div>
@@ -1522,7 +1872,7 @@ export function WorkerAppTravailPage({
                       </span>
                       <div className={styles.travailFiltersGroupCopy}>
                         <h4>Estimation</h4>
-                        <p>Choisir la serie d'estimation</p>
+                        <p>Choisir la serie d&apos;estimation</p>
                       </div>
                       <span className={styles.travailFiltersGroupCount}>{selectedEstimationFilters.length}</span>
                     </div>
@@ -1611,11 +1961,13 @@ export function WorkerAppTravailPage({
       >
         <WorkerAppStatusBar theme={isMapDetail ? "dark" : theme} transparent={isMapDetail} />
         {content}
-        {selectedEstimationJob || isTravailFiltersSheetOpen || isEstimationConfigSheetOpen ? null : (
+        {selectedEstimationJob || isTravailFiltersSheetOpen || isEstimationConfigSheetOpen || isSearchOpen ? null : (
           <WorkerAppHomeBottomBarScreen activeIndex={1} />
         )}
         {isTravailFiltersSheetOpen || isEstimationConfigSheetOpen ? null : (
-          <WorkerAppNavigationScreen surface={selectedEstimationJob ? "page" : "default"} />
+          <WorkerAppNavigationScreen
+            surface={isSearchOpen || selectedEstimationJob ? "page" : "default"}
+          />
         )}
       </div>
     </div>
