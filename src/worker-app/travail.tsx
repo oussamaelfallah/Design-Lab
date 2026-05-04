@@ -1410,19 +1410,29 @@ export function WorkerAppTravailPage({
                     aria-label="Ouvrir la recherche"
                     onClick={() => setIsSearchOpen(true)}
                   >
-                    <span className={styles.travailSearchPlaceholder}>Rechercher un travail</span>
+                    <span className={styles.googleSymbol} aria-hidden="true">search</span>
+                    <span className={styles.travailSearchPlaceholder}>
+                      {activeFilter === "estimation" ? "Parcelle, secteur, référence..." : "Parcelle, secteur..."}
+                    </span>
                   </button>
                   <button
                     className={`${styles.travailFilterButton} ${
                       activeAdvancedFilterCount > 0 ? styles.travailFilterButtonActive : ""
                     }`}
                     type="button"
-                    aria-label="Ouvrir les filtres"
+                    aria-label={
+                      activeAdvancedFilterCount > 0
+                        ? `Ouvrir les filtres, ${activeAdvancedFilterCount} actifs`
+                        : "Ouvrir les filtres"
+                    }
                     onClick={() => setIsTravailFiltersSheetOpen(true)}
                   >
-                    <span className={`${styles.googleSymbol}`} aria-hidden="true">tune</span>
+                    <span className={`${styles.googleSymbol}`} aria-hidden="true">filter_list</span>
+                    <span className={styles.travailFilterButtonLabel}>Filtres</span>
                     {activeAdvancedFilterCount > 0 ? (
-                      <span className={styles.travailFilterButtonCount} aria-hidden="true" />
+                      <span className={styles.travailFilterButtonCount} aria-hidden="true">
+                        {activeAdvancedFilterCount}
+                      </span>
                     ) : null}
                   </button>
                 </div>
@@ -1520,12 +1530,22 @@ export function WorkerAppTravailPage({
                     const dueText = isLockedUntilDate
                       ? `Début ${formatShortDateFr(job.dueDate)}`
                       : job.dueLabel.replace("Fin : ", "Fin ");
+                    const dueSummaryLabel =
+                      job.status === "done" ? `Fini le ${formatShortDateFr(job.dueDate)}` : dueText;
                     return (
                       <button
                         key={job.id}
                         type="button"
                         className={`${styles.posteCard} ${styles.travailJobCard} ${job.type === "estimation" && !isLockedUntilDate ? styles.travailJobCardClickable : ""} ${
                           isLockedUntilDate ? styles.travailJobCardLocked : ""
+                        } ${
+                          isOverdue
+                            ? styles.travailJobCardOverdue
+                            : isDueSoon
+                              ? styles.travailJobCardSoon
+                              : job.status === "done"
+                                ? styles.travailJobCardDone
+                                : ""
                         }`}
                         onClick={() => {
                           if (job.type === "estimation" && !isLockedUntilDate) {
@@ -1550,33 +1570,47 @@ export function WorkerAppTravailPage({
                         </div>
 
                         <div className={styles.travailJobMetaRow}>
-                          <span>{job.displayMeta}</span>
+                          <span>{job.type === "estimation" ? `Estimation Volume ${job.year}` : `Calibre ${job.year}`}</span>
+                          <span>#{job.yearlySequence}</span>
+                          <span>{job.sectorName}</span>
                         </div>
 
-                        <div className={styles.travailJobDueRow}>
-                          <div
-                            className={`${styles.travailJobDueChip} ${
-                              isOverdue
-                                ? styles.travailJobDueChipUrgent
-                                : isDueSoon
-                                  ? styles.travailJobDueChipSoon
-                                  : ""
-                            }`}
-                          >
-                            <span className={styles.travailJobDueLabel}>{dueText}</span>
-                          </div>
-                          {dueBadgeLabel ? (
-                            <span
-                              className={`${styles.travailJobDueBadge} ${
+                        <div
+                          className={`${styles.travailJobInfoRow} ${
+                            job.status === "done" ? styles.travailJobInfoRowComplete : ""
+                          }`}
+                        >
+                          <div className={styles.travailJobInfoMain}>
+                            <strong
+                              className={
                                 isOverdue
-                                  ? styles.travailJobDueBadgeUrgent
+                                  ? styles.travailJobSummaryUrgent
                                   : isDueSoon
-                                    ? styles.travailJobDueBadgeSoon
+                                    ? styles.travailJobSummarySoon
                                     : ""
-                              }`}
+                              }
                             >
-                              {dueBadgeLabel}
-                            </span>
+                              {dueSummaryLabel}
+                            </strong>
+                            {dueBadgeLabel ? (
+                              <span
+                                className={`${styles.travailJobSummaryBadge} ${
+                                  isOverdue
+                                    ? styles.travailJobSummaryBadgeUrgent
+                                    : isDueSoon
+                                      ? styles.travailJobSummaryBadgeSoon
+                                      : ""
+                                }`}
+                              >
+                                {dueBadgeLabel}
+                              </span>
+                            ) : null}
+                          </div>
+                          {job.status !== "done" ? (
+                            <div className={styles.travailJobInfoSecondary}>
+                              <strong>{job.remainingImages}</strong>
+                              <span>à capturer</span>
+                            </div>
                           ) : null}
                         </div>
 
@@ -1604,9 +1638,6 @@ export function WorkerAppTravailPage({
                                 {pendingImages} non sync
                               </span>
                             )}
-                            <span className={styles.travailJobProgressLegendItem}>
-                              {job.remainingImages} restantes
-                            </span>
                           </div>
                         </div>
                       </button>
@@ -1680,12 +1711,22 @@ export function WorkerAppTravailPage({
                 const dueText = isLockedUntilDate
                   ? `Début ${formatShortDateFr(job.dueDate)}`
                   : job.dueLabel.replace("Fin : ", "Fin ");
+                const dueSummaryLabel =
+                  job.status === "done" ? `Fini le ${formatShortDateFr(job.dueDate)}` : dueText;
                 return (
                   <button
                     key={job.id}
                     type="button"
                     className={`${styles.posteCard} ${styles.travailJobCard} ${job.type === "estimation" && !isLockedUntilDate ? styles.travailJobCardClickable : ""} ${
                       isLockedUntilDate ? styles.travailJobCardLocked : ""
+                    } ${
+                      isOverdue
+                        ? styles.travailJobCardOverdue
+                        : isDueSoon
+                          ? styles.travailJobCardSoon
+                          : job.status === "done"
+                            ? styles.travailJobCardDone
+                            : ""
                     }`}
                     onClick={() => {
                       if (job.type === "estimation" && !isLockedUntilDate) openEstimationDetail(job);
@@ -1707,33 +1748,47 @@ export function WorkerAppTravailPage({
                     </div>
 
                     <div className={styles.travailJobMetaRow}>
-                      <span>{job.displayMeta}</span>
+                      <span>{job.type === "estimation" ? `Estimation Volume ${job.year}` : `Calibre ${job.year}`}</span>
+                      <span>#{job.yearlySequence}</span>
+                      <span>{job.sectorName}</span>
                     </div>
 
-                    <div className={styles.travailJobDueRow}>
-                      <div
-                        className={`${styles.travailJobDueChip} ${
-                          isOverdue
-                            ? styles.travailJobDueChipUrgent
-                            : isDueSoon
-                              ? styles.travailJobDueChipSoon
-                              : ""
-                        }`}
-                      >
-                        <span className={styles.travailJobDueLabel}>{dueText}</span>
-                      </div>
-                      {dueBadgeLabel ? (
-                        <span
-                          className={`${styles.travailJobDueBadge} ${
+                    <div
+                      className={`${styles.travailJobInfoRow} ${
+                        job.status === "done" ? styles.travailJobInfoRowComplete : ""
+                      }`}
+                    >
+                      <div className={styles.travailJobInfoMain}>
+                        <strong
+                          className={
                             isOverdue
-                              ? styles.travailJobDueBadgeUrgent
+                              ? styles.travailJobSummaryUrgent
                               : isDueSoon
-                                ? styles.travailJobDueBadgeSoon
+                                ? styles.travailJobSummarySoon
                                 : ""
-                          }`}
+                          }
                         >
-                          {dueBadgeLabel}
-                        </span>
+                          {dueSummaryLabel}
+                        </strong>
+                        {dueBadgeLabel ? (
+                          <span
+                            className={`${styles.travailJobSummaryBadge} ${
+                              isOverdue
+                                ? styles.travailJobSummaryBadgeUrgent
+                                : isDueSoon
+                                  ? styles.travailJobSummaryBadgeSoon
+                                  : ""
+                            }`}
+                          >
+                            {dueBadgeLabel}
+                          </span>
+                        ) : null}
+                      </div>
+                      {job.status !== "done" ? (
+                        <div className={styles.travailJobInfoSecondary}>
+                          <strong>{job.remainingImages}</strong>
+                          <span>à capturer</span>
+                        </div>
                       ) : null}
                     </div>
 
@@ -1761,9 +1816,6 @@ export function WorkerAppTravailPage({
                             {pendingImages} non sync
                           </span>
                         )}
-                        <span className={styles.travailJobProgressLegendItem}>
-                          {job.remainingImages} restantes
-                        </span>
                       </div>
                     </div>
 
@@ -1957,7 +2009,7 @@ export function WorkerAppTravailPage({
       <div
         className={`${styles.androidScreen} ${
           theme === "dark" ? styles.androidScreenDark : styles.androidScreenLight
-        } ${isMapDetail ? styles.travailMapScreen : ""}`}
+        } ${isMapDetail ? styles.travailMapScreen : ""} ${isSearchOpen ? styles.travailSearchOpenScreen : ""}`}
       >
         <WorkerAppStatusBar theme={isMapDetail ? "dark" : theme} transparent={isMapDetail} />
         {content}

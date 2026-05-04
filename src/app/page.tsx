@@ -1569,7 +1569,7 @@ export default function Home() {
   >("postFixe");
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [workerTheme, setWorkerTheme] = useState<"dark" | "light">("light");
-  const [showDeviceFrame, setShowDeviceFrame] = useState(true);
+  const [showDeviceFrame, setShowDeviceFrame] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isWorkerAppOpen, setIsWorkerAppOpen] = useState(true);
   const [postFixeFrameView, setPostFixeFrameView] = useState<SecteursFrameView>("data");

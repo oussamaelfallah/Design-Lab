@@ -803,9 +803,10 @@
 .travailSegmentedTabs {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  min-height: 44px;
+  min-height: 40px;
   border-bottom: 1px solid var(--ds-border);
   background: var(--header-surface);
+  margin-bottom: 2px;
 }
 
 .travailSegmentedTab {
@@ -823,7 +824,7 @@
   font-size: 14px;
   font-weight: 500;
   line-height: 1;
-  padding: 0 8px 3px;
+  padding: 0 8px 2px;
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
 }
@@ -870,22 +871,20 @@
 .travailSearchRow {
   display: flex;
   align-items: center;
-  gap: 4px;
-  min-height: 56px;
-  border: none;
-  border-radius: 28px;
-  background: var(--ds-card);
-  margin-bottom: 6px;
+  gap: 0;
+  min-height: 44px;
+  border: 1.5px solid color-mix(in srgb, var(--ds-border) 90%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--ds-card) 80%, var(--post-fixe-page-surface));
+  margin-bottom: 0;
   overflow: hidden;
-  padding: 4px;
-  box-shadow: 0 1px 2px rgb(15 23 42 / 5%);
-  transition: box-shadow 0.15s, transform 0.15s;
+  padding: 0;
+  transition: border-color 0.15s;
 }
 
 .travailSearchRow:focus-within {
-  box-shadow:
-    0 0 0 3px color-mix(in srgb, var(--ds-brand) 12%, transparent),
-    0 10px 24px rgb(15 23 42 / 8%);
+  border-color: color-mix(in srgb, var(--ds-brand) 40%, var(--ds-border));
+  box-shadow: none;
 }
 
 .travailSearchField {
@@ -903,24 +902,41 @@
 .travailSearchTrigger {
   display: flex;
   align-items: center;
-  flex: 1;
+  justify-content: flex-start;
+  gap: 7px;
+  flex: 1 1 auto;
   min-width: 0;
-  align-self: stretch;
+  height: 42px;
   border: none;
+  border-radius: 12px 0 0 12px;
   background: transparent;
   color: var(--ds-text-secondary);
-  padding: 0 20px;
+  padding: 0 8px 0 12px;
   cursor: pointer;
   text-align: left;
+  transition: background-color 0.15s;
+}
+
+.travailSearchTrigger:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--ds-brand) 28%, transparent);
+  outline-offset: 2px;
+}
+
+.travailSearchTrigger span.googleSymbol {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  color: var(--ds-text-muted);
+  font-size: 20px;
 }
 
 .travailSearchPlaceholder {
-  color: var(--ds-text-secondary);
+  color: var(--ds-text-muted);
   font-family: var(--font-geist-sans), sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
-  line-height: 24px;
-  letter-spacing: 0.01em;
+  line-height: 20px;
+  letter-spacing: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -963,42 +979,78 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
+  gap: 5px;
+  flex: 0 0 96px;
+  min-width: 0;
+  width: 96px;
+  height: 42px;
   flex-shrink: 0;
   border: none;
-  border-radius: 999px;
+  border-left: 1.5px solid color-mix(in srgb, var(--ds-border) 90%, transparent);
+  border-radius: 0 12px 12px 0;
   background: transparent;
   color: var(--ds-text-secondary);
   cursor: pointer;
+  font-family: var(--font-geist-sans), sans-serif;
+  padding: 0 12px;
   transition: background-color 0.15s, color 0.15s;
 }
 
 .travailFilterButton span.googleSymbol {
-  font-size: 24px;
+  font-size: 19px;
 }
 
 .travailFilterButtonActive {
   color: var(--ds-brand);
-  background: color-mix(in srgb, var(--ds-brand) 10%, transparent);
+  background: color-mix(in srgb, var(--ds-brand) 9%, transparent);
+}
+
+.travailFilterButtonActive .travailFilterButtonLabel {
+  color: var(--ds-brand);
+}
+
+.travailFilterButton:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--ds-brand) 28%, transparent);
+  outline-offset: 2px;
+}
+
+.travailFilterButtonLabel {
+  color: currentColor;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+  letter-spacing: 0.1px;
 }
 
 .travailFilterButtonCount {
-  position: absolute;
-  top: 7px;
-  right: 7px;
-  width: 8px;
-  height: 8px;
-  border: 1.5px solid var(--ds-card);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border: none;
   border-radius: var(--radius-full);
   background: var(--ds-brand);
+  color: var(--ds-text-inverse);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.travailSearchOpenScreen {
+  --system-status-surface: var(--ds-card);
+  --system-navigation-default-surface: var(--ds-card);
+  --system-navigation-page-surface: var(--ds-card);
+  --post-fixe-page-surface: var(--ds-card);
+  --ds-surface: var(--ds-card);
 }
 
 .travailSearchScreen {
   display: flex;
   min-height: 100%;
   flex-direction: column;
-  background: var(--ds-surface);
+  background: var(--ds-card);
   margin: 0 calc(var(--screen-margin) * -1) calc(var(--screen-margin) * -1);
 }
 
@@ -1007,7 +1059,7 @@
   align-items: center;
   gap: 4px;
   min-height: 72px;
-  background: var(--ds-surface);
+  background: var(--ds-card);
   padding: 5px 4px;
 }
 
@@ -2805,7 +2857,7 @@
 
 .travailParcelleSheetOverlay {
   position: absolute;
-  inset: 0 0 24px;
+  inset: 0;
   z-index: 760;
   display: flex;
   align-items: flex-end;
@@ -3270,10 +3322,11 @@
   flex-direction: column;
   gap: 11px;
   border: none;
-  border-radius: 16px;
+  border-radius: 15px;
   background: var(--poste-card-surface);
   box-shadow: none;
-  padding: 16px;
+  padding: 14px 14px 13px 16px;
+  overflow: hidden;
 }
 
 .travailJobCardClickable {
@@ -3306,14 +3359,14 @@
 .travailJobCard .posteFixeCardTitle {
   color: var(--poste-card-title);
   font-size: 16px;
-  font-weight: 600;
-  line-height: 1.35;
+  font-weight: 700;
+  line-height: 1.25;
   letter-spacing: 0;
 }
 
 .travailJobCardHeader {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
 }
@@ -3336,11 +3389,11 @@
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
-  height: 24px;
+  height: 23px;
   border-radius: 999px;
   font-family: var(--font-geist-sans), sans-serif;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 11px;
+  font-weight: 600;
   line-height: 1;
   padding: 0 9px;
   white-space: nowrap;
@@ -3364,25 +3417,162 @@
 .travailJobMetaRow {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
+  flex-wrap: wrap;
   color: var(--poste-card-subtitle);
   font-family: var(--font-geist-sans), sans-serif;
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 1.4;
-  overflow: hidden;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  overflow: visible;
+  white-space: normal;
+}
+
+.travailJobMetaRow span {
+  min-width: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ds-text-secondary);
+  padding: 0;
+}
+
+.travailJobMetaRow span:not(:last-child)::after {
+  color: var(--ds-text-muted);
+  content: "·";
+  margin-left: 5px;
+}
+
+.travailJobSummaryGrid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.9fr 1.1fr;
+  gap: 6px;
+}
+
+.travailJobInfoRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  border-top: 1px solid color-mix(in srgb, var(--ds-border) 72%, transparent);
+  padding-top: 10px;
+}
+
+.travailJobInfoRowComplete {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.travailJobInfoMain,
+.travailJobInfoSecondary {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.travailJobInfoMain {
+  gap: 7px;
+}
+
+.travailJobInfoSecondary {
+  justify-content: flex-end;
+  align-items: baseline;
+  gap: 5px;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.travailJobInfoSecondary span {
+  color: var(--ds-text-muted);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1;
   white-space: nowrap;
 }
 
-.travailJobMetaRow span:first-child {
+.travailJobInfoMain strong,
+.travailJobInfoSecondary strong {
   min-width: 0;
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 14px;
+  font-weight: 750;
+  line-height: 1.1;
+}
+
+.travailJobInfoMain strong {
+  flex-shrink: 0;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+.travailJobInfoSecondary strong {
+  font-size: 16px;
+}
+
+.travailJobSummaryItem {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 5px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--ds-surface) 82%, var(--ds-card));
+  padding: 9px 8px;
+}
+
+.travailJobSummaryItem > span:first-child {
+  color: var(--ds-text-muted);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.travailJobSummaryItem strong {
+  min-width: 0;
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 14px;
+  font-weight: 750;
+  line-height: 1.1;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.travailJobMetaRow span:last-child {
-  flex-shrink: 0;
-  color: var(--ds-text-muted);
+.travailJobSummaryUrgent {
+  color: var(--ds-error-text) !important;
+}
+
+.travailJobSummarySoon {
+  color: var(--ds-warning-text) !important;
+}
+
+.travailJobSummaryBadge {
+  width: fit-content;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ds-brand) 9%, transparent);
+  color: var(--ds-brand);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 4px 6px;
+  white-space: nowrap;
+}
+
+.travailJobSummaryBadgeUrgent {
+  background: var(--ds-error-bg);
+  color: var(--ds-error-text);
+}
+
+.travailJobSummaryBadgeSoon {
+  background: var(--ds-warning-bg);
+  color: var(--ds-warning-text);
 }
 
 .travailJobDueChip {
@@ -3515,8 +3705,8 @@
 .travailJobProgressBlock {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 8px 0 2px;
+  gap: 7px;
+  padding: 2px 0 1px;
 }
 
 .travailJobProgressHeader {
@@ -3526,10 +3716,10 @@
 }
 
 .travailJobProgressCount {
-  color: var(--ds-text-secondary);
+  color: var(--ds-text-muted);
   font-family: var(--font-geist-sans), sans-serif;
   font-size: 12px;
-  font-weight: 400;
+  font-weight: 600;
   line-height: 1;
 }
 
@@ -3540,18 +3730,18 @@
 }
 
 .travailJobProgressPercent {
-  color: var(--ds-text-secondary);
+  color: var(--ds-text-muted);
   font-family: var(--font-geist-sans), sans-serif;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 11px;
+  font-weight: 600;
   line-height: 1;
 }
 
 .travailJobProgressTrack {
   display: flex;
-  height: 6px;
+  height: 7px;
   border-radius: 999px;
-  background: var(--ds-border);
+  background: color-mix(in srgb, var(--ds-border-strong) 58%, var(--ds-border));
   overflow: hidden;
 }
 
@@ -3570,7 +3760,8 @@
 .travailJobProgressLegend {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .travailJobProgressLegendItem {
@@ -3579,9 +3770,9 @@
   gap: 4px;
   color: var(--ds-text-secondary);
   font-family: var(--font-geist-sans), sans-serif;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 400;
-  line-height: 1;
+  line-height: 1.2;
 }
 
 .travailJobProgressDot {
@@ -4189,13 +4380,14 @@
   z-index: 10;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding-bottom: 8px;
+  gap: 9px;
+  padding-bottom: 7px;
   background: var(--header-surface);
 }
 
 .posteStickyTop .homeHeaderRow {
   padding-top: 10px;
+  margin-bottom: 1px;
 }
 
 .posteDetailTopBlock {
