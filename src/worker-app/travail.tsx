@@ -634,14 +634,11 @@ export function WorkerAppTravailPage({
     selectedEstimationJob && selectedEstimationDetail
       ? {
           syncedImages: Math.max(
-            selectedEstimationJob.capturedImages -
-              selectedEstimationDetail.pendingSyncImages -
-              selectedEstimationDetail.failedSyncImages,
+            selectedEstimationJob.capturedImages - selectedEstimationDetail.pendingSyncImages,
             0
           ),
           uncapturedImages: selectedEstimationJob.remainingImages,
-          unsyncedImages:
-            selectedEstimationDetail.pendingSyncImages + selectedEstimationDetail.failedSyncImages,
+          unsyncedImages: selectedEstimationDetail.pendingSyncImages,
           progressPercentage: Math.round(selectedEstimationJob.progressRatio * 100),
         }
       : null;
@@ -884,16 +881,7 @@ export function WorkerAppTravailPage({
                                 style={{
                                   background: `conic-gradient(
                                     var(--ds-brand) 0deg ${selectedEstimationJob.progressRatio * 360}deg,
-                                    #ff585b ${selectedEstimationJob.progressRatio * 360}deg ${
-                                      (selectedEstimationJob.progressRatio +
-                                        selectedEstimationDetail.failedSyncImages / selectedEstimationJob.targetImages) *
-                                      360
-                                    }deg,
-                                    #f59e0b ${
-                                      (selectedEstimationJob.progressRatio +
-                                        selectedEstimationDetail.failedSyncImages / selectedEstimationJob.targetImages) *
-                                      360
-                                    }deg ${
+                                    #f59e0b ${selectedEstimationJob.progressRatio * 360}deg ${
                                       (selectedEstimationJob.progressRatio +
                                         progressionStats.unsyncedImages / selectedEstimationJob.targetImages) *
                                       360
@@ -1246,11 +1234,11 @@ export function WorkerAppTravailPage({
                           <h3>{selectedEstimationJob.displayTitle}</h3>
                           <p>{selectedEstimationDetail.parcel.fruitType} · {selectedEstimationDetail.parcel.variety}</p>
                         </div>
-                        <span className={styles.travailParcelleSheetTag}>Arboriculteur</span>
                       </div>
                       <div className={styles.travailParcelleSheetDivider} aria-hidden="true" />
                       <div className={styles.travailParcelleSheetRows}>
                         {[
+                          { label: "Domaine", value: "Arboriculteur", icon: "domain" },
                           { label: "Type de fruit", value: selectedEstimationDetail.parcel.fruitType, icon: "spa" },
                           { label: "Variété", value: selectedEstimationDetail.parcel.variety, icon: "eco" },
                           { label: "Porte-greffe", value: selectedEstimationDetail.parcel.rootstock, icon: "agriculture" },
