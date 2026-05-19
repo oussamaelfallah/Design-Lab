@@ -27,23 +27,27 @@ import {
   WORKER_APP_TAB_NAME,
   WORKER_APP_TRAVAIL_PAGE_NAME,
 } from "../worker-app/constants";
-import { WorkerAppBoitePage } from "../worker-app/boite";
+import {
+  WorkerAppBoitePage,
+  type BoiteFrameView,
+  type BoitePreviewState,
+} from "../worker-app/boite";
 import { WorkerAppFullPrototypePage } from "../worker-app/full-prototype";
 import { WorkerAppGetStartedPage } from "../worker-app/getstarted";
 import { WorkerAppGetStartedV2Page } from "../worker-app/getstarted-v2";
-import { WorkerAppHomePage } from "../worker-app/home";
+import { WorkerAppHomePage, type HomeFrameView, type HomePreviewState } from "../worker-app/home";
 import {
   PostFixePreviewState,
   SecteursFrameView,
   WorkerAppPostFixePage,
 } from "../worker-app/post-fixe";
-import { WorkerAppProfilePage } from "../worker-app/profile";
-import { WorkerAppSynchronisationPage } from "../worker-app/synchronisation";
 import {
-  TravailFrameView,
-  TravailPreviewState,
-  WorkerAppTravailPage,
-} from "../worker-app/travail";
+  WorkerAppProfilePage,
+  type ProfileFrameView,
+  type ProfilePreviewState,
+} from "../worker-app/profile";
+import { WorkerAppSynchronisationPage } from "../worker-app/synchronisation";
+import { TravailFrameView, TravailPreviewState, WorkerAppTravailPage } from "../worker-app/travail";
 
 const posteFixeComponentStates = [
   {
@@ -157,28 +161,88 @@ const posteFixeDetailIcons = [
   { icon: "water_drop", name: "water_drop", usage: "Irrigation" },
 ] as const;
 
+const homeDetailIcons = [
+  {
+    icon: "chevron_right",
+    name: "chevron_right",
+    usage: "Navigation arrow on active job cards and the 'Voir' link.",
+  },
+] as const;
+
+const boiteDetailIcons = [
+  { icon: "notifications", name: "notifications", usage: "Global empty state in Boîte." },
+  { icon: "assignment", name: "assignment", usage: "New mission notification category." },
+  { icon: "edit", name: "edit", usage: "Modified mission notification category." },
+  { icon: "warning", name: "warning", usage: "Operational alert notification category." },
+  { icon: "chevron_right", name: "chevron_right", usage: "Mission row navigation affordance." },
+  { icon: "cloud_alert", name: "cloud_alert", usage: "Sync badge states in Boîte header." },
+  { icon: "cloud_done", name: "cloud_done", usage: "Sync badge synced state." },
+  { icon: "cloud_sync", name: "cloud_sync", usage: "Sync badge syncing state." },
+] as const;
+
+const profileDetailIcons = [
+  { icon: "arrow_back", name: "arrow_back", usage: "Back action when Profil opens as overlay." },
+  { icon: "person", name: "person", usage: "Identity avatar and account context." },
+  { icon: "language", name: "language", usage: "Language preference row." },
+  { icon: "logout", name: "logout", usage: "Sign-out action in Compte section." },
+  { icon: "info", name: "info", usage: "À propos section context." },
+  { icon: "chevron_right", name: "chevron_right", usage: "Editable rows (Nom, Langue, Mot de passe)." },
+  { icon: "check", name: "check", usage: "Selected language in picker sheet." },
+  { icon: "cloud_done", name: "cloud_done", usage: "Sync badge in Profil header." },
+  { icon: "cloud_sync", name: "cloud_sync", usage: "Sync badge while saving display name." },
+  { icon: "progress_activity", name: "progress_activity", usage: "Sync spinner during name save." },
+] as const;
+
 const travailDetailIcons = [
   // Search & filters
   { icon: "search", name: "search", usage: "Search trigger in the travail job list." },
   { icon: "filter_list", name: "filter_list", usage: "Filter button in the travail job list." },
-  { icon: "tune", name: "tune", usage: "Advanced filters sheet trigger and estimation config entry." },
+  {
+    icon: "tune",
+    name: "tune",
+    usage: "Advanced filters sheet trigger and estimation config entry.",
+  },
   { icon: "progress_activity", name: "progress_activity", usage: "Progression filter group icon." },
   { icon: "schedule", name: "schedule", usage: "Échéance filter group icon." },
   { icon: "filter_3", name: "filter_3", usage: "Estimation sequence filter group icon." },
-  { icon: "location_on", name: "location_on", usage: "Secteur filter group icon and région row in parcel sheet." },
+  {
+    icon: "location_on",
+    name: "location_on",
+    usage: "Secteur filter group icon and région row in parcel sheet.",
+  },
   { icon: "check", name: "check", usage: "Selected chip state inside filters." },
-  { icon: "travel_explore", name: "travel_explore", usage: "Search empty state illustration icon." },
+  {
+    icon: "travel_explore",
+    name: "travel_explore",
+    usage: "Search empty state illustration icon.",
+  },
   // Navigation & actions
-  { icon: "arrow_back", name: "arrow_back", usage: "Back action in search, detail header, and map header." },
+  {
+    icon: "arrow_back",
+    name: "arrow_back",
+    usage: "Back action in search, detail header, and map header.",
+  },
   { icon: "close", name: "close", usage: "Search clear and sheet dismiss action." },
-  { icon: "chevron_right", name: "chevron_right", usage: "Inline navigation rows in estimation detail." },
-  { icon: "photo_camera", name: "photo_camera", usage: "Floating capture action in estimation detail." },
+  {
+    icon: "chevron_right",
+    name: "chevron_right",
+    usage: "Inline navigation rows in estimation detail.",
+  },
+  {
+    icon: "photo_camera",
+    name: "photo_camera",
+    usage: "Floating capture action in estimation detail.",
+  },
   // Sync states
   { icon: "wifi_off", name: "wifi_off", usage: "Offline sync state in travail header." },
   // Estimation detail tabs & map
   { icon: "crop", name: "crop", usage: "Parcel detail entry point and parcel sheet header." },
   { icon: "overview_key", name: "overview_key", usage: "Overview tab in estimation detail." },
-  { icon: "map", name: "map", usage: "Map tab in estimation detail and secteur row in parcel sheet." },
+  {
+    icon: "map",
+    name: "map",
+    usage: "Map tab in estimation detail and secteur row in parcel sheet.",
+  },
   { icon: "image", name: "image", usage: "Gallery tab in estimation detail." },
   { icon: "layers", name: "layers", usage: "Map layers toggle action." },
   { icon: "crop_free", name: "crop_free", usage: "Center-on-parcel map action." },
@@ -188,8 +252,16 @@ const travailDetailIcons = [
   // Estimation config sheet
   { icon: "percent", name: "percent", usage: "Tree percentage row in estimation config sheet." },
   { icon: "explore", name: "explore", usage: "Orientation row in estimation config sheet." },
-  { icon: "photo_library", name: "photo_library", usage: "Multi-images row in estimation config sheet." },
-  { icon: "crop_portrait", name: "crop_portrait", usage: "Capture mode row in estimation config sheet." },
+  {
+    icon: "photo_library",
+    name: "photo_library",
+    usage: "Multi-images row in estimation config sheet.",
+  },
+  {
+    icon: "crop_portrait",
+    name: "crop_portrait",
+    usage: "Capture mode row in estimation config sheet.",
+  },
   // Parcel sheet
   { icon: "domain", name: "domain", usage: "Domain row in parcel sheet." },
   { icon: "spa", name: "spa", usage: "Fruit type row in parcel sheet." },
@@ -197,6 +269,170 @@ const travailDetailIcons = [
   { icon: "agriculture", name: "agriculture", usage: "Rootstock row in parcel sheet." },
   { icon: "park", name: "park", usage: "Tree count row in parcel sheet." },
   { icon: "straighten", name: "straighten", usage: "Spacing row in parcel sheet." },
+] as const;
+
+const homeCoreFrames = [
+  {
+    id: "H01",
+    title: "Accueil (Design)",
+    note: "Main dashboard with progress and active jobs.",
+    frameView: "data" as HomeFrameView,
+    previewState: "home-data" as HomePreviewState,
+  },
+  {
+    id: "H02",
+    title: "Accueil (Offline)",
+    note: "Offline banner with cached progress data.",
+    frameView: "data" as HomeFrameView,
+    previewState: "home-offline" as HomePreviewState,
+  },
+  {
+    id: "H03",
+    title: "Accueil (All Complete)",
+    note: "All jobs done — sync reminder shown.",
+    frameView: "data" as HomeFrameView,
+    previewState: "home-all-complete" as HomePreviewState,
+  },
+] as const;
+
+const homeSystemFrames = [
+  {
+    id: "HS1",
+    title: "Accueil (Loading)",
+    note: "Skeleton state while jobs load.",
+    frameView: "loading" as HomeFrameView,
+    previewState: "home-loading" as HomePreviewState,
+  },
+  {
+    id: "HS2",
+    title: "Accueil (Empty)",
+    note: "No jobs assigned state.",
+    frameView: "empty" as HomeFrameView,
+    previewState: "home-empty" as HomePreviewState,
+  },
+] as const;
+
+const homeTravailActifsFrames = [
+  {
+    id: "H-TA1",
+    title: "En retard",
+    note: "Active jobs with overdue due dates — red 'En retard' label.",
+    frameView: "data" as HomeFrameView,
+    previewState: "home-travaux-actifs-overdue" as HomePreviewState,
+  },
+  {
+    id: "H-TA2",
+    title: "En cours",
+    note: "Active jobs in progress with upcoming due dates.",
+    frameView: "data" as HomeFrameView,
+    previewState: "home-travaux-actifs-en-cours" as HomePreviewState,
+  },
+  {
+    id: "H-TA3",
+    title: "Planifié",
+    note: "Active jobs not yet started — 'Planifié' badge, future dates.",
+    frameView: "data" as HomeFrameView,
+    previewState: "home-travaux-actifs-planifie" as HomePreviewState,
+  },
+  {
+    id: "H-TA4",
+    title: "Vide",
+    note: "No active jobs remaining — all captures completed.",
+    frameView: "data" as HomeFrameView,
+    previewState: "home-travaux-actifs-empty" as HomePreviewState,
+  },
+] as const;
+
+const boiteCoreFrames = [
+  {
+    id: "B01",
+    title: "Boîte (Design)",
+    note: "Mixed read/unread notifications with Missions tab active.",
+    frameView: "data" as BoiteFrameView,
+    previewState: "boite-data" as BoitePreviewState,
+  },
+  {
+    id: "B02",
+    title: "Boîte (All Read)",
+    note: "All items read — muted list with 'Vous êtes à jour'.",
+    frameView: "data" as BoiteFrameView,
+    previewState: "boite-all-read" as BoitePreviewState,
+  },
+  {
+    id: "B03",
+    title: "Boîte (Alertes)",
+    note: "Alertes tab with operational notifications.",
+    frameView: "data" as BoiteFrameView,
+    previewState: "boite-tab-alertes" as BoitePreviewState,
+  },
+] as const;
+
+const boiteSystemFrames = [
+  {
+    id: "BS1",
+    title: "Boîte (Loading)",
+    note: "Skeleton rows while notifications load.",
+    frameView: "loading" as BoiteFrameView,
+    previewState: "boite-loading" as BoitePreviewState,
+  },
+  {
+    id: "BS2",
+    title: "Boîte (Empty)",
+    note: "No notifications at all.",
+    frameView: "empty" as BoiteFrameView,
+    previewState: "boite-empty" as BoitePreviewState,
+  },
+] as const;
+
+const profileCoreFrames = [
+  {
+    id: "P01",
+    title: "Profil (Design)",
+    note: "Default account and preferences view.",
+    frameView: "data" as ProfileFrameView,
+    previewState: "profile-data" as ProfilePreviewState,
+  },
+] as const;
+
+const profileInteractionFrames = [
+  {
+    id: "P02",
+    title: "Profil (Edit Name)",
+    note: "Inline display name edit in Identité.",
+    frameView: "data" as ProfileFrameView,
+    previewState: "profile-edit-name" as ProfilePreviewState,
+  },
+  {
+    id: "P03",
+    title: "Profil (Language Sheet)",
+    note: "Language picker bottom sheet open.",
+    frameView: "data" as ProfileFrameView,
+    previewState: "profile-language-sheet" as ProfilePreviewState,
+  },
+  {
+    id: "P04",
+    title: "Profil (Logout Dialog)",
+    note: "Sign-out confirmation dialog.",
+    frameView: "data" as ProfileFrameView,
+    previewState: "profile-logout-dialog" as ProfilePreviewState,
+  },
+] as const;
+
+const profileSystemFrames = [
+  {
+    id: "PS1",
+    title: "Profil (Loading)",
+    note: "Skeleton state for identity fields.",
+    frameView: "loading" as ProfileFrameView,
+    previewState: "profile-loading" as ProfilePreviewState,
+  },
+  {
+    id: "PS2",
+    title: "Profil (Saving)",
+    note: "Display name save with sync badge activity.",
+    frameView: "data" as ProfileFrameView,
+    previewState: "profile-saving" as ProfilePreviewState,
+  },
 ] as const;
 
 const postFixeCoreFrames = [
@@ -251,7 +487,7 @@ const postFixeCoreFrames = [
     note: "Fertilisation overview with Apports tab active.",
     frameView: "data" as SecteursFrameView,
     previewState: "conduite-fertilisation-apport-tab" as PostFixePreviewState,
-    },
+  },
   {
     id: "08",
     title: "Observation Example (Pas commencé)",
@@ -732,18 +968,18 @@ const sortPrimitiveShadeSteps = (aStep: string, bStep: string) => {
 const isSemanticLeaf = (value: unknown): value is SemanticColorTokenLeaf =>
   Boolean(
     value &&
-      typeof value === "object" &&
-      "$value" in value &&
-      typeof (value as { $value?: unknown }).$value === "string"
+    typeof value === "object" &&
+    "$value" in value &&
+    typeof (value as { $value?: unknown }).$value === "string"
   );
 
 const isTypographyLeaf = (value: unknown): value is TypographyTokenLeaf =>
   Boolean(
     value &&
-      typeof value === "object" &&
-      "$value" in value &&
-      (typeof (value as { $value?: unknown }).$value === "string" ||
-        typeof (value as { $value?: unknown }).$value === "number")
+    typeof value === "object" &&
+    "$value" in value &&
+    (typeof (value as { $value?: unknown }).$value === "string" ||
+      typeof (value as { $value?: unknown }).$value === "number")
   );
 
 const isGenericLeaf = (value: unknown): value is GenericTokenLeaf =>
@@ -751,15 +987,22 @@ const isGenericLeaf = (value: unknown): value is GenericTokenLeaf =>
 
 const isShadowValueObject = (
   value: unknown
-): value is { offsetX: string; offsetY: string; blur: string; spread: string; color: string; inset?: boolean } =>
+): value is {
+  offsetX: string;
+  offsetY: string;
+  blur: string;
+  spread: string;
+  color: string;
+  inset?: boolean;
+} =>
   Boolean(
     value &&
-      typeof value === "object" &&
-      "offsetX" in value &&
-      "offsetY" in value &&
-      "blur" in value &&
-      "spread" in value &&
-      "color" in value
+    typeof value === "object" &&
+    "offsetX" in value &&
+    "offsetY" in value &&
+    "blur" in value &&
+    "spread" in value &&
+    "color" in value
   );
 
 const shadowObjectToCss = (value: {
@@ -937,7 +1180,11 @@ const resolveTypographyTokenValue = (
 
   const semanticReference = semanticTypographyTokenMap.get(tokenPath);
   if (semanticReference) {
-    return resolveTypographyTokenValue(semanticReference.value, semanticTypographyTokenMap, visited);
+    return resolveTypographyTokenValue(
+      semanticReference.value,
+      semanticTypographyTokenMap,
+      visited
+    );
   }
 
   return primitiveTypographyTokenMap.get(tokenPath)?.value ?? rawValue;
@@ -988,11 +1235,18 @@ const prettifyTokenName = (tokenPath: string) =>
     .replace(/^color\./, "")
     .split(".")
     .map((segment) =>
-      toTitle(segment.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/-/g, " ").trim())
+      toTitle(
+        segment
+          .replace(/([a-z])([A-Z])/g, "$1 $2")
+          .replace(/-/g, " ")
+          .trim()
+      )
     )
     .join(" / ");
 
-const buildSemanticColorRoles = (semanticColorTree: Record<string, unknown>): DesignSystemColorRole[] => {
+const buildSemanticColorRoles = (
+  semanticColorTree: Record<string, unknown>
+): DesignSystemColorRole[] => {
   const semanticColorTokenMap = createSemanticColorTokenMap(semanticColorTree);
   return Array.from(semanticColorTokenMap.entries())
     .map(([token, tokenMeta]) => ({
@@ -1078,14 +1332,20 @@ const formatTypographyGroupLabel = (groupKey: string) =>
     .join(" ");
 
 const prettifyTypographyTokenName = (tokenPath: string, removePrefix?: string) => {
-  const trimmed = removePrefix && tokenPath.startsWith(removePrefix)
-    ? tokenPath.slice(removePrefix.length)
-    : tokenPath;
+  const trimmed =
+    removePrefix && tokenPath.startsWith(removePrefix)
+      ? tokenPath.slice(removePrefix.length)
+      : tokenPath;
 
   return trimmed
     .split(".")
     .map((segment) =>
-      toTitle(segment.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/-/g, " ").trim())
+      toTitle(
+        segment
+          .replace(/([a-z])([A-Z])/g, "$1 $2")
+          .replace(/-/g, " ")
+          .trim()
+      )
     )
     .join(" / ");
 };
@@ -1332,6 +1592,18 @@ const designSystemIconGroups: DesignSystemIconGroup[] = [
     ],
   },
   {
+    key: "travail",
+    label: "Travail",
+    description: "Icons used in Travail list, filters, detail tabs, map, gallery, and sheets.",
+    items: travailDetailIcons.map((iconItem) => ({
+      name: iconItem.name,
+      size: "18px to 24px glyph / context-specific container",
+      library: "Material Symbols Outlined",
+      usage: iconItem.usage,
+      preview: { kind: "material", glyph: iconItem.icon },
+    })),
+  },
+  {
     key: "bottom-nav",
     label: "Bottom Nav",
     description: "Navigation icons used in the fixed bottom app bar.",
@@ -1451,7 +1723,13 @@ function resolveWorkerCanvasView(
     | "synchronisation",
   canvasView: CanvasView
 ): CanvasView {
-  if (activeScreen === "postFixe" || activeScreen === "travail") {
+  if (
+    activeScreen === "postFixe" ||
+    activeScreen === "travail" ||
+    activeScreen === "home" ||
+    activeScreen === "boite" ||
+    activeScreen === "profile"
+  ) {
     return canvasView === "frames" || canvasView === "iconography" ? canvasView : "design";
   }
 
@@ -1575,12 +1853,20 @@ export default function Home() {
   const [showDeviceFrame, setShowDeviceFrame] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isWorkerAppOpen, setIsWorkerAppOpen] = useState(true);
+  const [homeFrameView, setHomeFrameView] = useState<HomeFrameView>("data");
+  const [homePreviewState, setHomePreviewState] = useState<HomePreviewState>("home-data");
   const [postFixeFrameView, setPostFixeFrameView] = useState<SecteursFrameView>("data");
   const [travailFrameView, setTravailFrameView] = useState<TravailFrameView>("data");
+  const [boiteFrameView, setBoiteFrameView] = useState<BoiteFrameView>("data");
+  const [boitePreviewState, setBoitePreviewState] = useState<BoitePreviewState>("boite-data");
+  const [profileFrameView, setProfileFrameView] = useState<ProfileFrameView>("data");
+  const [profilePreviewState, setProfilePreviewState] =
+    useState<ProfilePreviewState>("profile-data");
   const [canvasView, setCanvasView] = useState<CanvasView>("design");
   const [showDevAnnotations] = useState(false);
   const [designSystemTab, setDesignSystemTab] = useState<DesignSystemTab>("colors");
-  const [designSystemColorTab, setDesignSystemColorTab] = useState<DesignSystemColorTab>("primitive");
+  const [designSystemColorTab, setDesignSystemColorTab] =
+    useState<DesignSystemColorTab>("primitive");
   const [designSystemSemanticMode, setDesignSystemSemanticMode] =
     useState<DesignSystemSemanticMode>("light");
   const [designSystemTypographyTab, setDesignSystemTypographyTab] =
@@ -1693,31 +1979,59 @@ export default function Home() {
     [designSystemTypographyMode]
   );
   const primitiveSpacingGroups = useMemo(
-    () => buildFoundationGroups(primitiveFoundationSets.find((set) => set.key === "spacing")!, "primitive"),
+    () =>
+      buildFoundationGroups(
+        primitiveFoundationSets.find((set) => set.key === "spacing")!,
+        "primitive"
+      ),
     []
   );
   const semanticSpacingGroups = useMemo(
-    () => buildFoundationGroups(semanticFoundationSets.find((set) => set.key === "spacing")!, "semantic"),
+    () =>
+      buildFoundationGroups(
+        semanticFoundationSets.find((set) => set.key === "spacing")!,
+        "semantic"
+      ),
     []
   );
   const semanticElevationGroups = useMemo(
-    () => buildFoundationGroups(semanticFoundationSets.find((set) => set.key === "elevation")!, "semantic"),
+    () =>
+      buildFoundationGroups(
+        semanticFoundationSets.find((set) => set.key === "elevation")!,
+        "semantic"
+      ),
     []
   );
   const primitiveRadiusGroups = useMemo(
-    () => buildFoundationGroups(primitiveFoundationSets.find((set) => set.key === "radius")!, "primitive"),
+    () =>
+      buildFoundationGroups(
+        primitiveFoundationSets.find((set) => set.key === "radius")!,
+        "primitive"
+      ),
     []
   );
   const primitiveShadowGroups = useMemo(
-    () => buildFoundationGroups(primitiveFoundationSets.find((set) => set.key === "shadow")!, "primitive"),
+    () =>
+      buildFoundationGroups(
+        primitiveFoundationSets.find((set) => set.key === "shadow")!,
+        "primitive"
+      ),
     []
   );
   const primitiveMotionGroups = useMemo(
-    () => buildFoundationGroups(primitiveFoundationSets.find((set) => set.key === "motion")!, "primitive"),
+    () =>
+      buildFoundationGroups(
+        primitiveFoundationSets.find((set) => set.key === "motion")!,
+        "primitive"
+      ),
     []
   );
   const primitiveOpacityGroups = useMemo(
-    () => buildFoundationGroups(primitiveFoundationSets.find((set) => set.key === "opacity")!, "primitive"),
+    () =>
+      buildFoundationGroups(
+        primitiveFoundationSets.find((set) => set.key === "opacity")!,
+        "primitive"
+      ),
     []
   );
   const semanticElevationTokenMap = useMemo(() => {
@@ -1731,16 +2045,61 @@ export default function Home() {
   }, [semanticElevationGroups]);
   const elevationShowcaseCards = useMemo(() => {
     const entries = [
-      { token: "flat", label: "Flat", usage: "No elevation for inline/static surfaces.", kind: "surface" as const },
-      { token: "raised.xs", label: "Raised XS", usage: "Subtle hover and small controls.", kind: "surface" as const },
-      { token: "raised.sm", label: "Raised SM", usage: "Default card elevation.", kind: "surface" as const },
-      { token: "raised.md", label: "Raised MD", usage: "Active/hovered cards and panels.", kind: "surface" as const },
-      { token: "overlay.sm", label: "Overlay SM", usage: "Popovers and dropdowns.", kind: "surface" as const },
-      { token: "overlay.md", label: "Overlay MD", usage: "Dialogs and sheets.", kind: "surface" as const },
-      { token: "overlay.lg", label: "Overlay LG", usage: "Highest overlay layers.", kind: "surface" as const },
+      {
+        token: "flat",
+        label: "Flat",
+        usage: "No elevation for inline/static surfaces.",
+        kind: "surface" as const,
+      },
+      {
+        token: "raised.xs",
+        label: "Raised XS",
+        usage: "Subtle hover and small controls.",
+        kind: "surface" as const,
+      },
+      {
+        token: "raised.sm",
+        label: "Raised SM",
+        usage: "Default card elevation.",
+        kind: "surface" as const,
+      },
+      {
+        token: "raised.md",
+        label: "Raised MD",
+        usage: "Active/hovered cards and panels.",
+        kind: "surface" as const,
+      },
+      {
+        token: "overlay.sm",
+        label: "Overlay SM",
+        usage: "Popovers and dropdowns.",
+        kind: "surface" as const,
+      },
+      {
+        token: "overlay.md",
+        label: "Overlay MD",
+        usage: "Dialogs and sheets.",
+        kind: "surface" as const,
+      },
+      {
+        token: "overlay.lg",
+        label: "Overlay LG",
+        usage: "Highest overlay layers.",
+        kind: "surface" as const,
+      },
       { token: "inset", label: "Inset", usage: "Pressed/sunken fields.", kind: "inset" as const },
-      { token: "focus.default", label: "Focus Default", usage: "Keyboard focus ring.", kind: "focus" as const },
-      { token: "focus.error", label: "Focus Error", usage: "Invalid input focus ring.", kind: "focus" as const },
+      {
+        token: "focus.default",
+        label: "Focus Default",
+        usage: "Keyboard focus ring.",
+        kind: "focus" as const,
+      },
+      {
+        token: "focus.error",
+        label: "Focus Error",
+        usage: "Invalid input focus ring.",
+        kind: "focus" as const,
+      },
     ];
 
     return entries.map((entry) => {
@@ -1770,7 +2129,9 @@ export default function Home() {
             sizePx: Math.max(2, Math.min(Math.round(px), 96)),
           };
         })
-        .filter((row): row is { token: string; rem: string; px: number; sizePx: number } => Boolean(row))
+        .filter((row): row is { token: string; rem: string; px: number; sizePx: number } =>
+          Boolean(row)
+        )
         .sort((a, b) => a.px - b.px),
     [primitiveSpacingGroups]
   );
@@ -1787,16 +2148,23 @@ export default function Home() {
           </div>
           <div className={styles.designSystemSemanticList}>
             {group.items.map((item) => (
-              <article key={`${keyPrefix}-${item.token}`} className={styles.designSystemSemanticRow}>
+              <article
+                key={`${keyPrefix}-${item.token}`}
+                className={styles.designSystemSemanticRow}
+              >
                 <div className={styles.designSystemSemanticTokenBlock}>
                   <p className={styles.designSystemSemanticTokenName}>{item.name}</p>
                   <p className={styles.designSystemSemanticTokenCode}>{item.token}</p>
                   <p className={styles.designSystemSemanticUsage}>{item.usage}</p>
                 </div>
-                <div className={`${styles.designSystemSemanticValue} ${styles.designSystemTypographyValue}`}>
+                <div
+                  className={`${styles.designSystemSemanticValue} ${styles.designSystemTypographyValue}`}
+                >
                   <span className={styles.designSystemTypographyValueMain}>{item.value}</span>
                   {item.sourceValue ? (
-                    <span className={styles.designSystemTypographyValueSource}>{item.sourceValue}</span>
+                    <span className={styles.designSystemTypographyValueSource}>
+                      {item.sourceValue}
+                    </span>
                   ) : null}
                 </div>
               </article>
@@ -1808,7 +2176,11 @@ export default function Home() {
   );
   const renderDesignSystemWorkspace = () => (
     <div className={styles.designSystemCanvas}>
-      <div className={styles.designSystemTopTabs} role="tablist" aria-label="Design system sections">
+      <div
+        className={styles.designSystemTopTabs}
+        role="tablist"
+        aria-label="Design system sections"
+      >
         <button
           type="button"
           role="tab"
@@ -1912,7 +2284,11 @@ export default function Home() {
 
       {designSystemTab === "colors" ? (
         <>
-          <div className={styles.designSystemSubTabs} role="tablist" aria-label="Color token layers">
+          <div
+            className={styles.designSystemSubTabs}
+            role="tablist"
+            aria-label="Color token layers"
+          >
             <button
               type="button"
               role="tab"
@@ -1951,11 +2327,16 @@ export default function Home() {
                         <h4>{ramp.name}</h4>
                         <p>{ramp.hue}</p>
                       </div>
-                      <span className={styles.designSystemPaletteCount}>{ramp.shades.length} shades</span>
+                      <span className={styles.designSystemPaletteCount}>
+                        {ramp.shades.length} shades
+                      </span>
                     </div>
                     <div className={styles.designSystemShadeScale}>
                       {ramp.shades.map((shade) => (
-                        <div key={`${ramp.name}-${shade.step}`} className={styles.designSystemShadeScaleItem}>
+                        <div
+                          key={`${ramp.name}-${shade.step}`}
+                          className={styles.designSystemShadeScaleItem}
+                        >
                           <span
                             className={styles.designSystemShadeSwatch}
                             style={{ backgroundColor: shade.hex }}
@@ -1977,13 +2358,19 @@ export default function Home() {
                   <h3>Semantic Colors</h3>
                   <p>Purpose-based tokens mapped to UI roles in the mobile product.</p>
                 </div>
-                <div className={styles.designSystemSemanticModeSwitch} role="tablist" aria-label="Semantic mode">
+                <div
+                  className={styles.designSystemSemanticModeSwitch}
+                  role="tablist"
+                  aria-label="Semantic mode"
+                >
                   <button
                     type="button"
                     role="tab"
                     aria-selected={designSystemSemanticMode === "light"}
                     className={`${styles.designSystemSemanticModeButton} ${
-                      designSystemSemanticMode === "light" ? styles.designSystemSemanticModeButtonActive : ""
+                      designSystemSemanticMode === "light"
+                        ? styles.designSystemSemanticModeButtonActive
+                        : ""
                     }`}
                     onClick={() => setDesignSystemSemanticMode("light")}
                   >
@@ -1994,7 +2381,9 @@ export default function Home() {
                     role="tab"
                     aria-selected={designSystemSemanticMode === "dark"}
                     className={`${styles.designSystemSemanticModeButton} ${
-                      designSystemSemanticMode === "dark" ? styles.designSystemSemanticModeButtonActive : ""
+                      designSystemSemanticMode === "dark"
+                        ? styles.designSystemSemanticModeButtonActive
+                        : ""
                     }`}
                     onClick={() => setDesignSystemSemanticMode("dark")}
                   >
@@ -2041,7 +2430,11 @@ export default function Home() {
         </>
       ) : designSystemTab === "typography" ? (
         <>
-          <div className={styles.designSystemSubTabs} role="tablist" aria-label="Typography token layers">
+          <div
+            className={styles.designSystemSubTabs}
+            role="tablist"
+            aria-label="Typography token layers"
+          >
             <button
               type="button"
               role="tab"
@@ -2095,7 +2488,9 @@ export default function Home() {
                           <div
                             className={`${styles.designSystemSemanticValue} ${styles.designSystemTypographyValue}`}
                           >
-                            <span className={styles.designSystemTypographyValueMain}>{item.value}</span>
+                            <span className={styles.designSystemTypographyValueMain}>
+                              {item.value}
+                            </span>
                           </div>
                         </article>
                       ))}
@@ -2134,7 +2529,9 @@ export default function Home() {
                     role="tab"
                     aria-selected={designSystemTypographyMode === "web"}
                     className={`${styles.designSystemSemanticModeButton} ${
-                      designSystemTypographyMode === "web" ? styles.designSystemSemanticModeButtonActive : ""
+                      designSystemTypographyMode === "web"
+                        ? styles.designSystemSemanticModeButtonActive
+                        : ""
                     }`}
                     onClick={() => setDesignSystemTypographyMode("web")}
                   >
@@ -2165,7 +2562,9 @@ export default function Home() {
                           <div
                             className={`${styles.designSystemSemanticValue} ${styles.designSystemTypographyValue}`}
                           >
-                            <span className={styles.designSystemTypographyValueMain}>{item.value}</span>
+                            <span className={styles.designSystemTypographyValueMain}>
+                              {item.value}
+                            </span>
                             {item.sourceValue ? (
                               <span className={styles.designSystemTypographyValueSource}>
                                 {item.sourceValue}
@@ -2183,7 +2582,11 @@ export default function Home() {
         </>
       ) : designSystemTab === "spacing" ? (
         <>
-          <div className={styles.designSystemSubTabs} role="tablist" aria-label="Spacing token layers">
+          <div
+            className={styles.designSystemSubTabs}
+            role="tablist"
+            aria-label="Spacing token layers"
+          >
             <button
               type="button"
               role="tab"
@@ -2209,7 +2612,11 @@ export default function Home() {
           </div>
           <section className={styles.designSystemPanel}>
             <div className={styles.componentsPanelHeader}>
-              <h3>{designSystemSpacingTab === "primitive" ? "Primitive Spacing Tokens" : "Semantic Spacing Tokens"}</h3>
+              <h3>
+                {designSystemSpacingTab === "primitive"
+                  ? "Primitive Spacing Tokens"
+                  : "Semantic Spacing Tokens"}
+              </h3>
               <p>
                 {designSystemSpacingTab === "primitive"
                   ? "Base spacing scale values."
@@ -2223,7 +2630,10 @@ export default function Home() {
                   <p>Token documentation with rem, px, and a visual size sample.</p>
                 </div>
                 <div className={styles.spacingShowcaseTableWrap}>
-                  <table className={styles.spacingShowcaseTable} aria-label="Spacing scale showcase">
+                  <table
+                    className={styles.spacingShowcaseTable}
+                    aria-label="Spacing scale showcase"
+                  >
                     <thead>
                       <tr>
                         <th>Token</th>
@@ -2260,10 +2670,13 @@ export default function Home() {
         <section className={styles.designSystemPanel}>
           <div className={styles.componentsPanelHeader}>
             <h3>Icon Inventory</h3>
-            <p>Real icons used in Post Fixe and bottom navigation.</p>
+            <p>Real icons used in Post Fixe, Travail, and bottom navigation.</p>
             <p>Library: Material Symbols Outlined</p>
             <p>
-              Source: <a href="https://fonts.google.com/icons" target="_blank" rel="noreferrer">https://fonts.google.com/icons</a>
+              Source:{" "}
+              <a href="https://fonts.google.com/icons" target="_blank" rel="noreferrer">
+                https://fonts.google.com/icons
+              </a>
             </p>
           </div>
           <div className={styles.iconInventoryGroups}>
@@ -2272,7 +2685,9 @@ export default function Home() {
                 <div className={styles.iconInventoryGroupHeader}>
                   <div className={styles.designSystemSemanticGroupTitleRow}>
                     <h4>{group.label}</h4>
-                    <span className={styles.designSystemSemanticGroupCount}>{group.items.length}</span>
+                    <span className={styles.designSystemSemanticGroupCount}>
+                      {group.items.length}
+                    </span>
                   </div>
                   <p>{group.description}</p>
                 </div>
@@ -2356,13 +2771,17 @@ export default function Home() {
                 </div>
                 <div
                   className={styles.elevationDepthLayerPopover}
-                  style={{ boxShadow: semanticElevationTokenMap.get("overlay.sm")?.value ?? "none" }}
+                  style={{
+                    boxShadow: semanticElevationTokenMap.get("overlay.sm")?.value ?? "none",
+                  }}
                 >
                   Popover
                 </div>
                 <div
                   className={styles.elevationDepthLayerModal}
-                  style={{ boxShadow: semanticElevationTokenMap.get("overlay.md")?.value ?? "none" }}
+                  style={{
+                    boxShadow: semanticElevationTokenMap.get("overlay.md")?.value ?? "none",
+                  }}
                 >
                   Modal
                 </div>
@@ -2499,88 +2918,90 @@ export default function Home() {
               </span>
             </button>
             {isWorkerAppOpen ? (
-            <div className={styles.subTabs}>
-              <button
-                className={`${styles.subTab} ${activeScreen === "prototype" ? styles.activeSubTab : ""}`}
-                type="button"
-                onClick={() => {
-                  setActiveScreen("prototype");
-                  setIsWorkerAppOpen(true);
-                }}
-              >
-                {WORKER_APP_CANVAS_NAME}
-              </button>
-              <div className={styles.subTabDivider} aria-hidden="true" />
-              <button
-                className={`${styles.subTab} ${activeScreen === "postFixe" ? styles.activeSubTab : ""}`}
-                type="button"
-                onClick={() => {
-                  setActiveScreen("postFixe");
-                  setPostFixeFrameView("data");
-                  setIsWorkerAppOpen(true);
-                }}
-              >
-                {WORKER_APP_POST_FIXE_PAGE_NAME}
-              </button>
-              <button
-                className={`${styles.subTab} ${activeScreen === "home" ? styles.activeSubTab : ""}`}
-                type="button"
-                onClick={() => {
-                  setActiveScreen("home");
-                  setIsWorkerAppOpen(true);
-                }}
-              >
-                {WORKER_APP_HOME_PAGE_NAME}
-              </button>
-              <button
-                className={`${styles.subTab} ${activeScreen === "travail" ? styles.activeSubTab : ""}`}
-                type="button"
-                onClick={() => {
-                  setActiveScreen("travail");
-                  setTravailFrameView("data");
-                  setCanvasView("design");
-                  setIsWorkerAppOpen(true);
-                }}
-              >
-                <span className={`${styles.subTabLabelRow} ${styles.subTabLabelRowCentered}`}>
-                  <span>{WORKER_APP_TRAVAIL_PAGE_NAME}</span>
-                  <span className={styles.devReadyBadge}>
-                    <span className={styles.devReadyDot} aria-hidden="true" />
-                    Ready For Dev
+              <div className={styles.subTabs}>
+                <button
+                  className={`${styles.subTab} ${activeScreen === "prototype" ? styles.activeSubTab : ""}`}
+                  type="button"
+                  onClick={() => {
+                    setActiveScreen("prototype");
+                    setIsWorkerAppOpen(true);
+                  }}
+                >
+                  {WORKER_APP_CANVAS_NAME}
+                </button>
+                <div className={styles.subTabDivider} aria-hidden="true" />
+                <button
+                  className={`${styles.subTab} ${activeScreen === "postFixe" ? styles.activeSubTab : ""}`}
+                  type="button"
+                  onClick={() => {
+                    setActiveScreen("postFixe");
+                    setPostFixeFrameView("data");
+                    setIsWorkerAppOpen(true);
+                  }}
+                >
+                  {WORKER_APP_POST_FIXE_PAGE_NAME}
+                </button>
+                <button
+                  className={`${styles.subTab} ${activeScreen === "home" ? styles.activeSubTab : ""}`}
+                  type="button"
+                  onClick={() => {
+                    setActiveScreen("home");
+                    setHomeFrameView("data");
+                    setHomePreviewState("home-data");
+                    setIsWorkerAppOpen(true);
+                  }}
+                >
+                  {WORKER_APP_HOME_PAGE_NAME}
+                </button>
+                <button
+                  className={`${styles.subTab} ${activeScreen === "travail" ? styles.activeSubTab : ""}`}
+                  type="button"
+                  onClick={() => {
+                    setActiveScreen("travail");
+                    setTravailFrameView("data");
+                    setCanvasView("design");
+                    setIsWorkerAppOpen(true);
+                  }}
+                >
+                  <span className={`${styles.subTabLabelRow} ${styles.subTabLabelRowCentered}`}>
+                    <span>{WORKER_APP_TRAVAIL_PAGE_NAME}</span>
+                    <span className={styles.devReadyBadge}>
+                      <span className={styles.devReadyDot} aria-hidden="true" />
+                      Ready For Dev
+                    </span>
                   </span>
-                </span>
-              </button>
-              <button
-                className={`${styles.subTab} ${activeScreen === "boite" ? styles.activeSubTab : ""}`}
-                type="button"
-                onClick={() => {
-                  setActiveScreen("boite");
-                  setIsWorkerAppOpen(true);
-                }}
-              >
-                {WORKER_APP_BOITE_PAGE_NAME}
-              </button>
-              <button
-                className={`${styles.subTab} ${activeScreen === "profile" ? styles.activeSubTab : ""}`}
-                type="button"
-                onClick={() => {
-                  setActiveScreen("profile");
-                  setIsWorkerAppOpen(true);
-                }}
-              >
-                {WORKER_APP_PROFILE_PAGE_NAME}
-              </button>
-              <button
-                className={`${styles.subTab} ${activeScreen === "synchronisation" ? styles.activeSubTab : ""}`}
-                type="button"
-                onClick={() => {
-                  setActiveScreen("synchronisation");
-                  setIsWorkerAppOpen(true);
-                }}
-              >
-                {WORKER_APP_SYNCHRONISATION_PAGE_NAME}
-              </button>
-            </div>
+                </button>
+                <button
+                  className={`${styles.subTab} ${activeScreen === "boite" ? styles.activeSubTab : ""}`}
+                  type="button"
+                  onClick={() => {
+                    setActiveScreen("boite");
+                    setIsWorkerAppOpen(true);
+                  }}
+                >
+                  {WORKER_APP_BOITE_PAGE_NAME}
+                </button>
+                <button
+                  className={`${styles.subTab} ${activeScreen === "profile" ? styles.activeSubTab : ""}`}
+                  type="button"
+                  onClick={() => {
+                    setActiveScreen("profile");
+                    setIsWorkerAppOpen(true);
+                  }}
+                >
+                  {WORKER_APP_PROFILE_PAGE_NAME}
+                </button>
+                <button
+                  className={`${styles.subTab} ${activeScreen === "synchronisation" ? styles.activeSubTab : ""}`}
+                  type="button"
+                  onClick={() => {
+                    setActiveScreen("synchronisation");
+                    setIsWorkerAppOpen(true);
+                  }}
+                >
+                  {WORKER_APP_SYNCHRONISATION_PAGE_NAME}
+                </button>
+              </div>
             ) : null}
           </div>
         </div>
@@ -2608,7 +3029,11 @@ export default function Home() {
           <div className={styles.canvasTopBar}>
             <div className={styles.canvasTopLeft}>
               <p className={styles.canvasPageTitle}>{activePageTitle}</p>
-              {resolvedActiveScreen === "postFixe" || resolvedActiveScreen === "travail" ? (
+              {resolvedActiveScreen === "postFixe" ||
+              resolvedActiveScreen === "travail" ||
+              resolvedActiveScreen === "home" ||
+              resolvedActiveScreen === "boite" ||
+              resolvedActiveScreen === "profile" ? (
                 <div className={styles.canvasViewSwitch} role="tablist" aria-label="Canvas view">
                   <button
                     type="button"
@@ -2647,7 +3072,53 @@ export default function Home() {
               ) : null}
             </div>
           </div>
-          {resolvedActiveScreen === "postFixe" && resolvedCanvasView !== "frames" ? (
+          {resolvedActiveScreen === "home" && resolvedCanvasView !== "frames" ? (
+            <div className={styles.frameViewRail} role="tablist" aria-label="Home states">
+              {[
+                {
+                  label: "Design",
+                  frameView: "data" as HomeFrameView,
+                  previewState: "home-data" as HomePreviewState,
+                },
+                {
+                  label: "Loading",
+                  frameView: "loading" as HomeFrameView,
+                  previewState: "home-loading" as HomePreviewState,
+                },
+                {
+                  label: "Empty",
+                  frameView: "empty" as HomeFrameView,
+                  previewState: "home-empty" as HomePreviewState,
+                },
+                {
+                  label: "Offline",
+                  frameView: "data" as HomeFrameView,
+                  previewState: "home-offline" as HomePreviewState,
+                },
+                {
+                  label: "Complete",
+                  frameView: "data" as HomeFrameView,
+                  previewState: "home-all-complete" as HomePreviewState,
+                },
+              ].map((state) => (
+                <button
+                  key={state.label}
+                  type="button"
+                  role="tab"
+                  aria-selected={homePreviewState === state.previewState}
+                  className={`${styles.frameViewRailTab} ${
+                    homePreviewState === state.previewState ? styles.frameViewRailTabActive : ""
+                  }`}
+                  onClick={() => {
+                    setHomeFrameView(state.frameView);
+                    setHomePreviewState(state.previewState);
+                  }}
+                >
+                  {state.label}
+                </button>
+              ))}
+            </div>
+          ) : resolvedActiveScreen === "postFixe" && resolvedCanvasView !== "frames" ? (
             <div className={styles.frameViewRail} role="tablist" aria-label="Post Fixe states">
               <button
                 type="button"
@@ -2718,6 +3189,59 @@ export default function Home() {
               >
                 Empty
               </button>
+            </div>
+          ) : resolvedActiveScreen === "boite" && resolvedCanvasView !== "frames" ? (
+            <div className={styles.frameViewRail} role="tablist" aria-label="Boîte states">
+              {[
+                { label: "Design", frameView: "data" as BoiteFrameView, previewState: "boite-data" as BoitePreviewState },
+                { label: "All read", frameView: "data" as BoiteFrameView, previewState: "boite-all-read" as BoitePreviewState },
+                { label: "Alertes", frameView: "data" as BoiteFrameView, previewState: "boite-tab-alertes" as BoitePreviewState },
+                { label: "Loading", frameView: "loading" as BoiteFrameView, previewState: "boite-loading" as BoitePreviewState },
+                { label: "Empty", frameView: "empty" as BoiteFrameView, previewState: "boite-empty" as BoitePreviewState },
+              ].map((state) => (
+                <button
+                  key={state.label}
+                  type="button"
+                  role="tab"
+                  aria-selected={boitePreviewState === state.previewState}
+                  className={`${styles.frameViewRailTab} ${
+                    boitePreviewState === state.previewState ? styles.frameViewRailTabActive : ""
+                  }`}
+                  onClick={() => {
+                    setBoiteFrameView(state.frameView);
+                    setBoitePreviewState(state.previewState);
+                  }}
+                >
+                  {state.label}
+                </button>
+              ))}
+            </div>
+          ) : resolvedActiveScreen === "profile" && resolvedCanvasView !== "frames" ? (
+            <div className={styles.frameViewRail} role="tablist" aria-label="Profil states">
+              {[
+                { label: "Design", previewState: "profile-data" as ProfilePreviewState, frameView: "data" as ProfileFrameView },
+                { label: "Loading", previewState: "profile-loading" as ProfilePreviewState, frameView: "loading" as ProfileFrameView },
+                { label: "Edit name", previewState: "profile-edit-name" as ProfilePreviewState, frameView: "data" as ProfileFrameView },
+                { label: "Language", previewState: "profile-language-sheet" as ProfilePreviewState, frameView: "data" as ProfileFrameView },
+                { label: "Logout", previewState: "profile-logout-dialog" as ProfilePreviewState, frameView: "data" as ProfileFrameView },
+                { label: "Saving", previewState: "profile-saving" as ProfilePreviewState, frameView: "data" as ProfileFrameView },
+              ].map((state) => (
+                <button
+                  key={state.label}
+                  type="button"
+                  role="tab"
+                  aria-selected={profilePreviewState === state.previewState}
+                  className={`${styles.frameViewRailTab} ${
+                    profilePreviewState === state.previewState ? styles.frameViewRailTabActive : ""
+                  }`}
+                  onClick={() => {
+                    setProfileFrameView(state.frameView);
+                    setProfilePreviewState(state.previewState);
+                  }}
+                >
+                  {state.label}
+                </button>
+              ))}
             </div>
           ) : null}
 
@@ -2809,6 +3333,231 @@ export default function Home() {
                       </div>
                       <div className={styles.detailPreviewWidth}>
                         <WorkerAppTravailPage
+                          showDeviceFrame={showDeviceFrame}
+                          theme={canvasTheme}
+                          frameTheme={canvasFrameTheme}
+                          frameView={frame.frameView}
+                          previewState={frame.previewState}
+                          isInteractive={false}
+                        />
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
+            </div>
+          ) : resolvedCanvasView === "frames" && resolvedActiveScreen === "home" ? (
+            <div className={styles.componentsCanvas}>
+              <section className={styles.componentsPanel}>
+                <div className={styles.componentsPanelHeader}>
+                  <h3>Core Frames</h3>
+                  <p>Accueil screens in user journey order</p>
+                </div>
+                <div className={styles.componentsCardsGrid}>
+                  {homeCoreFrames.map((frame) => (
+                    <article key={frame.id} className={styles.componentCardItem}>
+                      <p className={styles.componentCardStateLabel}>{frame.id}</p>
+                      <div className={styles.componentPosteCard}>
+                        <h4>{frame.title}</h4>
+                        <p className={styles.componentPosteCardMeta}>{frame.note}</p>
+                      </div>
+                      <div className={styles.detailPreviewWidth}>
+                        <WorkerAppHomePage
+                          showDeviceFrame={showDeviceFrame}
+                          theme={canvasTheme}
+                          frameTheme={canvasFrameTheme}
+                          frameView={frame.frameView}
+                          previewState={frame.previewState}
+                          isInteractive={false}
+                        />
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
+              <section className={styles.componentsPanel}>
+                <div className={styles.componentsPanelHeader}>
+                  <h3>System States</h3>
+                  <p>Supporting frames outside the main happy path</p>
+                </div>
+                <div className={styles.componentsCardsGrid}>
+                  {homeSystemFrames.map((frame) => (
+                    <article key={frame.id} className={styles.componentCardItem}>
+                      <p className={styles.componentCardStateLabel}>{frame.id}</p>
+                      <div className={styles.componentPosteCard}>
+                        <h4>{frame.title}</h4>
+                        <p className={styles.componentPosteCardMeta}>{frame.note}</p>
+                      </div>
+                      <div className={styles.detailPreviewWidth}>
+                        <WorkerAppHomePage
+                          showDeviceFrame={showDeviceFrame}
+                          theme={canvasTheme}
+                          frameTheme={canvasFrameTheme}
+                          frameView={frame.frameView}
+                          previewState={frame.previewState}
+                          isInteractive={false}
+                        />
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
+              <section className={styles.componentsPanel}>
+                <div className={styles.componentsPanelHeader}>
+                  <h3>Travaux actifs</h3>
+                  <p>Job card states inside the active work section</p>
+                </div>
+                <div className={styles.componentsCardsGrid}>
+                  {homeTravailActifsFrames.map((frame) => (
+                    <article key={frame.id} className={styles.componentCardItem}>
+                      <p className={styles.componentCardStateLabel}>{frame.id}</p>
+                      <div className={styles.componentPosteCard}>
+                        <h4>{frame.title}</h4>
+                        <p className={styles.componentPosteCardMeta}>{frame.note}</p>
+                      </div>
+                      <div className={styles.detailPreviewWidth}>
+                        <WorkerAppHomePage
+                          showDeviceFrame={showDeviceFrame}
+                          theme={canvasTheme}
+                          frameTheme={canvasFrameTheme}
+                          frameView={frame.frameView}
+                          previewState={frame.previewState}
+                          isInteractive={false}
+                        />
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
+            </div>
+          ) : resolvedCanvasView === "frames" && resolvedActiveScreen === "boite" ? (
+            <div className={styles.componentsCanvas}>
+              <section className={styles.componentsPanel}>
+                <div className={styles.componentsPanelHeader}>
+                  <h3>Core Frames</h3>
+                  <p>Boîte notification feed states</p>
+                </div>
+                <div className={styles.componentsCardsGrid}>
+                  {boiteCoreFrames.map((frame) => (
+                    <article key={frame.id} className={styles.componentCardItem}>
+                      <p className={styles.componentCardStateLabel}>{frame.id}</p>
+                      <div className={styles.componentPosteCard}>
+                        <h4>{frame.title}</h4>
+                        <p className={styles.componentPosteCardMeta}>{frame.note}</p>
+                      </div>
+                      <div className={styles.detailPreviewWidth}>
+                        <WorkerAppBoitePage
+                          showDeviceFrame={showDeviceFrame}
+                          theme={canvasTheme}
+                          frameTheme={canvasFrameTheme}
+                          frameView={frame.frameView}
+                          previewState={frame.previewState}
+                          isInteractive={false}
+                        />
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
+              <section className={styles.componentsPanel}>
+                <div className={styles.componentsPanelHeader}>
+                  <h3>System States</h3>
+                  <p>Loading and empty inbox states</p>
+                </div>
+                <div className={styles.componentsCardsGrid}>
+                  {boiteSystemFrames.map((frame) => (
+                    <article key={frame.id} className={styles.componentCardItem}>
+                      <p className={styles.componentCardStateLabel}>{frame.id}</p>
+                      <div className={styles.componentPosteCard}>
+                        <h4>{frame.title}</h4>
+                        <p className={styles.componentPosteCardMeta}>{frame.note}</p>
+                      </div>
+                      <div className={styles.detailPreviewWidth}>
+                        <WorkerAppBoitePage
+                          showDeviceFrame={showDeviceFrame}
+                          theme={canvasTheme}
+                          frameTheme={canvasFrameTheme}
+                          frameView={frame.frameView}
+                          previewState={frame.previewState}
+                          isInteractive={false}
+                        />
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
+            </div>
+          ) : resolvedCanvasView === "frames" && resolvedActiveScreen === "profile" ? (
+            <div className={styles.componentsCanvas}>
+              <section className={styles.componentsPanel}>
+                <div className={styles.componentsPanelHeader}>
+                  <h3>Core Frames</h3>
+                  <p>Profil account and preferences</p>
+                </div>
+                <div className={styles.componentsCardsGrid}>
+                  {profileCoreFrames.map((frame) => (
+                    <article key={frame.id} className={styles.componentCardItem}>
+                      <p className={styles.componentCardStateLabel}>{frame.id}</p>
+                      <div className={styles.componentPosteCard}>
+                        <h4>{frame.title}</h4>
+                        <p className={styles.componentPosteCardMeta}>{frame.note}</p>
+                      </div>
+                      <div className={styles.detailPreviewWidth}>
+                        <WorkerAppProfilePage
+                          showDeviceFrame={showDeviceFrame}
+                          theme={canvasTheme}
+                          frameTheme={canvasFrameTheme}
+                          frameView={frame.frameView}
+                          previewState={frame.previewState}
+                          isInteractive={false}
+                        />
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
+              <section className={styles.componentsPanel}>
+                <div className={styles.componentsPanelHeader}>
+                  <h3>Interactions</h3>
+                  <p>Sheets and dialogs triggered from Profil</p>
+                </div>
+                <div className={styles.componentsCardsGrid}>
+                  {profileInteractionFrames.map((frame) => (
+                    <article key={frame.id} className={styles.componentCardItem}>
+                      <p className={styles.componentCardStateLabel}>{frame.id}</p>
+                      <div className={styles.componentPosteCard}>
+                        <h4>{frame.title}</h4>
+                        <p className={styles.componentPosteCardMeta}>{frame.note}</p>
+                      </div>
+                      <div className={styles.detailPreviewWidth}>
+                        <WorkerAppProfilePage
+                          showDeviceFrame={showDeviceFrame}
+                          theme={canvasTheme}
+                          frameTheme={canvasFrameTheme}
+                          frameView={frame.frameView}
+                          previewState={frame.previewState}
+                          isInteractive={false}
+                        />
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
+              <section className={styles.componentsPanel}>
+                <div className={styles.componentsPanelHeader}>
+                  <h3>System States</h3>
+                  <p>Loading and save-in-progress states</p>
+                </div>
+                <div className={styles.componentsCardsGrid}>
+                  {profileSystemFrames.map((frame) => (
+                    <article key={frame.id} className={styles.componentCardItem}>
+                      <p className={styles.componentCardStateLabel}>{frame.id}</p>
+                      <div className={styles.componentPosteCard}>
+                        <h4>{frame.title}</h4>
+                        <p className={styles.componentPosteCardMeta}>{frame.note}</p>
+                      </div>
+                      <div className={styles.detailPreviewWidth}>
+                        <WorkerAppProfilePage
                           showDeviceFrame={showDeviceFrame}
                           theme={canvasTheme}
                           frameTheme={canvasFrameTheme}
@@ -2925,7 +3674,9 @@ export default function Home() {
                         </span>
                         <span>Travail</span>
                       </div>
-                      <div className={`${styles.componentBottomNavItem} ${styles.componentBottomNavItemActive}`}>
+                      <div
+                        className={`${styles.componentBottomNavItem} ${styles.componentBottomNavItemActive}`}
+                      >
                         <span className={styles.componentBottomNavIconContainer}>
                           <span className={styles.componentBottomNavIcon}>view_timeline</span>
                         </span>
@@ -3017,7 +3768,8 @@ export default function Home() {
                           Début : {state.startDate} · Modifié le {state.updatedDate}
                         </p>
                         <p className={styles.componentPosteCardProgressText}>
-                          {state.completed} / {state.total} observations complétées · {state.progress}%
+                          {state.completed} / {state.total} observations complétées ·{" "}
+                          {state.progress}%
                         </p>
                         {renderComponentMilestones(state.completed)}
                       </div>
@@ -3026,7 +3778,9 @@ export default function Home() {
 
                   <article className={styles.componentCardItem}>
                     <p className={styles.componentCardStateLabel}>Loading</p>
-                    <div className={`${styles.componentPosteCard} ${styles.componentPosteCardLoading}`}>
+                    <div
+                      className={`${styles.componentPosteCard} ${styles.componentPosteCardLoading}`}
+                    >
                       <span className={styles.componentSkeletonTitle} aria-hidden="true" />
                       <span className={styles.componentSkeletonSub} aria-hidden="true" />
                       <span className={styles.componentSkeletonMeta} aria-hidden="true" />
@@ -3042,57 +3796,84 @@ export default function Home() {
 
                 {showDevAnnotations ? (
                   <ComponentAnnotationPanel
-                  ariaLabel="Poste Fixe card specs"
-                  legend={[
-                    { index: 1, label: "Card container (tap target)" },
-                    { index: 2, label: "Title + chevron header row" },
-                    { index: 3, label: "Secteur + dates text block" },
-                    { index: 4, label: "Progress summary text" },
-                    { index: 5, label: "5-step milestone bar" },
-                  ]}
-                  specs={[
-                    { attribute: "Container radius", value: "14px" },
-                    { attribute: "Container padding", value: "14px" },
-                    { attribute: "Row spacing", value: "Title->sector 4px, sector->dates 4px, dates->progress 8px, progress->bar 8px" },
-                    { attribute: "Title size / weight", value: "15px / 600 (single-line, ellipsis)" },
-                    { attribute: "Sector size / weight", value: "14px / 400 (single-line, ellipsis)" },
-                    { attribute: "Dates size / weight", value: "12px / 400 (single-line, ellipsis)" },
-                    { attribute: "Progress text size / weight", value: "12px / 500 (single-line, ellipsis)" },
-                    { attribute: "Progress segment height", value: "6px" },
-                    { attribute: "Segment gap", value: "4px" },
-                    { attribute: "Card min tap target", value: ">= 44px height (full card tappable)" },
-                    { attribute: "Date format", value: "Début : DD MMM · Modifié le DD MMM (fr-FR)" },
-                  ]}
-                  colors={[
-                    { name: "Card background", hex: "#FFFFFF" },
-                    { name: "Primary text", hex: "#1A2623" },
-                    { name: "Secondary text", hex: "#667774" },
-                    { name: "Meta text", hex: "#808A90" },
-                    { name: "Progress active", hex: "#01A362" },
-                    { name: "Progress inactive", hex: "#E2E8E6" },
-                  ]}
-                  behaviors={[
-                    {
-                      key: "Source of truth",
-                      value: "completed/total drives both percentage label and filled milestones; do not derive from card title label.",
-                    },
-                    {
-                      key: "Overflow contract",
-                      value: "All text rows are single-line with ellipsis; no wrapping in card list.",
-                    },
-                    {
-                      key: "Interaction",
-                      value: "Entire card is one button; chevron is affordance only (not separate action).",
-                    },
-                    {
-                      key: "Accessibility",
-                      value: "Button label: \"{Poste} {Secteur}, {completed} sur {total} observations, {progress}%\"; visible focus ring required.",
-                    },
-                    {
-                      key: "Loading contract",
-                      value: "Skeleton variant mirrors final layout; show until data resolves and keep visible minimum 300ms to avoid flicker.",
-                    },
-                  ]}
+                    ariaLabel="Poste Fixe card specs"
+                    legend={[
+                      { index: 1, label: "Card container (tap target)" },
+                      { index: 2, label: "Title + chevron header row" },
+                      { index: 3, label: "Secteur + dates text block" },
+                      { index: 4, label: "Progress summary text" },
+                      { index: 5, label: "5-step milestone bar" },
+                    ]}
+                    specs={[
+                      { attribute: "Container radius", value: "14px" },
+                      { attribute: "Container padding", value: "14px" },
+                      {
+                        attribute: "Row spacing",
+                        value:
+                          "Title->sector 4px, sector->dates 4px, dates->progress 8px, progress->bar 8px",
+                      },
+                      {
+                        attribute: "Title size / weight",
+                        value: "15px / 600 (single-line, ellipsis)",
+                      },
+                      {
+                        attribute: "Sector size / weight",
+                        value: "14px / 400 (single-line, ellipsis)",
+                      },
+                      {
+                        attribute: "Dates size / weight",
+                        value: "12px / 400 (single-line, ellipsis)",
+                      },
+                      {
+                        attribute: "Progress text size / weight",
+                        value: "12px / 500 (single-line, ellipsis)",
+                      },
+                      { attribute: "Progress segment height", value: "6px" },
+                      { attribute: "Segment gap", value: "4px" },
+                      {
+                        attribute: "Card min tap target",
+                        value: ">= 44px height (full card tappable)",
+                      },
+                      {
+                        attribute: "Date format",
+                        value: "Début : DD MMM · Modifié le DD MMM (fr-FR)",
+                      },
+                    ]}
+                    colors={[
+                      { name: "Card background", hex: "#FFFFFF" },
+                      { name: "Primary text", hex: "#1A2623" },
+                      { name: "Secondary text", hex: "#667774" },
+                      { name: "Meta text", hex: "#808A90" },
+                      { name: "Progress active", hex: "#01A362" },
+                      { name: "Progress inactive", hex: "#E2E8E6" },
+                    ]}
+                    behaviors={[
+                      {
+                        key: "Source of truth",
+                        value:
+                          "completed/total drives both percentage label and filled milestones; do not derive from card title label.",
+                      },
+                      {
+                        key: "Overflow contract",
+                        value:
+                          "All text rows are single-line with ellipsis; no wrapping in card list.",
+                      },
+                      {
+                        key: "Interaction",
+                        value:
+                          "Entire card is one button; chevron is affordance only (not separate action).",
+                      },
+                      {
+                        key: "Accessibility",
+                        value:
+                          'Button label: "{Poste} {Secteur}, {completed} sur {total} observations, {progress}%"; visible focus ring required.',
+                      },
+                      {
+                        key: "Loading contract",
+                        value:
+                          "Skeleton variant mirrors final layout; show until data resolves and keep visible minimum 300ms to avoid flicker.",
+                      },
+                    ]}
                   />
                 ) : null}
               </section>
@@ -3115,40 +3896,40 @@ export default function Home() {
                 </div>
                 {showDevAnnotations ? (
                   <ComponentAnnotationPanel
-                  ariaLabel="Poste Fixe empty state specs"
-                  legend={[
-                    { index: 1, label: "Empty icon container" },
-                    { index: 2, label: "Title message" },
-                    { index: 3, label: "Supporting message" },
-                  ]}
-                  specs={[
-                    { attribute: "Card radius", value: "18px" },
-                    { attribute: "Card padding", value: "24px 18px" },
-                    { attribute: "Icon wrap", value: "56px" },
-                    { attribute: "Title size / weight", value: "16px / 500" },
-                    { attribute: "Subtitle size / weight", value: "13px / 400" },
-                  ]}
-                  colors={[
-                    { name: "Surface", hex: "#FFFFFF" },
-                    { name: "Icon wrap", hex: "#EEF2F4" },
-                    { name: "Icon", hex: "#9AA6B2" },
-                    { name: "Title", hex: "#3D4C5C" },
-                    { name: "Subtitle", hex: "#7B8899" },
-                  ]}
-                  behaviors={[
-                    {
-                      key: "Rendering rule",
-                      value: "Only shown when data source returns no postes fixes.",
-                    },
-                    {
-                      key: "Layout",
-                      value: "Centered content for calm and fast comprehension.",
-                    },
-                    {
-                      key: "No false CTA",
-                      value: "No add action because postes are assigned externally.",
-                    },
-                  ]}
+                    ariaLabel="Poste Fixe empty state specs"
+                    legend={[
+                      { index: 1, label: "Empty icon container" },
+                      { index: 2, label: "Title message" },
+                      { index: 3, label: "Supporting message" },
+                    ]}
+                    specs={[
+                      { attribute: "Card radius", value: "18px" },
+                      { attribute: "Card padding", value: "24px 18px" },
+                      { attribute: "Icon wrap", value: "56px" },
+                      { attribute: "Title size / weight", value: "16px / 500" },
+                      { attribute: "Subtitle size / weight", value: "13px / 400" },
+                    ]}
+                    colors={[
+                      { name: "Surface", hex: "#FFFFFF" },
+                      { name: "Icon wrap", hex: "#EEF2F4" },
+                      { name: "Icon", hex: "#9AA6B2" },
+                      { name: "Title", hex: "#3D4C5C" },
+                      { name: "Subtitle", hex: "#7B8899" },
+                    ]}
+                    behaviors={[
+                      {
+                        key: "Rendering rule",
+                        value: "Only shown when data source returns no postes fixes.",
+                      },
+                      {
+                        key: "Layout",
+                        value: "Centered content for calm and fast comprehension.",
+                      },
+                      {
+                        key: "No false CTA",
+                        value: "No add action because postes are assigned externally.",
+                      },
+                    ]}
                   />
                 ) : null}
               </section>
@@ -3228,42 +4009,43 @@ export default function Home() {
                 </div>
                 {showDevAnnotations ? (
                   <ComponentAnnotationPanel
-                  ariaLabel="Poste Fixe details header and campaign specs"
-                  legend={[
-                    { index: 1, label: "Back button + title block" },
-                    { index: 2, label: "Campaign title and date row" },
-                    { index: 3, label: "Progress row + milestones" },
-                  ]}
-                  specs={[
-                    { attribute: "Header row height", value: "48px" },
-                    { attribute: "Header gap", value: "8px" },
-                    { attribute: "Campaign card radius", value: "14px" },
-                    { attribute: "Campaign card padding", value: "12px" },
-                    { attribute: "Campaign title", value: "16px / 500" },
-                    { attribute: "Progress line", value: "6px segments" },
-                  ]}
-                  colors={[
-                    { name: "Header title", hex: "#1A2623" },
-                    { name: "Header subtitle", hex: "#7B8899" },
-                    { name: "Campaign surface", hex: "#FFFFFF" },
-                    { name: "Campaign meta", hex: "#808A90" },
-                    { name: "Progress active", hex: "#01A362" },
-                    { name: "Progress inactive", hex: "#E2E8E6" },
-                  ]}
-                  behaviors={[
-                    {
-                      key: "Back navigation",
-                      value: "Always returns to Poste Fixe list without changing list header state.",
-                    },
-                    {
-                      key: "Campaign summary",
-                      value: "Uses same progress semantics as Poste Fixe cards for consistency.",
-                    },
-                    {
-                      key: "Density",
-                      value: "Compact block to preserve space for observations below.",
-                    },
-                  ]}
+                    ariaLabel="Poste Fixe details header and campaign specs"
+                    legend={[
+                      { index: 1, label: "Back button + title block" },
+                      { index: 2, label: "Campaign title and date row" },
+                      { index: 3, label: "Progress row + milestones" },
+                    ]}
+                    specs={[
+                      { attribute: "Header row height", value: "48px" },
+                      { attribute: "Header gap", value: "8px" },
+                      { attribute: "Campaign card radius", value: "14px" },
+                      { attribute: "Campaign card padding", value: "12px" },
+                      { attribute: "Campaign title", value: "16px / 500" },
+                      { attribute: "Progress line", value: "6px segments" },
+                    ]}
+                    colors={[
+                      { name: "Header title", hex: "#1A2623" },
+                      { name: "Header subtitle", hex: "#7B8899" },
+                      { name: "Campaign surface", hex: "#FFFFFF" },
+                      { name: "Campaign meta", hex: "#808A90" },
+                      { name: "Progress active", hex: "#01A362" },
+                      { name: "Progress inactive", hex: "#E2E8E6" },
+                    ]}
+                    behaviors={[
+                      {
+                        key: "Back navigation",
+                        value:
+                          "Always returns to Poste Fixe list without changing list header state.",
+                      },
+                      {
+                        key: "Campaign summary",
+                        value: "Uses same progress semantics as Poste Fixe cards for consistency.",
+                      },
+                      {
+                        key: "Density",
+                        value: "Compact block to preserve space for observations below.",
+                      },
+                    ]}
                   />
                 ) : null}
 
@@ -3272,7 +4054,10 @@ export default function Home() {
                   <div className={styles.detailPreviewWidth}>
                     <div className={styles.detailObservationsList}>
                       {posteFixeDetailObservationStates.map((state) => (
-                        <article key={`real-${state.title}`} className={styles.detailObservationItem}>
+                        <article
+                          key={`real-${state.title}`}
+                          className={styles.detailObservationItem}
+                        >
                           <span
                             className={`${styles.detailObservationIconWrap} ${
                               state.tone === "violet"
@@ -3314,43 +4099,43 @@ export default function Home() {
                 </div>
                 {showDevAnnotations ? (
                   <ComponentAnnotationPanel
-                  ariaLabel="Observation rows specs"
-                  legend={[
-                    { index: 1, label: "Icon wrap + icon (phase marker)" },
-                    { index: 2, label: "Observation title + last update line" },
-                    { index: 3, label: "Status chip (Pas commencé / En cours / Terminé)" },
-                    { index: 4, label: "Row navigation chevron" },
-                  ]}
-                  specs={[
-                    { attribute: "Row height", value: "64px (content dependent)" },
-                    { attribute: "Row horizontal padding", value: "14px" },
-                    { attribute: "Icon wrap", value: "40px / radius 10px" },
-                    { attribute: "Title size / weight", value: "14px / 500" },
-                    { attribute: "Subtitle size / weight", value: "11px / 400" },
-                    { attribute: "Status chip", value: "22px height" },
-                  ]}
-                  colors={[
-                    { name: "Row surface", hex: "#FFFFFF" },
-                    { name: "Title", hex: "#4A5A53" },
-                    { name: "Subtitle", hex: "#7F8996" },
-                    { name: "Status done", hex: "#E6F7F1" },
-                    { name: "Status in progress", hex: "#DBEAFE" },
-                    { name: "Status not started", hex: "#F3F4F6" },
-                  ]}
-                  behaviors={[
-                    {
-                      key: "Variant A",
-                      value: "Wireframe style with placeholders to explain structure only.",
-                    },
-                    {
-                      key: "Variant B",
-                      value: "Mirrors current app data with all five observations.",
-                    },
-                    {
-                      key: "Interaction",
-                      value: "Row click navigates to form screen for selected phase.",
-                    },
-                  ]}
+                    ariaLabel="Observation rows specs"
+                    legend={[
+                      { index: 1, label: "Icon wrap + icon (phase marker)" },
+                      { index: 2, label: "Observation title + last update line" },
+                      { index: 3, label: "Status chip (Pas commencé / En cours / Terminé)" },
+                      { index: 4, label: "Row navigation chevron" },
+                    ]}
+                    specs={[
+                      { attribute: "Row height", value: "64px (content dependent)" },
+                      { attribute: "Row horizontal padding", value: "14px" },
+                      { attribute: "Icon wrap", value: "40px / radius 10px" },
+                      { attribute: "Title size / weight", value: "14px / 500" },
+                      { attribute: "Subtitle size / weight", value: "11px / 400" },
+                      { attribute: "Status chip", value: "22px height" },
+                    ]}
+                    colors={[
+                      { name: "Row surface", hex: "#FFFFFF" },
+                      { name: "Title", hex: "#4A5A53" },
+                      { name: "Subtitle", hex: "#7F8996" },
+                      { name: "Status done", hex: "#E6F7F1" },
+                      { name: "Status in progress", hex: "#DBEAFE" },
+                      { name: "Status not started", hex: "#F3F4F6" },
+                    ]}
+                    behaviors={[
+                      {
+                        key: "Variant A",
+                        value: "Wireframe style with placeholders to explain structure only.",
+                      },
+                      {
+                        key: "Variant B",
+                        value: "Mirrors current app data with all five observations.",
+                      },
+                      {
+                        key: "Interaction",
+                        value: "Row click navigates to form screen for selected phase.",
+                      },
+                    ]}
                   />
                 ) : null}
               </section>
@@ -3370,7 +4155,9 @@ export default function Home() {
                   <div className={styles.componentObservationFormPreview}>
                     <div className={styles.componentFormHeader}>
                       <h3 className={styles.componentFormHeaderTitle}>Observation status</h3>
-                      <span className={`${styles.detailObservationStatus} ${styles.detailObservationStatusInProgress}`}>
+                      <span
+                        className={`${styles.detailObservationStatus} ${styles.detailObservationStatusInProgress}`}
+                      >
                         En cours
                       </span>
                     </div>
@@ -3379,7 +4166,9 @@ export default function Home() {
                       <div className={styles.componentFormField}>
                         <p className={styles.componentFormLabel}>Densité florale</p>
                         <div className={styles.componentChipsRow}>
-                          <span className={`${styles.componentChoiceChip} ${styles.componentChoiceChipActive}`}>
+                          <span
+                            className={`${styles.componentChoiceChip} ${styles.componentChoiceChipActive}`}
+                          >
                             <span className={styles.componentChoiceChipCheck} aria-hidden="true">
                               check
                             </span>
@@ -3418,7 +4207,9 @@ export default function Home() {
                         <div className={styles.componentChipsRow}>
                           <span className={styles.componentChoiceChip}>90%</span>
                           <span className={styles.componentChoiceChip}>75%</span>
-                          <span className={`${styles.componentChoiceChip} ${styles.componentChoiceChipActive}`}>
+                          <span
+                            className={`${styles.componentChoiceChip} ${styles.componentChoiceChipActive}`}
+                          >
                             <span className={styles.componentChoiceChipCheck} aria-hidden="true">
                               check
                             </span>
@@ -3461,45 +4252,45 @@ export default function Home() {
                 </div>
                 {showDevAnnotations ? (
                   <ComponentAnnotationPanel
-                  ariaLabel="Observation form component specs"
-                  legend={[
-                    { index: 1, label: "Section header + status chip" },
-                    { index: 2, label: "Density chips (single selection)" },
-                    { index: 3, label: "Date start/end fields" },
-                    { index: 4, label: "Secondary input/chips mode" },
-                    { index: 5, label: "Images + notes areas" },
-                    { index: 6, label: "Save / edit action buttons" },
-                  ]}
-                  specs={[
-                    { attribute: "Field label size / weight", value: "12px / 500" },
-                    { attribute: "Chip height", value: "32px" },
-                    { attribute: "Date/input height", value: "52px" },
-                    { attribute: "Image thumb size", value: "64px" },
-                    { attribute: "Textarea height", value: "92px" },
-                    { attribute: "Primary action height", value: "40px" },
-                  ]}
-                  colors={[
-                    { name: "Form surface", hex: "#FFFFFF" },
-                    { name: "Input background", hex: "#EEF2F6" },
-                    { name: "Chip selected", hex: "#01A362" },
-                    { name: "Chip unselected", hex: "#FFFFFF" },
-                    { name: "Chip border", hex: "#C8D2DD" },
-                    { name: "Placeholder text", hex: "#96A3AF" },
-                  ]}
-                  behaviors={[
-                    {
-                      key: "Single selection",
-                      value: "Chips allow only one selected value per field set.",
-                    },
-                    {
-                      key: "Date logic",
-                      value: "Start date required; end date optional until phase completes.",
-                    },
-                    {
-                      key: "Read-only mode",
-                      value: "When status is Terminé, form is locked and shows Modifier action.",
-                    },
-                  ]}
+                    ariaLabel="Observation form component specs"
+                    legend={[
+                      { index: 1, label: "Section header + status chip" },
+                      { index: 2, label: "Density chips (single selection)" },
+                      { index: 3, label: "Date start/end fields" },
+                      { index: 4, label: "Secondary input/chips mode" },
+                      { index: 5, label: "Images + notes areas" },
+                      { index: 6, label: "Save / edit action buttons" },
+                    ]}
+                    specs={[
+                      { attribute: "Field label size / weight", value: "12px / 500" },
+                      { attribute: "Chip height", value: "32px" },
+                      { attribute: "Date/input height", value: "52px" },
+                      { attribute: "Image thumb size", value: "64px" },
+                      { attribute: "Textarea height", value: "92px" },
+                      { attribute: "Primary action height", value: "40px" },
+                    ]}
+                    colors={[
+                      { name: "Form surface", hex: "#FFFFFF" },
+                      { name: "Input background", hex: "#EEF2F6" },
+                      { name: "Chip selected", hex: "#01A362" },
+                      { name: "Chip unselected", hex: "#FFFFFF" },
+                      { name: "Chip border", hex: "#C8D2DD" },
+                      { name: "Placeholder text", hex: "#96A3AF" },
+                    ]}
+                    behaviors={[
+                      {
+                        key: "Single selection",
+                        value: "Chips allow only one selected value per field set.",
+                      },
+                      {
+                        key: "Date logic",
+                        value: "Start date required; end date optional until phase completes.",
+                      },
+                      {
+                        key: "Read-only mode",
+                        value: "When status is Terminé, form is locked and shows Modifier action.",
+                      },
+                    ]}
                   />
                 ) : null}
               </section>
@@ -3529,42 +4320,43 @@ export default function Home() {
                 </div>
                 {showDevAnnotations ? (
                   <ComponentAnnotationPanel
-                  ariaLabel="Observation unsaved modal specs"
-                  legend={[
-                    { index: 1, label: "Dialog title" },
-                    { index: 2, label: "Support message" },
-                    { index: 3, label: "Secondary action" },
-                    { index: 4, label: "Primary action" },
-                  ]}
-                  specs={[
-                    { attribute: "Dialog width", value: "min(100%, 360px)" },
-                    { attribute: "Dialog radius", value: "14px" },
-                    { attribute: "Dialog padding", value: "16px" },
-                    { attribute: "Button height", value: "40px" },
-                    { attribute: "Button radius", value: "999px" },
-                  ]}
-                  colors={[
-                    { name: "Overlay tint", hex: "#10182799" },
-                    { name: "Dialog surface", hex: "#FFFFFF" },
-                    { name: "Primary action", hex: "#01A362" },
-                    { name: "Primary text", hex: "#FFFFFF" },
-                    { name: "Secondary action", hex: "#EEF2F6" },
-                    { name: "Secondary text", hex: "#3D4C5C" },
-                  ]}
-                  behaviors={[
-                    {
-                      key: "Trigger",
-                      value: "Displayed only when user has unsaved changes and attempts to leave.",
-                    },
-                    {
-                      key: "Actions",
-                      value: "Quit discards draft; Enregistrer persists and closes modal.",
-                    },
-                    {
-                      key: "Focus",
-                      value: "Dialog traps interaction until one action is selected.",
-                    },
-                  ]}
+                    ariaLabel="Observation unsaved modal specs"
+                    legend={[
+                      { index: 1, label: "Dialog title" },
+                      { index: 2, label: "Support message" },
+                      { index: 3, label: "Secondary action" },
+                      { index: 4, label: "Primary action" },
+                    ]}
+                    specs={[
+                      { attribute: "Dialog width", value: "min(100%, 360px)" },
+                      { attribute: "Dialog radius", value: "14px" },
+                      { attribute: "Dialog padding", value: "16px" },
+                      { attribute: "Button height", value: "40px" },
+                      { attribute: "Button radius", value: "999px" },
+                    ]}
+                    colors={[
+                      { name: "Overlay tint", hex: "#10182799" },
+                      { name: "Dialog surface", hex: "#FFFFFF" },
+                      { name: "Primary action", hex: "#01A362" },
+                      { name: "Primary text", hex: "#FFFFFF" },
+                      { name: "Secondary action", hex: "#EEF2F6" },
+                      { name: "Secondary text", hex: "#3D4C5C" },
+                    ]}
+                    behaviors={[
+                      {
+                        key: "Trigger",
+                        value:
+                          "Displayed only when user has unsaved changes and attempts to leave.",
+                      },
+                      {
+                        key: "Actions",
+                        value: "Quit discards draft; Enregistrer persists and closes modal.",
+                      },
+                      {
+                        key: "Focus",
+                        value: "Dialog traps interaction until one action is selected.",
+                      },
+                    ]}
                   />
                 ) : null}
               </section>
@@ -3577,7 +4369,13 @@ export default function Home() {
                   <p>
                     {resolvedActiveScreen === "travail"
                       ? "Icons used in the Travail screens and sheets"
-                      : "Icons used in the current worker app UI"}
+                      : resolvedActiveScreen === "home"
+                        ? "Icons used in the Accueil screen"
+                        : resolvedActiveScreen === "boite"
+                          ? "Icons used in the Boîte inbox screen"
+                          : resolvedActiveScreen === "profile"
+                            ? "Icons used in the Profil screen and sheets"
+                            : "Icons used in the Post Fixe screens"}
                   </p>
                 </div>
                 <div className={styles.componentsMetaRow}>
@@ -3585,13 +4383,24 @@ export default function Home() {
                     Library: Material Symbols Outlined
                   </span>
                   <span className={styles.componentsMetaChip}>
-                    {resolvedActiveScreen === "travail" ? "Mixed sizes 18px to 24px" : "Icon size 20px"}
+                    {resolvedActiveScreen === "travail"
+                      ? "Mixed sizes 18px to 24px"
+                      : "Icon size 20px"}
                   </span>
                   <span className={styles.componentsMetaChip}>Wrap 34px / 40px</span>
                 </div>
                 <div className={styles.detailIconsSection}>
                   <div className={styles.detailIconsGrid}>
-                    {(resolvedActiveScreen === "travail" ? travailDetailIcons : posteFixeDetailIcons).map((iconItem) => (
+                    {(resolvedActiveScreen === "travail"
+                      ? travailDetailIcons
+                      : resolvedActiveScreen === "home"
+                        ? homeDetailIcons
+                        : resolvedActiveScreen === "boite"
+                          ? boiteDetailIcons
+                          : resolvedActiveScreen === "profile"
+                            ? profileDetailIcons
+                            : posteFixeDetailIcons
+                    ).map((iconItem) => (
                       <article key={iconItem.name} className={styles.detailIconItem}>
                         <span className={styles.detailIconGlyph} aria-hidden="true">
                           {iconItem.icon}
@@ -3599,9 +4408,7 @@ export default function Home() {
                         <div className={styles.detailIconMeta}>
                           <p className={styles.detailIconName}>{iconItem.name}</p>
                           <p className={styles.detailIconUsage}>{iconItem.usage}</p>
-                          <p className={styles.detailIconLibraryName}>
-                            Material Symbols Outlined
-                          </p>
+                          <p className={styles.detailIconLibraryName}>Material Symbols Outlined</p>
                         </div>
                       </article>
                     ))}
@@ -3624,6 +4431,8 @@ export default function Home() {
               showDeviceFrame={showDeviceFrame}
               theme={canvasTheme}
               frameTheme={canvasFrameTheme}
+              frameView={homeFrameView}
+              previewState={homePreviewState}
             />
           ) : resolvedActiveScreen === "getStartedV2" ? (
             <WorkerAppGetStartedV2Page
@@ -3652,12 +4461,16 @@ export default function Home() {
               showDeviceFrame={showDeviceFrame}
               theme={canvasTheme}
               frameTheme={canvasFrameTheme}
+              frameView={boiteFrameView}
+              previewState={boitePreviewState}
             />
           ) : resolvedActiveScreen === "profile" ? (
             <WorkerAppProfilePage
               showDeviceFrame={showDeviceFrame}
               theme={canvasTheme}
               frameTheme={canvasFrameTheme}
+              frameView={profileFrameView}
+              previewState={profilePreviewState}
             />
           ) : resolvedActiveScreen === "synchronisation" ? (
             <WorkerAppSynchronisationPage

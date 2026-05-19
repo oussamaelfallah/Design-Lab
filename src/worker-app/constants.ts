@@ -6,7 +6,7 @@ export const WORKER_APP_HOME_PAGE_NAME = "Accueil";
 export const WORKER_APP_TRAVAIL_PAGE_NAME = "Travail";
 export const WORKER_APP_POST_FIXE_PAGE_NAME = "Post Fixe";
 export const WORKER_APP_BOITE_PAGE_NAME = "Boite";
-export const WORKER_APP_PROFILE_PAGE_NAME = "Profile";
+export const WORKER_APP_PROFILE_PAGE_NAME = "Profil";
 export const WORKER_APP_SYNCHRONISATION_PAGE_NAME = "Synchronisation";
 
 export const WORKER_APP_ASSETS = {

@@ -17,20 +17,11 @@ const syncStates = [
 type TravailJobType = "estimation" | "calibre";
 type TravailFilter = TravailJobType;
 type TravailJobStatus = "notStarted" | "inProgress" | "done";
-type EstimationDetailTab = "overview" | "map" | "gallery";
+type TravailDetailTab = "overview" | "map" | "gallery";
 type GalleryFilter = "all" | "synced" | "unsynced";
 type MapFocus = "all" | "user" | "parcel";
 type MapOverlay = "points" | "heatmap";
 type DueFilter = "overdue" | "today" | "upcoming";
-
-const GALLERY_IMAGE_A =
-  "https://www.figma.com/api/mcp/asset/75d16a2c-668e-422d-85a7-eeb5a3b60544";
-const GALLERY_IMAGE_B =
-  "https://www.figma.com/api/mcp/asset/d5926dc9-dfd0-4e4e-afe7-68fb5482bb3e";
-const GALLERY_IMAGE_C =
-  "https://www.figma.com/api/mcp/asset/ab80e10d-b9bf-4384-bf84-d0067a9d2e20";
-const GALLERY_IMAGE_D =
-  "https://www.figma.com/api/mcp/asset/ee5224bc-30b8-457f-908a-ec234e8a725f";
 
 const TravailLiveMap = dynamic(
   () => import("./components/travail-live-map").then((module) => module.TravailLiveMap),
@@ -67,15 +58,12 @@ type TravailJob = TravailJobSeed & {
   dueLabel: string;
 };
 
-type EstimationDetail = {
+type TravailJobDetail = {
   pendingSyncImages: number;
   failedSyncImages: number;
   lastCaptureLabel: string;
   settings: {
-    treePercentage: string;
-    orientation: string;
-    multiImagesEnabled: boolean;
-    mode: "Portrait" | "Paysage";
+    mode: "Manuel" | "Sur plan" | "Sur arbre";
   };
   parcel: {
     fruitType: string;
@@ -186,9 +174,11 @@ type EstimationDetailSeed = {
   pendingSyncImages: number;
   failedSyncImages: number;
   lastCaptureLabel: string;
-  settings: EstimationDetail["settings"];
-  parcel: EstimationDetail["parcel"];
+  settings: TravailJobDetail["settings"];
+  parcel: TravailJobDetail["parcel"];
 };
+
+type CalibreDetailSeed = EstimationDetailSeed;
 
 const ESTIMATION_DETAILS: EstimationDetailSeed[] = [
   {
@@ -196,7 +186,7 @@ const ESTIMATION_DETAILS: EstimationDetailSeed[] = [
     pendingSyncImages: 2,
     failedSyncImages: 1,
     lastCaptureLabel: "Il y a 45 min",
-    settings: { treePercentage: "5%", orientation: "Est", multiImagesEnabled: true, mode: "Portrait" },
+    settings: { mode: "Sur arbre" },
     parcel: { fruitType: "Orange", variety: "Navel", rootstock: "Carrizo", treeCount: 320, spacing: "6 m × 4 m" },
   },
   {
@@ -204,7 +194,7 @@ const ESTIMATION_DETAILS: EstimationDetailSeed[] = [
     pendingSyncImages: 0,
     failedSyncImages: 0,
     lastCaptureLabel: "Il y a 2 h",
-    settings: { treePercentage: "8%", orientation: "Ouest", multiImagesEnabled: false, mode: "Paysage" },
+    settings: { mode: "Sur plan" },
     parcel: { fruitType: "Citron", variety: "Eureka", rootstock: "Citrange Troyer", treeCount: 210, spacing: "5 m × 3 m" },
   },
   {
@@ -212,7 +202,7 @@ const ESTIMATION_DETAILS: EstimationDetailSeed[] = [
     pendingSyncImages: 2,
     failedSyncImages: 0,
     lastCaptureLabel: "Il y a 1 h",
-    settings: { treePercentage: "6%", orientation: "Nord", multiImagesEnabled: true, mode: "Portrait" },
+    settings: { mode: "Sur arbre" },
     parcel: { fruitType: "Mandarine", variety: "Clémentine", rootstock: "Poncirus", treeCount: 415, spacing: "5 m × 4 m" },
   },
   {
@@ -220,7 +210,7 @@ const ESTIMATION_DETAILS: EstimationDetailSeed[] = [
     pendingSyncImages: 0,
     failedSyncImages: 0,
     lastCaptureLabel: "Il y a 20 min",
-    settings: { treePercentage: "10%", orientation: "Sud", multiImagesEnabled: true, mode: "Portrait" },
+    settings: { mode: "Sur arbre" },
     parcel: { fruitType: "Pamplemousse", variety: "Star Ruby", rootstock: "Swingle", treeCount: 180, spacing: "7 m × 5 m" },
   },
   {
@@ -228,7 +218,7 @@ const ESTIMATION_DETAILS: EstimationDetailSeed[] = [
     pendingSyncImages: 0,
     failedSyncImages: 0,
     lastCaptureLabel: "—",
-    settings: { treePercentage: "5%", orientation: "Est", multiImagesEnabled: false, mode: "Portrait" },
+    settings: { mode: "Sur arbre" },
     parcel: { fruitType: "Orange", variety: "Valencia", rootstock: "Carrizo", treeCount: 290, spacing: "6 m × 4 m" },
   },
   {
@@ -236,7 +226,7 @@ const ESTIMATION_DETAILS: EstimationDetailSeed[] = [
     pendingSyncImages: 0,
     failedSyncImages: 0,
     lastCaptureLabel: "Il y a 3 h",
-    settings: { treePercentage: "7%", orientation: "Ouest", multiImagesEnabled: true, mode: "Paysage" },
+    settings: { mode: "Sur plan" },
     parcel: { fruitType: "Citron", variety: "Lisbon", rootstock: "Citrus macrophylla", treeCount: 155, spacing: "5 m × 3.5 m" },
   },
   {
@@ -244,7 +234,7 @@ const ESTIMATION_DETAILS: EstimationDetailSeed[] = [
     pendingSyncImages: 1,
     failedSyncImages: 0,
     lastCaptureLabel: "Il y a 30 min",
-    settings: { treePercentage: "5%", orientation: "Sud-Est", multiImagesEnabled: true, mode: "Portrait" },
+    settings: { mode: "Sur arbre" },
     parcel: { fruitType: "Orange", variety: "Salustiana", rootstock: "Bigaradier", treeCount: 340, spacing: "6 m × 4 m" },
   },
   {
@@ -252,7 +242,7 @@ const ESTIMATION_DETAILS: EstimationDetailSeed[] = [
     pendingSyncImages: 3,
     failedSyncImages: 2,
     lastCaptureLabel: "Il y a 1 h 20 min",
-    settings: { treePercentage: "8%", orientation: "Nord-Ouest", multiImagesEnabled: true, mode: "Portrait" },
+    settings: { mode: "Sur arbre" },
     parcel: { fruitType: "Mandarine", variety: "Nadorcott", rootstock: "Poncirus", treeCount: 203, spacing: "5 m × 3 m" },
   },
   {
@@ -260,7 +250,7 @@ const ESTIMATION_DETAILS: EstimationDetailSeed[] = [
     pendingSyncImages: 0,
     failedSyncImages: 0,
     lastCaptureLabel: "—",
-    settings: { treePercentage: "6%", orientation: "Est", multiImagesEnabled: false, mode: "Paysage" },
+    settings: { mode: "Sur plan" },
     parcel: { fruitType: "Citron", variety: "Fino", rootstock: "Citrange Carrizo", treeCount: 128, spacing: "4 m × 3 m" },
   },
   {
@@ -268,7 +258,7 @@ const ESTIMATION_DETAILS: EstimationDetailSeed[] = [
     pendingSyncImages: 0,
     failedSyncImages: 0,
     lastCaptureLabel: "Il y a 4 h",
-    settings: { treePercentage: "5%", orientation: "Sud", multiImagesEnabled: true, mode: "Portrait" },
+    settings: { mode: "Sur arbre" },
     parcel: { fruitType: "Orange", variety: "Navelina", rootstock: "Carrizo", treeCount: 276, spacing: "6 m × 4 m" },
   },
   {
@@ -276,7 +266,7 @@ const ESTIMATION_DETAILS: EstimationDetailSeed[] = [
     pendingSyncImages: 1,
     failedSyncImages: 1,
     lastCaptureLabel: "Il y a 2 h 30 min",
-    settings: { treePercentage: "10%", orientation: "Ouest", multiImagesEnabled: true, mode: "Portrait" },
+    settings: { mode: "Manuel" },
     parcel: { fruitType: "Pamplemousse", variety: "Marsh", rootstock: "Swingle", treeCount: 142, spacing: "7 m × 5 m" },
   },
   {
@@ -284,7 +274,7 @@ const ESTIMATION_DETAILS: EstimationDetailSeed[] = [
     pendingSyncImages: 0,
     failedSyncImages: 0,
     lastCaptureLabel: "—",
-    settings: { treePercentage: "7%", orientation: "Nord", multiImagesEnabled: false, mode: "Portrait" },
+    settings: { mode: "Manuel" },
     parcel: { fruitType: "Mandarine", variety: "Orri", rootstock: "Poncirus", treeCount: 388, spacing: "5 m × 4 m" },
   },
   {
@@ -292,7 +282,7 @@ const ESTIMATION_DETAILS: EstimationDetailSeed[] = [
     pendingSyncImages: 0,
     failedSyncImages: 0,
     lastCaptureLabel: "Il y a 10 min",
-    settings: { treePercentage: "5%", orientation: "Est", multiImagesEnabled: true, mode: "Paysage" },
+    settings: { mode: "Sur plan" },
     parcel: { fruitType: "Orange", variety: "Cara Cara", rootstock: "Bigaradier", treeCount: 198, spacing: "6 m × 3.5 m" },
   },
   {
@@ -300,7 +290,7 @@ const ESTIMATION_DETAILS: EstimationDetailSeed[] = [
     pendingSyncImages: 4,
     failedSyncImages: 0,
     lastCaptureLabel: "Il y a 50 min",
-    settings: { treePercentage: "6%", orientation: "Sud-Ouest", multiImagesEnabled: true, mode: "Portrait" },
+    settings: { mode: "Manuel" },
     parcel: { fruitType: "Citron", variety: "Interdonato", rootstock: "Citrus macrophylla", treeCount: 167, spacing: "5 m × 3 m" },
   },
   {
@@ -308,7 +298,7 @@ const ESTIMATION_DETAILS: EstimationDetailSeed[] = [
     pendingSyncImages: 0,
     failedSyncImages: 0,
     lastCaptureLabel: "—",
-    settings: { treePercentage: "8%", orientation: "Nord-Est", multiImagesEnabled: false, mode: "Portrait" },
+    settings: { mode: "Manuel" },
     parcel: { fruitType: "Orange", variety: "Washington Navel", rootstock: "Carrizo", treeCount: 312, spacing: "6 m × 4 m" },
   },
   {
@@ -316,7 +306,7 @@ const ESTIMATION_DETAILS: EstimationDetailSeed[] = [
     pendingSyncImages: 0,
     failedSyncImages: 0,
     lastCaptureLabel: "Il y a 35 min",
-    settings: { treePercentage: "5%", orientation: "Sud", multiImagesEnabled: true, mode: "Portrait" },
+    settings: { mode: "Manuel" },
     parcel: { fruitType: "Mandarine", variety: "Hernandina", rootstock: "Citrange Troyer", treeCount: 224, spacing: "5 m × 3.5 m" },
   },
   {
@@ -324,7 +314,7 @@ const ESTIMATION_DETAILS: EstimationDetailSeed[] = [
     pendingSyncImages: 2,
     failedSyncImages: 1,
     lastCaptureLabel: "Il y a 1 h 45 min",
-    settings: { treePercentage: "7%", orientation: "Ouest", multiImagesEnabled: true, mode: "Paysage" },
+    settings: { mode: "Sur plan" },
     parcel: { fruitType: "Citron", variety: "Primofiori", rootstock: "Citrange Carrizo", treeCount: 145, spacing: "4.5 m × 3 m" },
   },
   {
@@ -332,7 +322,7 @@ const ESTIMATION_DETAILS: EstimationDetailSeed[] = [
     pendingSyncImages: 0,
     failedSyncImages: 0,
     lastCaptureLabel: "—",
-    settings: { treePercentage: "6%", orientation: "Est", multiImagesEnabled: false, mode: "Portrait" },
+    settings: { mode: "Manuel" },
     parcel: { fruitType: "Orange", variety: "Navel Lane Late", rootstock: "Carrizo", treeCount: 258, spacing: "6 m × 4 m" },
   },
   {
@@ -340,7 +330,7 @@ const ESTIMATION_DETAILS: EstimationDetailSeed[] = [
     pendingSyncImages: 0,
     failedSyncImages: 0,
     lastCaptureLabel: "Il y a 5 h",
-    settings: { treePercentage: "10%", orientation: "Nord", multiImagesEnabled: true, mode: "Portrait" },
+    settings: { mode: "Manuel" },
     parcel: { fruitType: "Pamplemousse", variety: "Ruby Red", rootstock: "Swingle", treeCount: 110, spacing: "7 m × 5 m" },
   },
   {
@@ -348,8 +338,43 @@ const ESTIMATION_DETAILS: EstimationDetailSeed[] = [
     pendingSyncImages: 1,
     failedSyncImages: 0,
     lastCaptureLabel: "Il y a 20 min",
-    settings: { treePercentage: "5%", orientation: "Sud-Est", multiImagesEnabled: true, mode: "Portrait" },
+    settings: { mode: "Manuel" },
     parcel: { fruitType: "Mandarine", variety: "Tango", rootstock: "Poncirus", treeCount: 175, spacing: "5 m × 3 m" },
+  },
+];
+
+const CALIBRE_DETAILS: CalibreDetailSeed[] = [
+  {
+    id: "cal-20518-1",
+    pendingSyncImages: 44,
+    failedSyncImages: 0,
+    lastCaptureLabel: "Il y a 25 min",
+    settings: { mode: "Manuel" },
+    parcel: { fruitType: "Orange", variety: "Navel Late", rootstock: "Carrizo", treeCount: 286, spacing: "6 m × 4 m" },
+  },
+  {
+    id: "cal-20240-1",
+    pendingSyncImages: 0,
+    failedSyncImages: 0,
+    lastCaptureLabel: "Il y a 1 h",
+    settings: { mode: "Sur plan" },
+    parcel: { fruitType: "Citron", variety: "Eureka", rootstock: "Citrange Troyer", treeCount: 194, spacing: "5 m × 3 m" },
+  },
+  {
+    id: "cal-20410-2",
+    pendingSyncImages: 0,
+    failedSyncImages: 0,
+    lastCaptureLabel: "Il y a 3 h",
+    settings: { mode: "Manuel" },
+    parcel: { fruitType: "Mandarine", variety: "Nadorcott", rootstock: "Poncirus", treeCount: 248, spacing: "5 m × 3.5 m" },
+  },
+  {
+    id: "cal-20622-1",
+    pendingSyncImages: 28,
+    failedSyncImages: 1,
+    lastCaptureLabel: "Il y a 40 min",
+    settings: { mode: "Manuel" },
+    parcel: { fruitType: "Pamplemousse", variety: "Star Ruby", rootstock: "Swingle", treeCount: 132, spacing: "7 m × 5 m" },
   },
 ];
 
@@ -432,13 +457,17 @@ function sortTravailJobs(a: TravailJob, b: TravailJob): number {
   return a.displayTitle.localeCompare(b.displayTitle, "fr");
 }
 
-function getEstimationDetail(job: TravailJob): EstimationDetail {
-  const seed = ESTIMATION_DETAILS.find((d) => d.id === job.id);
+function getTravailJobDetail(job: TravailJob): TravailJobDetail {
+  const seed =
+    job.type === "calibre"
+      ? CALIBRE_DETAILS.find((d) => d.id === job.id)
+      : ESTIMATION_DETAILS.find((d) => d.id === job.id);
+
   return {
     pendingSyncImages: seed?.pendingSyncImages ?? 0,
     failedSyncImages: seed?.failedSyncImages ?? 0,
     lastCaptureLabel: seed?.lastCaptureLabel ?? "—",
-    settings: seed?.settings ?? { treePercentage: "5%", orientation: "Est", multiImagesEnabled: true, mode: "Portrait" },
+    settings: seed?.settings ?? { mode: "Manuel" },
     parcel: seed?.parcel ?? { fruitType: "—", variety: "—", rootstock: "—", treeCount: 0, spacing: "—" },
   };
 }
@@ -451,13 +480,11 @@ function normalizeSearchValue(value: string): string {
 }
 
 function buildGalleryImages(job: TravailJob) {
-  const sources = [GALLERY_IMAGE_A, GALLERY_IMAGE_B, GALLERY_IMAGE_C, GALLERY_IMAGE_D];
   const count = Math.max(job.capturedImages, 12);
   return {
     dateLabel: "03 déc. 2024",
     images: Array.from({ length: count }, (_, i) => ({
       id: `${job.id}-${i + 1}`,
-      src: sources[i % sources.length],
       synced: i < job.syncedImages,
       alt: `${job.displayTitle} capture ${i + 1}`,
     })),
@@ -484,7 +511,7 @@ function shouldOpenDetailForPreview(previewState?: TravailPreviewState): boolean
   );
 }
 
-function getPreviewDetailTab(previewState?: TravailPreviewState): EstimationDetailTab {
+function getPreviewDetailTab(previewState?: TravailPreviewState): TravailDetailTab {
   if (previewState === "detail-map") {
     return "map";
   }
@@ -534,8 +561,8 @@ export function WorkerAppTravailPage({
     return null;
   }, [previewJob, previewState]);
 
-  const [selectedEstimationJob, setSelectedEstimationJob] = useState<TravailJob | null>(initialJob);
-  const [activeDetailTab, setActiveDetailTab] = useState<EstimationDetailTab>(getPreviewDetailTab(previewState));
+  const [selectedTravailJob, setSelectedTravailJob] = useState<TravailJob | null>(initialJob);
+  const [activeDetailTab, setActiveDetailTab] = useState<TravailDetailTab>(getPreviewDetailTab(previewState));
   const [galleryFilter, setGalleryFilter] = useState<GalleryFilter>("all");
   const [mapFocus, setMapFocus] = useState<MapFocus>("all");
   const [mapOverlay, setMapOverlay] = useState<MapOverlay>("points");
@@ -543,11 +570,11 @@ export function WorkerAppTravailPage({
   const [isCameraDemoOpen, setIsCameraDemoOpen] = useState(false);
   const [isDetailScrolled, setIsDetailScrolled] = useState(false);
   const [isParcelleSheetOpen, setIsParcelleSheetOpen] = useState(false);
-  const [isEstimationConfigSheetOpen, setIsEstimationConfigSheetOpen] = useState(false);
+  const [isJobConfigSheetOpen, setIsJobConfigSheetOpen] = useState(false);
   const detailContentRef = useRef<HTMLDivElement>(null);
   const syncState = syncStates[syncStateIndex];
   const isOffline = syncState.offline;
-  const isMapDetail = Boolean(selectedEstimationJob && activeDetailTab === "map");
+  const isMapDetail = Boolean(selectedTravailJob?.type === "estimation" && activeDetailTab === "map");
   const previewSearchQuery = getPreviewSearchQuery(previewState);
 
 
@@ -601,19 +628,19 @@ export function WorkerAppTravailPage({
     todayIso,
   ]);
   const listJobs = useMemo(() => {
-    if (!previewJobId || selectedEstimationJob) {
+    if (!previewJobId || selectedTravailJob) {
       return visibleJobs;
     }
 
     const matchedJob = visibleJobs.find((job) => job.id === previewJobId);
     return matchedJob ? [matchedJob] : visibleJobs;
-  }, [previewJobId, selectedEstimationJob, visibleJobs]);
+  }, [previewJobId, selectedTravailJob, visibleJobs]);
   const searchVisibleJobs = useMemo(() => {
     const normalizedQuery = normalizeSearchValue(searchQuery.trim());
     if (normalizedQuery.length === 0) return [];
 
     return visibleJobs.filter((job) => {
-      const detail = getEstimationDetail(job);
+      const detail = getTravailJobDetail(job);
       return normalizeSearchValue(
         `${job.displayTitle} ${job.displayMeta} ${job.sectorName} ${job.statusLabel} ${detail.parcel.fruitType} ${detail.parcel.variety}`
       ).includes(normalizedQuery);
@@ -627,32 +654,32 @@ export function WorkerAppTravailPage({
     }),
     [jobs]
   );
-  const selectedEstimationDetail = selectedEstimationJob
-    ? getEstimationDetail(selectedEstimationJob)
+  const selectedTravailJobDetail = selectedTravailJob
+    ? getTravailJobDetail(selectedTravailJob)
     : null;
   const progressionStats =
-    selectedEstimationJob && selectedEstimationDetail
+    selectedTravailJob && selectedTravailJobDetail
       ? {
           syncedImages: Math.max(
-            selectedEstimationJob.capturedImages - selectedEstimationDetail.pendingSyncImages,
+            selectedTravailJob.capturedImages - selectedTravailJobDetail.pendingSyncImages,
             0
           ),
-          uncapturedImages: selectedEstimationJob.remainingImages,
-          unsyncedImages: selectedEstimationDetail.pendingSyncImages,
-          progressPercentage: Math.round(selectedEstimationJob.progressRatio * 100),
+          uncapturedImages: selectedTravailJob.remainingImages,
+          unsyncedImages: selectedTravailJobDetail.pendingSyncImages,
+          progressPercentage: Math.round(selectedTravailJob.progressRatio * 100),
         }
       : null;
-  const selectedEstimationDueMeta = selectedEstimationJob
+  const selectedTravailDueMeta = selectedTravailJob
     ? (() => {
-        const dueTime = parseIsoDateToTime(selectedEstimationJob.dueDate);
+        const dueTime = parseIsoDateToTime(selectedTravailJob.dueDate);
         const todayTime = parseIsoDateToTime(todayIso);
         const daysUntilDue = Math.ceil((dueTime - todayTime) / 86400000);
-        const isOverdue = selectedEstimationJob.status !== "done" && daysUntilDue < 0;
-        const isDueSoon = selectedEstimationJob.status !== "done" && daysUntilDue >= 0 && daysUntilDue <= 3;
-        const isLockedUntilDate = selectedEstimationJob.status === "notStarted" && daysUntilDue > 0;
+        const isOverdue = selectedTravailJob.status !== "done" && daysUntilDue < 0;
+        const isDueSoon = selectedTravailJob.status !== "done" && daysUntilDue >= 0 && daysUntilDue <= 3;
+        const isLockedUntilDate = selectedTravailJob.status === "notStarted" && daysUntilDue > 0;
         const daysLate = Math.abs(daysUntilDue);
         const dueBadgeLabel =
-          selectedEstimationJob.status === "done"
+          selectedTravailJob.status === "done"
             ? null
             : isLockedUntilDate
               ? `dans ${daysUntilDue} j`
@@ -660,13 +687,13 @@ export function WorkerAppTravailPage({
                 ? `${daysLate} j retard`
                 : `${Math.max(daysUntilDue, 0)} j restants`;
         const dueText = isLockedUntilDate
-          ? `Début ${formatShortDateFr(selectedEstimationJob.dueDate)}`
-          : selectedEstimationJob.dueLabel.replace("Fin : ", "Fin ");
+          ? `Début ${formatShortDateFr(selectedTravailJob.dueDate)}`
+          : selectedTravailJob.dueLabel.replace("Fin : ", "Fin ");
 
         return { dueText, dueBadgeLabel, isOverdue, isDueSoon };
       })()
     : null;
-  const galleryData = selectedEstimationJob ? buildGalleryImages(selectedEstimationJob) : null;
+  const galleryData = selectedTravailJob ? buildGalleryImages(selectedTravailJob) : null;
   const visibleGalleryImages = useMemo(() => {
     if (!galleryData) return [];
     return galleryData.images.filter((image) => {
@@ -675,23 +702,34 @@ export function WorkerAppTravailPage({
       return true;
     });
   }, [galleryData, galleryFilter]);
+  const selectedJobTypeLabel = selectedTravailJob?.type === "calibre" ? "Calibre" : "Estimation";
+  const selectedJobConfigTitle =
+    selectedTravailJob?.type === "calibre" ? "Configuration calibre" : "Configuration estimation";
+  const selectedJobModeLabel = selectedTravailJobDetail?.settings.mode ?? "Manuel";
+  const detailTabs = [
+    { key: "overview" as TravailDetailTab, label: "Aperçu", icon: "overview_key" },
+    ...(selectedTravailJob?.type === "estimation"
+      ? [{ key: "map" as TravailDetailTab, label: "Carte", icon: "map" }]
+      : []),
+    { key: "gallery" as TravailDetailTab, label: "Galerie", icon: "image" },
+  ];
   const detailHeaderTitle =
     activeDetailTab === "gallery"
       ? "Galerie"
       : activeDetailTab === "map"
         ? "Carte"
-        : selectedEstimationJob?.displayTitle ?? "";
+        : selectedTravailJob?.displayTitle ?? "";
   const detailHeaderSubtitle =
     activeDetailTab === "gallery"
-      ? `${galleryData?.images.length ?? 0} images • Estimation ${selectedEstimationJob?.year} #${
-          selectedEstimationJob?.yearlySequence
-        } • ${selectedEstimationJob?.sectorName ?? ""}`
-      : activeDetailTab === "map"
-        ? `${selectedEstimationJob?.displayTitle ?? ""} • Estimation ${selectedEstimationJob?.year} #${
-            selectedEstimationJob?.yearlySequence
-          } • ${selectedEstimationJob?.sectorName ?? ""}`
-      : `Estimation ${selectedEstimationJob?.year} • #${selectedEstimationJob?.yearlySequence} • ${
-          selectedEstimationJob?.sectorName ?? ""
+      ? `${galleryData?.images.length ?? 0} images • ${selectedJobTypeLabel} ${selectedTravailJob?.year} #${
+          selectedTravailJob?.yearlySequence
+        } • ${selectedTravailJob?.sectorName ?? ""}`
+    : activeDetailTab === "map"
+        ? `${selectedTravailJob?.displayTitle ?? ""} • Estimation ${selectedTravailJob?.year} #${
+            selectedTravailJob?.yearlySequence
+          } • ${selectedTravailJob?.sectorName ?? ""}`
+      : `${selectedJobTypeLabel} ${selectedTravailJob?.year} • #${selectedTravailJob?.yearlySequence} • ${
+          selectedTravailJob?.sectorName ?? ""
         }`;
   const renderStatusBadge = (job: TravailJob) => (
     <span
@@ -733,8 +771,8 @@ export function WorkerAppTravailPage({
     </div>
   );
 
-  const openEstimationDetail = (job: TravailJob) => {
-    setSelectedEstimationJob(job);
+  const openTravailDetail = (job: TravailJob) => {
+    setSelectedTravailJob(job);
     setActiveDetailTab("overview");
     setGalleryFilter("all");
     setMapFocus("all");
@@ -742,11 +780,11 @@ export function WorkerAppTravailPage({
     setIsMapLayersSheetOpen(false);
     setIsCameraDemoOpen(false);
     setIsParcelleSheetOpen(false);
-    setIsEstimationConfigSheetOpen(false);
+    setIsJobConfigSheetOpen(false);
   };
 
-  const closeEstimationDetail = () => {
-    setSelectedEstimationJob(null);
+  const closeTravailDetail = () => {
+    setSelectedTravailJob(null);
     setActiveDetailTab("overview");
     setGalleryFilter("all");
     setMapFocus("all");
@@ -754,7 +792,7 @@ export function WorkerAppTravailPage({
     setIsMapLayersSheetOpen(false);
     setIsCameraDemoOpen(false);
     setIsParcelleSheetOpen(false);
-    setIsEstimationConfigSheetOpen(false);
+    setIsJobConfigSheetOpen(false);
   };
 
   const handleDetailScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
@@ -762,7 +800,7 @@ export function WorkerAppTravailPage({
   }, []);
 
   const handleDetailBack = useCallback(() => {
-    closeEstimationDetail();
+    closeTravailDetail();
   }, []);
 
   const closeSearch = useCallback(() => {
@@ -793,7 +831,7 @@ export function WorkerAppTravailPage({
     setSelectedDueFilters(showActiveFilters ? ["overdue", "today"] : []);
     setSelectedEstimationFilters(showActiveFilters ? [1, 2] : []);
     setSelectedSectorFilters(showActiveFilters ? ["Secteur S1", "Secteur S4"] : []);
-    setSelectedEstimationJob(shouldOpenDetailForPreview(previewState) ? previewJob : null);
+    setSelectedTravailJob(shouldOpenDetailForPreview(previewState) ? previewJob : null);
     setActiveDetailTab(getPreviewDetailTab(previewState));
     setGalleryFilter("all");
     setMapFocus("all");
@@ -802,12 +840,19 @@ export function WorkerAppTravailPage({
     setIsCameraDemoOpen(false);
     setIsDetailScrolled(false);
     setIsParcelleSheetOpen(previewState === "detail-sheet-parcel");
-    setIsEstimationConfigSheetOpen(previewState === "detail-sheet-config");
+    setIsJobConfigSheetOpen(previewState === "detail-sheet-config");
   }, [isInteractive, previewJob, previewSearchQuery, previewState]);
 
   useEffect(() => {
-    onLayoutModeChange?.(selectedEstimationJob ? "fullScreen" : "default");
-  }, [onLayoutModeChange, selectedEstimationJob]);
+    onLayoutModeChange?.(selectedTravailJob ? "fullScreen" : "default");
+  }, [onLayoutModeChange, selectedTravailJob]);
+
+  useEffect(() => {
+    if (selectedTravailJob?.type === "calibre" && activeDetailTab === "map") {
+      setActiveDetailTab("overview");
+      setIsMapLayersSheetOpen(false);
+    }
+  }, [activeDetailTab, selectedTravailJob]);
 
   const content = (
     <>
@@ -817,7 +862,7 @@ export function WorkerAppTravailPage({
             Hors ligne — les modifications seront synchronisées à la reconnexion
           </div>
         )}
-        {selectedEstimationJob && selectedEstimationDetail ? (
+        {selectedTravailJob && selectedTravailJobDetail ? (
           <>
             {isDetailScrolled && (
                   <div className={styles.travailDetailStickyBar} aria-hidden="true">
@@ -830,10 +875,10 @@ export function WorkerAppTravailPage({
                       <span aria-hidden="true">arrow_back</span>
                     </button>
                     <span className={styles.travailDetailStickyTitle}>
-                      {selectedEstimationJob.displayTitle}
+                      {selectedTravailJob.displayTitle}
                     </span>
                     <span className={styles.travailDetailStickyProgress}>
-                      {selectedEstimationJob.capturedImages}/{selectedEstimationJob.targetImages}
+                      {selectedTravailJob.capturedImages}/{selectedTravailJob.targetImages}
                     </span>
                   </div>
                 )}
@@ -841,7 +886,7 @@ export function WorkerAppTravailPage({
                   ref={detailContentRef}
                   onScroll={handleDetailScroll}
                   className={`${styles.secteursContent} ${styles.travailContent} ${styles.travailDetailContent} ${
-                    activeDetailTab === "map" ? styles.travailDetailContentMap : ""
+                    selectedTravailJob.type === "estimation" && activeDetailTab === "map" ? styles.travailDetailContentMap : ""
                   }`}
                 >
                   {/* Header */}
@@ -859,7 +904,7 @@ export function WorkerAppTravailPage({
                       <h2 className={styles.posteDetailHeaderTitle}>{detailHeaderTitle}</h2>
                       <p className={styles.posteDetailHeaderLocation}>
                         {activeDetailTab === "overview"
-                          ? selectedEstimationJob?.displayMeta ?? ""
+                          ? selectedTravailJob?.displayMeta ?? ""
                           : detailHeaderSubtitle}
                       </p>
                     </div>
@@ -880,15 +925,15 @@ export function WorkerAppTravailPage({
                                 aria-hidden="true"
                                 style={{
                                   background: `conic-gradient(
-                                    var(--ds-brand) 0deg ${selectedEstimationJob.progressRatio * 360}deg,
-                                    #f59e0b ${selectedEstimationJob.progressRatio * 360}deg ${
-                                      (selectedEstimationJob.progressRatio +
-                                        progressionStats.unsyncedImages / selectedEstimationJob.targetImages) *
+                                    var(--ds-brand) 0deg ${selectedTravailJob.progressRatio * 360}deg,
+                                    #f59e0b ${selectedTravailJob.progressRatio * 360}deg ${
+                                      (selectedTravailJob.progressRatio +
+                                        progressionStats.unsyncedImages / selectedTravailJob.targetImages) *
                                       360
                                     }deg,
                                     #eaeaea ${
-                                      (selectedEstimationJob.progressRatio +
-                                        progressionStats.unsyncedImages / selectedEstimationJob.targetImages) *
+                                      (selectedTravailJob.progressRatio +
+                                        progressionStats.unsyncedImages / selectedTravailJob.targetImages) *
                                       360
                                     }deg 360deg
                                   )`,
@@ -896,7 +941,7 @@ export function WorkerAppTravailPage({
                               >
                                 <div className={styles.travailProgressDonutInner}>
                                   <span className={styles.travailProgressDonutCount}>
-                                    {selectedEstimationJob.capturedImages}/{selectedEstimationJob.targetImages}
+                                    {selectedTravailJob.capturedImages}/{selectedTravailJob.targetImages}
                                   </span>
                                   <span className={styles.travailProgressDonutLabel}>captures</span>
                                 </div>
@@ -911,7 +956,7 @@ export function WorkerAppTravailPage({
                                   },
                                   {
                                     label: "Non Synchronisées",
-                                    value: selectedEstimationDetail.pendingSyncImages,
+                                    value: selectedTravailJobDetail.pendingSyncImages,
                                     dotClass: styles.travailProgressLegendDotPending,
                                   },
                                   {
@@ -933,12 +978,12 @@ export function WorkerAppTravailPage({
 
                                 <div className={styles.travailProgressRightRow}>
                                   <span className={styles.travailProgressRightMeta}>Dernière capture</span>
-                                  <span className={styles.travailProgressRightMeta}>{selectedEstimationDetail.lastCaptureLabel}</span>
+                                  <span className={styles.travailProgressRightMeta}>{selectedTravailJobDetail.lastCaptureLabel}</span>
                                 </div>
                               </div>
                             </div>
 
-                            {selectedEstimationJob.status === "done" && (
+                            {selectedTravailJob.status === "done" && (
                               <div className={styles.travailDetailDoneNote}>
                                 <span aria-hidden="true">check_circle</span>
                                 Toutes les captures sont complétées
@@ -954,39 +999,39 @@ export function WorkerAppTravailPage({
                         <div className={styles.posteConfigCard}>
                           {renderDetailRows([
                             {
-                              label: "Estimation",
-                              value: `Estimation ${selectedEstimationJob.year} #${selectedEstimationJob.yearlySequence}`,
+                              label: selectedJobTypeLabel,
+                              value: `${selectedJobTypeLabel} ${selectedTravailJob.year} #${selectedTravailJob.yearlySequence}`,
                             },
                           ])}
-                          {selectedEstimationDueMeta ? (
+                          {selectedTravailDueMeta ? (
                             <div className={styles.travailDetailRow}>
                               <span className={styles.travailDetailLabel}>Échéance</span>
                               <div className={styles.travailDetailDueValue}>
                                 <div className={styles.travailJobDueRow}>
                                   <div
                                     className={`${styles.travailJobDueChip} ${
-                                      selectedEstimationDueMeta.isOverdue
+                                      selectedTravailDueMeta.isOverdue
                                         ? styles.travailJobDueChipUrgent
-                                        : selectedEstimationDueMeta.isDueSoon
+                                        : selectedTravailDueMeta.isDueSoon
                                           ? styles.travailJobDueChipSoon
                                           : ""
                                     }`}
                                   >
                                     <span className={styles.travailJobDueLabel}>
-                                      {selectedEstimationDueMeta.dueText}
+                                      {selectedTravailDueMeta.dueText}
                                     </span>
                                   </div>
-                                  {selectedEstimationDueMeta.dueBadgeLabel ? (
+                                  {selectedTravailDueMeta.dueBadgeLabel ? (
                                     <span
                                       className={`${styles.travailJobDueBadge} ${
-                                        selectedEstimationDueMeta.isOverdue
+                                        selectedTravailDueMeta.isOverdue
                                           ? styles.travailJobDueBadgeUrgent
-                                          : selectedEstimationDueMeta.isDueSoon
+                                          : selectedTravailDueMeta.isDueSoon
                                             ? styles.travailJobDueBadgeSoon
                                             : ""
                                       }`}
                                     >
-                                      {selectedEstimationDueMeta.dueBadgeLabel}
+                                      {selectedTravailDueMeta.dueBadgeLabel}
                                     </span>
                                   ) : null}
                                 </div>
@@ -995,7 +1040,7 @@ export function WorkerAppTravailPage({
                           ) : null}
                           <div className={styles.travailDetailStatusRow}>
                             <span className={styles.travailDetailLabel}>Statut</span>
-                            {renderStatusBadge(selectedEstimationJob)}
+                            {renderStatusBadge(selectedTravailJob)}
                           </div>
                           <div className={styles.travailDetailDivider} />
                           <button
@@ -1008,38 +1053,47 @@ export function WorkerAppTravailPage({
                               <span>crop</span>
                             </div>
                             <div className={styles.travailParcelleNavText}>
-                              <strong>{selectedEstimationJob.displayTitle}</strong>
+                              <strong>{selectedTravailJob.displayTitle}</strong>
                               <span>
-                                {selectedEstimationDetail.parcel.fruitType} • {selectedEstimationDetail.parcel.variety} •{" "}
-                                {selectedEstimationDetail.parcel.treeCount} arbres
+                                {selectedTravailJobDetail.parcel.fruitType} • {selectedTravailJobDetail.parcel.variety} •{" "}
+                                {selectedTravailJobDetail.parcel.treeCount} arbres
                               </span>
                             </div>
                             <span className={styles.travailParcelleNavChevron} aria-hidden="true">chevron_right</span>
                           </button>
                           <div className={styles.travailDetailDivider} />
-                          <button
-                            type="button"
-                            className={styles.travailParcelleNavInline}
-                            onClick={() => setIsEstimationConfigSheetOpen(true)}
-                            aria-label="Ouvrir la configuration estimation"
-                          >
-                            <div className={styles.travailParcelleNavIcon} aria-hidden="true">
-                              <span>tune</span>
-                            </div>
-                            <div className={styles.travailParcelleNavText}>
-                              <strong>Configuration estimation</strong>
-                              <span>
-                                {selectedEstimationDetail.settings.treePercentage} • {selectedEstimationDetail.settings.orientation} •{" "}
-                                {selectedEstimationDetail.settings.mode}
-                              </span>
-                            </div>
-                            <span className={styles.travailParcelleNavChevron} aria-hidden="true">chevron_right</span>
-                          </button>
+                          {selectedTravailJob.type === "estimation" ? (
+                              <button
+                                type="button"
+                                className={styles.travailParcelleNavInline}
+                                onClick={() => setIsJobConfigSheetOpen(true)}
+                                aria-label={`Ouvrir la ${selectedJobConfigTitle.toLocaleLowerCase("fr-FR")}`}
+                              >
+                                <div className={styles.travailParcelleNavIcon} aria-hidden="true">
+                                  <span>tune</span>
+                                </div>
+                                <div className={styles.travailParcelleNavText}>
+                                  <strong>{selectedJobConfigTitle}</strong>
+                                  <span>{selectedTravailJobDetail.settings.mode}</span>
+                                </div>
+                                <span className={styles.travailParcelleNavChevron} aria-hidden="true">chevron_right</span>
+                              </button>
+                          ) : (
+                              <div className={styles.travailParcelleInfoInline}>
+                                <div className={styles.travailParcelleNavIcon} aria-hidden="true">
+                                  <span>tune</span>
+                                </div>
+                                <div className={styles.travailParcelleNavText}>
+                                  <strong>{selectedJobConfigTitle}</strong>
+                                  <span>{selectedTravailJobDetail.settings.mode}</span>
+                                </div>
+                              </div>
+                          )}
                         </div>
                       </section>
 
                     </>
-                  ) : activeDetailTab === "map" ? (
+                  ) : activeDetailTab === "map" && selectedTravailJob.type === "estimation" ? (
                     <section className={styles.travailMapSection}>
                       <div className={styles.travailMapView}>
                         {isInteractive ? (
@@ -1061,7 +1115,7 @@ export function WorkerAppTravailPage({
                           </button>
                           <div className={styles.travailMapTopTitle}>
                             <strong>Carte parcelle</strong>
-                            <span>{selectedEstimationJob.displayTitle}</span>
+                            <span>{selectedTravailJob.displayTitle}</span>
                           </div>
                         </div>
                         <div className={styles.travailMapOverlayTop}>
@@ -1120,7 +1174,9 @@ export function WorkerAppTravailPage({
                       <div className={styles.travailGalleryGrid}>
                         {visibleGalleryImages.map((image) => (
                           <div key={image.id} className={styles.travailGalleryCard}>
-                            <img src={image.src} alt={image.alt} className={styles.travailGalleryImage} />
+                            <div className={styles.travailGalleryImagePlaceholder} role="img" aria-label={image.alt}>
+                              <span aria-hidden="true">image</span>
+                            </div>
                             <div className={styles.travailGalleryBadge} aria-hidden="true">
                               <span>{image.synced ? "cloud_done" : "cloud_off"}</span>
                             </div>
@@ -1132,13 +1188,9 @@ export function WorkerAppTravailPage({
                 </div>
 
                 {!isParcelleSheetOpen ? (
-                <div className={styles.travailDetailFloatingBar} aria-label="Actions estimation">
-                  <div className={styles.travailDetailViewTabs} role="tablist" aria-label="Vue estimation">
-                    {[
-                      { key: "overview", label: "Aperçu", icon: "overview_key" },
-                      { key: "map", label: "Carte", icon: "map" },
-                      { key: "gallery", label: "Galerie", icon: "image" },
-                    ].map((tab) => (
+                <div className={styles.travailDetailFloatingBar} aria-label={`Actions ${selectedJobTypeLabel.toLocaleLowerCase("fr-FR")}`}>
+                  <div className={styles.travailDetailViewTabs} role="tablist" aria-label={`Vue ${selectedJobTypeLabel.toLocaleLowerCase("fr-FR")}`}>
+                    {detailTabs.map((tab) => (
                       <button
                         key={tab.key}
                         className={`${styles.travailDetailViewTab} ${
@@ -1147,7 +1199,7 @@ export function WorkerAppTravailPage({
                         type="button"
                         role="tab"
                         aria-selected={activeDetailTab === tab.key}
-                        onClick={() => setActiveDetailTab(tab.key as EstimationDetailTab)}
+                        onClick={() => setActiveDetailTab(tab.key as TravailDetailTab)}
                       >
                         <span className={styles.travailDetailViewIcon} aria-hidden="true">
                           {tab.icon}
@@ -1167,7 +1219,7 @@ export function WorkerAppTravailPage({
                 </div>
                 ) : null}
 
-                {isMapLayersSheetOpen ? (
+                {isMapLayersSheetOpen && selectedTravailJob.type === "estimation" ? (
                   <div
                     className={styles.travailMapLayersSheetOverlay}
                     role="dialog"
@@ -1183,7 +1235,7 @@ export function WorkerAppTravailPage({
                       <div className={styles.travailMapLayersHeader}>
                         <div>
                           <h3>Couches de carte</h3>
-                          <p>{selectedEstimationJob.displayTitle}</p>
+                          <p>{selectedTravailJob.displayTitle}</p>
                         </div>
                         <button
                           type="button"
@@ -1231,20 +1283,20 @@ export function WorkerAppTravailPage({
                           <span>crop</span>
                         </div>
                         <div className={styles.travailParcelleSheetHeaderText}>
-                          <h3>{selectedEstimationJob.displayTitle}</h3>
-                          <p>{selectedEstimationDetail.parcel.fruitType} · {selectedEstimationDetail.parcel.variety}</p>
+                          <h3>{selectedTravailJob.displayTitle}</h3>
+                          <p>{selectedTravailJobDetail.parcel.fruitType} · {selectedTravailJobDetail.parcel.variety}</p>
                         </div>
                       </div>
                       <div className={styles.travailParcelleSheetDivider} aria-hidden="true" />
                       <div className={styles.travailParcelleSheetRows}>
                         {[
                           { label: "Domaine", value: "Arboriculteur", icon: "domain" },
-                          { label: "Type de fruit", value: selectedEstimationDetail.parcel.fruitType, icon: "spa" },
-                          { label: "Variété", value: selectedEstimationDetail.parcel.variety, icon: "eco" },
-                          { label: "Porte-greffe", value: selectedEstimationDetail.parcel.rootstock, icon: "agriculture" },
-                          { label: "Nombre d’arbres", value: selectedEstimationDetail.parcel.treeCount.toLocaleString("fr-FR"), icon: "park" },
-                          { label: "Espacement", value: selectedEstimationDetail.parcel.spacing, icon: "straighten" },
-                          { label: "Secteur", value: selectedEstimationJob.sectorName, icon: "map" },
+                          { label: "Type de fruit", value: selectedTravailJobDetail.parcel.fruitType, icon: "spa" },
+                          { label: "Variété", value: selectedTravailJobDetail.parcel.variety, icon: "eco" },
+                          { label: "Porte-greffe", value: selectedTravailJobDetail.parcel.rootstock, icon: "agriculture" },
+                          { label: "Nombre d’arbres", value: selectedTravailJobDetail.parcel.treeCount.toLocaleString("fr-FR"), icon: "park" },
+                          { label: "Espacement", value: selectedTravailJobDetail.parcel.spacing, icon: "straighten" },
+                          { label: "Secteur", value: selectedTravailJob.sectorName, icon: "map" },
                           { label: "Région", value: "Cap Bon", icon: "location_on" },
                         ].map((item) => (
                           <div key={item.label} className={styles.travailParcelleSheetRow}>
@@ -1257,13 +1309,13 @@ export function WorkerAppTravailPage({
                     </div>
                   </div>
                 ) : null}
-                {isEstimationConfigSheetOpen ? (
+                {isJobConfigSheetOpen ? (
                   <div
                     className={styles.travailParcelleSheetOverlay}
                     role="dialog"
                     aria-modal="true"
-                    aria-label="Configuration estimation"
-                    onClick={() => setIsEstimationConfigSheetOpen(false)}
+                    aria-label={selectedJobConfigTitle}
+                    onClick={() => setIsJobConfigSheetOpen(false)}
                   >
                     <div
                       className={styles.travailParcelleSheet}
@@ -1275,22 +1327,15 @@ export function WorkerAppTravailPage({
                           <span>tune</span>
                         </div>
                         <div className={styles.travailParcelleSheetHeaderText}>
-                          <h3>Estimation configuration</h3>
-                          <p>{selectedEstimationJob.displayTitle}</p>
+                          <h3>{selectedJobConfigTitle}</h3>
+                          <p>{selectedTravailJob.displayTitle}</p>
                         </div>
                         <span className={styles.travailParcelleSheetTag}>Capture</span>
                       </div>
                       <div className={styles.travailParcelleSheetDivider} aria-hidden="true" />
                       <div className={styles.travailParcelleSheetRows}>
                         {[
-                          { label: "Pourcentage d’arbres", value: selectedEstimationDetail.settings.treePercentage, icon: "percent" },
-                          { label: "Orientation", value: selectedEstimationDetail.settings.orientation, icon: "explore" },
-                          {
-                            label: "Multi-images",
-                            value: selectedEstimationDetail.settings.multiImagesEnabled ? "Activé" : "Désactivé",
-                            icon: "photo_library",
-                          },
-                          { label: "Mode", value: selectedEstimationDetail.settings.mode, icon: "crop_portrait" },
+                          { label: "Mode de capture", value: selectedTravailJobDetail.settings.mode, icon: "touch_app" },
                         ].map((item) => (
                           <div key={item.label} className={styles.travailParcelleSheetRow}>
                             <span className={styles.travailParcelleSheetRowIcon} aria-hidden="true">{item.icon}</span>
@@ -1315,7 +1360,7 @@ export function WorkerAppTravailPage({
                       </button>
                       <div className={styles.travailCameraHeaderText}>
                         <h3>Caméra</h3>
-                        <p>{selectedEstimationJob.displayTitle}</p>
+                        <p>{selectedTravailJob.displayTitle}</p>
                       </div>
                     </div>
                     <div className={styles.travailCameraPreview}>
@@ -1328,12 +1373,12 @@ export function WorkerAppTravailPage({
                       </div>
                     </div>
                     <div className={styles.travailCameraFooter}>
-                      <span className={styles.travailCameraMode}>Portrait</span>
+                      <span className={styles.travailCameraMode}>{selectedJobModeLabel}</span>
                       <button className={styles.travailCameraShutter} type="button" aria-label="Capturer">
                         <span />
                       </button>
                       <span className={styles.travailCameraMode}>
-                        {selectedEstimationJob.capturedImages} / {selectedEstimationJob.targetImages}
+                        {selectedTravailJob.capturedImages} / {selectedTravailJob.targetImages}
                       </span>
                     </div>
                   </div>
@@ -1468,7 +1513,7 @@ export function WorkerAppTravailPage({
               {searchScreenJobs.length > 0 ? (
                 <div className={styles.travailSearchResultsList}>
                   {searchScreenJobs.map((job) => {
-                    const detail = getEstimationDetail(job);
+                    const detail = getTravailJobDetail(job);
                     const searchItemLockedUntilDate =
                       job.status === "notStarted" &&
                       parseIsoDateToTime(job.dueDate) > parseIsoDateToTime(todayIso);
@@ -1481,9 +1526,9 @@ export function WorkerAppTravailPage({
                         type="button"
                         className={styles.travailSearchListItem}
                         onClick={() => {
-                          if (job.type === "estimation" && !searchItemLockedUntilDate) {
+                          if (!searchItemLockedUntilDate) {
                             setIsSearchOpen(false);
-                            openEstimationDetail(job);
+                            openTravailDetail(job);
                           }
                         }}
                       >
@@ -1524,7 +1569,7 @@ export function WorkerAppTravailPage({
                       <button
                         key={job.id}
                         type="button"
-                        className={`${styles.posteCard} ${styles.travailJobCard} ${job.type === "estimation" && !isLockedUntilDate ? styles.travailJobCardClickable : ""} ${
+                        className={`${styles.posteCard} ${styles.travailJobCard} ${!isLockedUntilDate ? styles.travailJobCardClickable : ""} ${
                           isLockedUntilDate ? styles.travailJobCardLocked : ""
                         } ${
                           isOverdue
@@ -1536,9 +1581,9 @@ export function WorkerAppTravailPage({
                                 : ""
                         }`}
                         onClick={() => {
-                          if (job.type === "estimation" && !isLockedUntilDate) {
+                          if (!isLockedUntilDate) {
                             setIsSearchOpen(false);
-                            openEstimationDetail(job);
+                            openTravailDetail(job);
                           }
                         }}
                       >
@@ -1705,7 +1750,7 @@ export function WorkerAppTravailPage({
                   <button
                     key={job.id}
                     type="button"
-                    className={`${styles.posteCard} ${styles.travailJobCard} ${job.type === "estimation" && !isLockedUntilDate ? styles.travailJobCardClickable : ""} ${
+                    className={`${styles.posteCard} ${styles.travailJobCard} ${!isLockedUntilDate ? styles.travailJobCardClickable : ""} ${
                       isLockedUntilDate ? styles.travailJobCardLocked : ""
                     } ${
                       isOverdue
@@ -1717,7 +1762,7 @@ export function WorkerAppTravailPage({
                             : ""
                     }`}
                     onClick={() => {
-                      if (job.type === "estimation" && !isLockedUntilDate) openEstimationDetail(job);
+                      if (!isLockedUntilDate) openTravailDetail(job);
                     }}
                   >
                     <div className={styles.travailJobCardHeader}>
@@ -2001,12 +2046,12 @@ export function WorkerAppTravailPage({
       >
         <WorkerAppStatusBar theme={isMapDetail ? "dark" : theme} transparent={isMapDetail} />
         {content}
-        {selectedEstimationJob || isTravailFiltersSheetOpen || isEstimationConfigSheetOpen || isSearchOpen ? null : (
+        {selectedTravailJob || isTravailFiltersSheetOpen || isJobConfigSheetOpen || isSearchOpen ? null : (
           <WorkerAppHomeBottomBarScreen activeIndex={1} />
         )}
-        {isTravailFiltersSheetOpen || isEstimationConfigSheetOpen ? null : (
+        {isTravailFiltersSheetOpen || isJobConfigSheetOpen ? null : (
           <WorkerAppNavigationScreen
-            surface={isSearchOpen || selectedEstimationJob ? "page" : "default"}
+            surface={isSearchOpen || selectedTravailJob ? "page" : "default"}
           />
         )}
       </div>
