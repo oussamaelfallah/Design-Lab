@@ -1641,6 +1641,95 @@
   justify-content: flex-start;
 }
 
+.homeMasterShellGrid {
+  align-items: flex-start;
+}
+
+.homeMasterShellMetaCard {
+  display: flex;
+  min-height: 84px;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.homeComponentMatrix {
+  --home-component-width: 358px;
+  margin-top: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+}
+
+.homeComponentMatrixRow {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.homeComponentMatrixRow h4 {
+  margin: 0;
+  color: var(--canvas-title);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.homeComponentMatrixScroller {
+  display: flex;
+  align-items: flex-start;
+  gap: 40px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.homeComponentMatrixItem {
+  flex: 0 0 var(--home-component-width);
+  width: var(--home-component-width);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.homeComponentMetaCard {
+  width: 100%;
+  min-height: 88px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+  padding: 10px 12px;
+}
+
+.homeComponentMetaCard strong,
+.homeComponentMetaCard span,
+.homeComponentMetaCard p {
+  display: block;
+  margin: 0;
+  letter-spacing: 0;
+}
+
+.homeComponentMetaCard strong {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.homeComponentMetaCard span {
+  margin-top: 4px;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.homeComponentMetaCard p {
+  margin-top: 4px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
 .framesGroups {
   margin-top: 14px;
   display: flex;

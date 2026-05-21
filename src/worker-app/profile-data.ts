@@ -1,4 +1,4 @@
-export type WorkerLanguage = "fr" | "en";
+export type WorkerLanguage = "fr" | "ar";
 
 export type WorkerProfile = {
   workerId: string;
@@ -28,6 +28,7 @@ export const WORKER_APP_VERSION_LABEL = "1.0.0 (42)";
 
 export const WORKER_LANGUAGE_OPTIONS: { code: WorkerLanguage; label: string }[] = [
   { code: "fr", label: "Français" },
+  { code: "ar", label: "العربية (Arabe)" },
 ];
 
 export function getLanguageLabel(language: WorkerLanguage): string {
@@ -54,7 +55,10 @@ export function loadStoredWorkerProfile(): WorkerProfile {
         parsed.role.toLowerCase().includes("terrain")
           ? DEFAULT_WORKER_PROFILE.role
           : parsed.role,
-      language: "fr",
+      language:
+        parsed.language === "fr" || parsed.language === "ar"
+          ? parsed.language
+          : DEFAULT_WORKER_PROFILE.language,
     };
   } catch {
     return DEFAULT_WORKER_PROFILE;

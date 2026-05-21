@@ -78,6 +78,25 @@ export function formatNotificationMeta(metaParts: string[]): string {
 
 export const DEFAULT_NOTIFICATIONS: WorkerNotification[] = [
   {
+    id: "notif-3",
+    kind: "alert.operational",
+    headline: "Synchro requise",
+    metaParts: ["12 images en attente"],
+    createdAt: hoursAgo(3),
+    read: false,
+    expandedBody:
+      "12 images capturées aujourd'hui ne sont pas encore synchronisées. Connectez-vous au Wi-Fi de la ferme avant 18h.",
+  },
+  {
+    id: "notif-7",
+    kind: "alert.operational",
+    headline: "Batterie faible",
+    metaParts: ["15% restant"],
+    createdAt: minutesAgo(10),
+    read: false,
+    expandedBody: "Pensez à charger votre appareil pour ne pas interrompre votre mission.",
+  },
+  {
     id: "notif-1",
     kind: "mission.created",
     headline: "Nouvelle mission : Parcelle 10612",
@@ -94,16 +113,6 @@ export const DEFAULT_NOTIFICATIONS: WorkerNotification[] = [
     createdAt: minutesAgo(42),
     read: false,
     jobId: "est-10089-2",
-  },
-  {
-    id: "notif-3",
-    kind: "alert.operational",
-    headline: "Synchronisation requise avant 18h",
-    metaParts: ["12 images en attente", "3 parcelles"],
-    createdAt: hoursAgo(3),
-    read: false,
-    expandedBody:
-      "12 images capturées aujourd'hui ne sont pas encore synchronisées. Connectez-vous au Wi-Fi de la ferme avant 18h pour éviter tout retard de transmission.",
   },
   {
     id: "notif-4",
@@ -127,21 +136,11 @@ export const DEFAULT_NOTIFICATIONS: WorkerNotification[] = [
     id: "notif-6",
     kind: "alert.operational",
     headline: "Échéance demain : Parcelle 10118",
-    metaParts: ["Estimation", "8 images restantes", "Priorité haute"],
+    metaParts: ["Estimation", "8 images restantes"],
     createdAt: daysAgo(1),
     read: true,
     expandedBody:
-      "La mission sur la parcelle 10118 arrive à échéance demain. Il reste 8 images à capturer pour terminer l'objectif.",
-  },
-  {
-    id: "notif-7",
-    kind: "alert.operational",
-    headline: "Connexion serveur instable",
-    metaParts: ["Synchronisation ralentie"],
-    createdAt: daysAgo(3),
-    read: true,
-    expandedBody:
-      "Le serveur de synchronisation connaît des ralentissements temporaires. Vos captures sont conservées localement.",
+      "La mission sur la parcelle 10118 arrive à échéance demain. Il reste 8 images à capturer.",
   },
 ];
 

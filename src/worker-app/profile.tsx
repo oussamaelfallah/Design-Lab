@@ -37,7 +37,7 @@ type WorkerAppProfilePageProps = {
   onBack?: () => void;
 };
 
-type ProfileView = "profile" | "settings" | "security" | "password" | "about";
+type ProfileView = "profile" | "settings" | "password" | "about";
 
 function ProfileSection({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -69,6 +69,9 @@ export function WorkerAppProfilePage({
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isCurrentPasswordVisible, setIsCurrentPasswordVisible] = useState(false);
+  const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
   const [isEditingName, setIsEditingName] = useState(previewState === "profile-edit-name");
   const [draftName, setDraftName] = useState(profile.displayName);
   const [isSavingName, setIsSavingName] = useState(false);
@@ -155,10 +158,10 @@ export function WorkerAppProfilePage({
 
   const goBack = useCallback(() => {
     if (profileView === "password") {
-      setProfileView("security");
+      setProfileView("settings");
       return;
     }
-    if (profileView === "security" || profileView === "about") {
+    if (profileView === "about") {
       setProfileView("settings");
       return;
     }
@@ -172,7 +175,6 @@ export function WorkerAppProfilePage({
   const headerTitleByView: Record<ProfileView, string> = {
     profile: "Profil",
     settings: "Paramètres",
-    security: "Sécurité",
     password: "Changer le mot de passe",
     about: "À propos",
   };
@@ -180,7 +182,6 @@ export function WorkerAppProfilePage({
   const headerSubtitleByView: Record<ProfileView, string> = {
     profile: "Informations du compte",
     settings: "Préférences et sécurité",
-    security: "Sécurité du compte",
     password: "Sécurité du compte",
     about: "Informations de l’application",
   };
@@ -243,6 +244,13 @@ export function WorkerAppProfilePage({
     );
   };
 
+  const stackedRow = (label: string, value: string) => (
+    <div className={styles.profileRowStacked} key={label}>
+      <span className={styles.profileRowLabel}>{label}</span>
+      <span className={styles.profileRowStackedValue}>{value}</span>
+    </div>
+  );
+
   const identityCard = (
     <ProfileSection title="Identité">
       <div className={styles.profileIdentityCardBody}>
@@ -259,53 +267,6 @@ export function WorkerAppProfilePage({
               <span className={styles.profileIdentityNameSkeleton} aria-hidden="true" />
               <span className={styles.profileIdentityRoleSkeleton} aria-hidden="true" />
             </>
-          ) : isEditing ? (
-            <div className={styles.profileNameEditWrap}>
-              <input
-                id="profile-display-name"
-                ref={nameInputRef}
-                className={styles.profileTextInput}
-                type="text"
-                value={draftName}
-                aria-label="Nom"
-                onChange={(event) => setDraftName(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault();
-                    void saveName();
-                  }
-                  if (event.key === "Escape") {
-                    event.preventDefault();
-                    cancelNameEdit();
-                  }
-                }}
-                autoComplete="name"
-              />
-              <div className={styles.profileNameEditActions}>
-                <button
-                  className={styles.profileNameIconButton}
-                  type="button"
-                  aria-label="Enregistrer le nom"
-                  disabled={!draftName.trim() || isSaving}
-                  onClick={() => void saveName()}
-                >
-                  <span className={styles.googleSymbol} aria-hidden="true">
-                    check
-                  </span>
-                </button>
-                <button
-                  className={styles.profileNameIconButton}
-                  type="button"
-                  aria-label="Annuler"
-                  disabled={isSaving}
-                  onClick={cancelNameEdit}
-                >
-                  <span className={styles.googleSymbol} aria-hidden="true">
-                    close
-                  </span>
-                </button>
-              </div>
-            </div>
           ) : (
             <>
               <div className={styles.profileNameDisplayRow}>
@@ -322,7 +283,6 @@ export function WorkerAppProfilePage({
                   </span>
                 </button>
               </div>
-              <p className={styles.profileIdentityRole}>{profile.role}</p>
             </>
           )}
         </div>
@@ -332,13 +292,11 @@ export function WorkerAppProfilePage({
             <>
               {skeletonRow(styles.profileRowValueSkeletonLong)}
               {skeletonRow(styles.profileRowValueSkeletonMedium)}
-              {skeletonRow(styles.profileRowValueSkeletonShort)}
             </>
           ) : (
             <>
-              {row("E-mail", { value: profile.email })}
-              {row("Téléphone", { value: profile.phone })}
-              {row("Responsable", { value: profile.managerName })}
+              {stackedRow("E-mail", profile.email)}
+              {stackedRow("Téléphone", profile.phone)}
             </>
           )}
         </div>
@@ -346,9 +304,28 @@ export function WorkerAppProfilePage({
     </ProfileSection>
   );
 
+  const organizationCard = (
+    <ProfileSection title="Organisation">
+      <div className={styles.profileInfoRows} aria-label="Informations de l’organisation">
+        {isLoading ? (
+          <>
+            {skeletonRow(styles.profileRowValueSkeletonShort)}
+            {skeletonRow(styles.profileRowValueSkeletonMedium)}
+          </>
+        ) : (
+          <>
+            {row("Rôle", { value: profile.role })}
+            {row("Responsable", { value: profile.managerName })}
+          </>
+        )}
+      </div>
+    </ProfileSection>
+  );
+
   const loadingProfileScreen = (
     <>
       {identityCard}
+      {organizationCard}
       <div className={styles.homeProgressOverviewCard}>
         {skeletonRow(styles.profileRowValueSkeletonShort)}
       </div>
@@ -359,6 +336,7 @@ export function WorkerAppProfilePage({
   const profileScreen = (
     <>
       {identityCard}
+      {organizationCard}
       <div className={styles.homeProgressOverviewCard}>
         {row("Paramètres", { icon: "chevron_right", onClick: () => setProfileView("settings") })}
       </div>
@@ -374,7 +352,7 @@ export function WorkerAppProfilePage({
 
   const settingsScreen = (
     <div className={styles.homeProgressOverviewCard}>
-      {row("Sécurité", { icon: "chevron_right", onClick: () => setProfileView("security") })}
+      {row("Changer le mot de passe", { icon: "chevron_right", onClick: () => setProfileView("password") })}
       {row("Langue", {
         value: getLanguageLabel(profile.language),
         icon: "chevron_right",
@@ -384,57 +362,92 @@ export function WorkerAppProfilePage({
     </div>
   );
 
-  const securityScreen = (
-    <div className={styles.homeProgressOverviewCard}>
-      {row("Mot de passe", {
-        value: "Changer",
-        icon: "chevron_right",
-        onClick: () => setProfileView("password"),
-      })}
-    </div>
-  );
-
   const passwordScreen = (
     <form className={styles.profilePasswordForm}>
       <label className={styles.profileFieldLabel} htmlFor="profile-current-password">
         Mot de passe actuel
       </label>
-      <input
-        id="profile-current-password"
-        className={styles.profileTextInput}
-        type="password"
-        value={currentPassword}
-        onChange={(event) => setCurrentPassword(event.target.value)}
-        autoComplete="current-password"
-      />
+      <div className={styles.profilePasswordInputWrap}>
+        <input
+          id="profile-current-password"
+          className={`${styles.profileTextInput} ${styles.profilePasswordInput}`}
+          type={isCurrentPasswordVisible ? "text" : "password"}
+          value={currentPassword}
+          onChange={(event) => setCurrentPassword(event.target.value)}
+          autoComplete="current-password"
+          placeholder="••••••••"
+        />
+        {currentPassword ? (
+          <button
+            className={styles.profilePasswordToggle}
+            type="button"
+            aria-label={isCurrentPasswordVisible ? "Masquer le mot de passe actuel" : "Afficher le mot de passe actuel"}
+            onClick={() => setIsCurrentPasswordVisible((visible) => !visible)}
+          >
+            <span className={styles.googleSymbol} aria-hidden="true">
+              {isCurrentPasswordVisible ? "visibility" : "visibility_off"}
+            </span>
+          </button>
+        ) : null}
+      </div>
+      <p className={styles.profilePasswordHelpText}>
+        Mot de passe oublié ? Contactez votre responsable.
+      </p>
       <label className={styles.profileFieldLabel} htmlFor="profile-new-password">
         Nouveau mot de passe
       </label>
-      <input
-        id="profile-new-password"
-        className={styles.profileTextInput}
-        type="password"
-        value={newPassword}
-        onChange={(event) => setNewPassword(event.target.value)}
-        autoComplete="new-password"
-      />
+      <div className={styles.profilePasswordInputWrap}>
+        <input
+          id="profile-new-password"
+          className={`${styles.profileTextInput} ${styles.profilePasswordInput}`}
+          type={isNewPasswordVisible ? "text" : "password"}
+          value={newPassword}
+          onChange={(event) => setNewPassword(event.target.value)}
+          autoComplete="new-password"
+          placeholder="••••••••"
+        />
+        {newPassword ? (
+          <button
+            className={styles.profilePasswordToggle}
+            type="button"
+            aria-label={isNewPasswordVisible ? "Masquer le nouveau mot de passe" : "Afficher le nouveau mot de passe"}
+            onClick={() => setIsNewPasswordVisible((visible) => !visible)}
+          >
+            <span className={styles.googleSymbol} aria-hidden="true">
+              {isNewPasswordVisible ? "visibility" : "visibility_off"}
+            </span>
+          </button>
+        ) : null}
+      </div>
       <label className={styles.profileFieldLabel} htmlFor="profile-confirm-password">
         Confirmer le nouveau mot de passe
       </label>
-      <input
-        id="profile-confirm-password"
-        className={styles.profileTextInput}
-        type="password"
-        value={confirmPassword}
-        onChange={(event) => setConfirmPassword(event.target.value)}
-        autoComplete="new-password"
-      />
+      <div className={styles.profilePasswordInputWrap}>
+        <input
+          id="profile-confirm-password"
+          className={`${styles.profileTextInput} ${styles.profilePasswordInput}`}
+          type={isConfirmPasswordVisible ? "text" : "password"}
+          value={confirmPassword}
+          onChange={(event) => setConfirmPassword(event.target.value)}
+          autoComplete="new-password"
+          placeholder="••••••••"
+        />
+        {confirmPassword ? (
+          <button
+            className={styles.profilePasswordToggle}
+            type="button"
+            aria-label={isConfirmPasswordVisible ? "Masquer la confirmation du mot de passe" : "Afficher la confirmation du mot de passe"}
+            onClick={() => setIsConfirmPasswordVisible((visible) => !visible)}
+          >
+            <span className={styles.googleSymbol} aria-hidden="true">
+              {isConfirmPasswordVisible ? "visibility" : "visibility_off"}
+            </span>
+          </button>
+        ) : null}
+      </div>
       <button className={styles.profilePrimaryButton} type="button">
         Changer le mot de passe
       </button>
-      <p className={styles.profileSupportText}>
-        Mot de passe oublié ? Votre responsable peut réinitialiser votre mot de passe.
-      </p>
     </form>
   );
 
@@ -452,7 +465,6 @@ export function WorkerAppProfilePage({
   const screenByView: Record<ProfileView, ReactNode> = {
     profile: isLoading ? loadingProfileScreen : profileScreen,
     settings: settingsScreen,
-    security: securityScreen,
     password: passwordScreen,
     about: aboutScreen,
   };
@@ -506,23 +518,109 @@ export function WorkerAppProfilePage({
                 return (
                   <button
                     key={option.code}
-                    className={`${styles.profileLanguageOption} ${
-                      isSelected ? styles.profileLanguageOptionSelected : ""
-                    }`}
+                    className={styles.profileLanguageOption}
                     type="button"
                     role="option"
                     aria-selected={isSelected}
                     onClick={() => void selectLanguage(option.code)}
                   >
                     <span>{option.label}</span>
-                    {isSelected ? (
-                      <span className={styles.googleSymbol} aria-hidden="true">
-                        check
-                      </span>
-                    ) : null}
+                    <span
+                      className={`${styles.profileLanguageRadio} ${
+                        isSelected ? styles.profileLanguageRadioSelected : ""
+                      }`}
+                      aria-hidden="true"
+                    />
                   </button>
                 );
               })}
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {isEditing ? (
+        <div
+          className={styles.profileSheetOverlay}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="profile-name-sheet-title"
+          onClick={cancelNameEdit}
+        >
+          <div className={styles.profileNameEditStack} onClick={(event) => event.stopPropagation()}>
+            <div className={styles.profileNameSheet}>
+              <div className={styles.profileLanguageSheetHandle} aria-hidden="true" />
+              <h4 id="profile-name-sheet-title" className={styles.profileLanguageSheetTitle}>
+                Modifier le nom
+              </h4>
+              <div className={styles.profileOutlinedField}>
+                <input
+                  id="profile-display-name"
+                  ref={nameInputRef}
+                  className={styles.profileOutlinedInput}
+                  type="text"
+                  value={draftName}
+                  aria-label="Nom"
+                  onChange={(event) => setDraftName(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      event.preventDefault();
+                      void saveName();
+                    }
+                    if (event.key === "Escape") {
+                      event.preventDefault();
+                      cancelNameEdit();
+                    }
+                  }}
+                  autoComplete="name"
+                />
+                {draftName ? (
+                  <button
+                    className={styles.profileClearTextButton}
+                    type="button"
+                    aria-label="Effacer le nom"
+                    onClick={() => setDraftName("")}
+                  >
+                    <span className={styles.googleSymbol} aria-hidden="true">
+                      close
+                    </span>
+                  </button>
+                ) : null}
+              </div>
+              <div className={styles.profileNameSheetActions}>
+                <button
+                  className={styles.profileNameSheetSecondary}
+                  type="button"
+                  disabled={isSaving}
+                  onClick={cancelNameEdit}
+                >
+                  Annuler
+                </button>
+                <button
+                  className={styles.profileNameSheetPrimary}
+                  type="button"
+                  disabled={!draftName.trim() || isSaving}
+                  onClick={() => void saveName()}
+                >
+                  Enregistrer
+                </button>
+              </div>
+            </div>
+            <div className={styles.profileKeyboardMockup} aria-hidden="true">
+              {["AZERTYUIOP", "QSDFGHJKLM", "WXCVBN"].map((rowKeys) => (
+                <div className={styles.profileKeyboardRow} key={rowKeys}>
+                  {rowKeys.split("").map((key) => (
+                    <span className={styles.profileKeyboardKey} key={key}>
+                      {key}
+                    </span>
+                  ))}
+                </div>
+              ))}
+              <div className={styles.profileKeyboardRow}>
+                <span className={styles.profileKeyboardKeyWide}>123</span>
+                <span className={styles.profileKeyboardSpace} />
+                <span className={styles.profileKeyboardKeyWide}>retour</span>
+              </div>
             </div>
           </div>
         </div>
@@ -540,7 +638,7 @@ export function WorkerAppProfilePage({
             <h4 id="profile-logout-title" className={styles.profileConfirmTitle}>
               Se déconnecter ?
             </h4>
-            <p className={styles.profileConfirmText}>Vous serez déconnecté. Continuer ?</p>
+            <p className={styles.profileConfirmText}>Voulez-vous vraiment vous déconnecter ?</p>
             <div className={styles.profileConfirmActions}>
               <button className={styles.profileConfirmDanger} type="button" onClick={confirmLogout}>
                 Se déconnecter
