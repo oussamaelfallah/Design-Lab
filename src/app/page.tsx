@@ -35,7 +35,14 @@ import {
 import { WorkerAppFullPrototypePage } from "../worker-app/full-prototype";
 import { WorkerAppGetStartedPage } from "../worker-app/getstarted";
 import { WorkerAppGetStartedV2Page } from "../worker-app/getstarted-v2";
-import { WorkerAppHomePage, type HomeFrameView, type HomePreviewState } from "../worker-app/home";
+import {
+  WorkerAppHomeComponentPreview,
+  WorkerAppHomePage,
+  type HomeComponentPreviewKind,
+  type HomeFrameView,
+  type HomePreviewState,
+  type HomeTravailNavigationHandler,
+} from "../worker-app/home";
 import {
   PostFixePreviewState,
   SecteursFrameView,
@@ -271,75 +278,141 @@ const travailDetailIcons = [
   { icon: "straighten", name: "straighten", usage: "Spacing row in parcel sheet." },
 ] as const;
 
-const homeCoreFrames = [
+const homeMasterFrames = [
   {
-    id: "H01",
-    title: "Accueil (Design)",
-    note: "Main dashboard with progress and active jobs.",
+    id: "H-FULL-ACTIVE",
+    title: "Default Active Shell",
+    note: "Global Accueil dashboard structure with top header and bottom navigation.",
     frameView: "data" as HomeFrameView,
     previewState: "home-data" as HomePreviewState,
   },
   {
-    id: "H02",
-    title: "Accueil (Offline)",
-    note: "Offline banner with cached progress data.",
-    frameView: "data" as HomeFrameView,
-    previewState: "home-offline" as HomePreviewState,
-  },
-  {
-    id: "H03",
-    title: "Accueil (All Complete)",
-    note: "All jobs done — sync reminder shown.",
-    frameView: "data" as HomeFrameView,
-    previewState: "home-all-complete" as HomePreviewState,
-  },
-] as const;
-
-const homeSystemFrames = [
-  {
-    id: "HS1",
-    title: "Accueil (Loading)",
-    note: "Skeleton state while jobs load.",
+    id: "H-FULL-LOADING",
+    title: "Global Skeleton Shell",
+    note: "Page-level loading structure while assigned work data is loading.",
     frameView: "loading" as HomeFrameView,
     previewState: "home-loading" as HomePreviewState,
   },
   {
-    id: "HS2",
-    title: "Accueil (Empty)",
-    note: "No jobs assigned state.",
+    id: "H-FULL-EMPTY",
+    title: "No Work Shell",
+    note: "Page-level empty/no-work assigned structure.",
     frameView: "empty" as HomeFrameView,
     previewState: "home-empty" as HomePreviewState,
   },
+  {
+    id: "H-FULL-ERROR",
+    title: "No Connection Shell",
+    note: "Page-level error state when Accueil data cannot load.",
+    frameView: "error" as HomeFrameView,
+    previewState: "home-error" as HomePreviewState,
+  },
 ] as const;
 
-const homeTravailActifsFrames = [
+const homeComponentMatrixRows = [
   {
-    id: "H-TA1",
-    title: "En retard",
-    note: "Active jobs with overdue due dates — red 'En retard' label.",
-    frameView: "data" as HomeFrameView,
-    previewState: "home-travaux-actifs-overdue" as HomePreviewState,
+    title: "ROW 1: Aujourd'hui Card Variants",
+    items: [
+      {
+        id: "H-AJ1",
+        name: "Active / Mixed",
+        trigger: "Triggers when overdue, today, and pending sync work exist.",
+        kind: "today-active" as HomeComponentPreviewKind,
+      },
+      {
+        id: "H-AJ2",
+        name: "Active Sync",
+        trigger: "Triggers while local captures are actively synchronizing.",
+        kind: "today-syncing" as HomeComponentPreviewKind,
+      },
+      {
+        id: "H-AJ3",
+        name: "Offline",
+        trigger: "Triggers when the worker is offline with unsynced images.",
+        kind: "today-offline" as HomeComponentPreviewKind,
+      },
+      {
+        id: "H-AJ4",
+        name: "Success / All Clear",
+        trigger: "Triggers when all assigned work is complete and synced.",
+        kind: "today-success" as HomeComponentPreviewKind,
+      },
+      {
+        id: "H-AJ5",
+        name: "No Work Scheduled",
+        trigger: "Triggers when no work is scheduled for today.",
+        kind: "today-empty" as HomeComponentPreviewKind,
+      },
+    ],
   },
   {
-    id: "H-TA2",
-    title: "En cours",
-    note: "Active jobs in progress with upcoming due dates.",
-    frameView: "data" as HomeFrameView,
-    previewState: "home-travaux-actifs-en-cours" as HomePreviewState,
+    title: "ROW 2: Progression du travail Card Variants",
+    items: [
+      {
+        id: "H-PR1",
+        name: "In Progress",
+        trigger: "Triggers when active captures exist and global progress is partial.",
+        kind: "progress-in-progress" as HomeComponentPreviewKind,
+      },
+      {
+        id: "H-PR2",
+        name: "100% Completed",
+        trigger: "Triggers when all target captures are complete.",
+        kind: "progress-complete" as HomeComponentPreviewKind,
+      },
+      {
+        id: "H-PR3",
+        name: "Not Started",
+        trigger: "Triggers when assigned work exists but no captures are made.",
+        kind: "progress-not-started" as HomeComponentPreviewKind,
+      },
+    ],
   },
   {
-    id: "H-TA3",
-    title: "Planifié",
-    note: "Active jobs not yet started — 'Planifié' badge, future dates.",
-    frameView: "data" as HomeFrameView,
-    previewState: "home-travaux-actifs-planifie" as HomePreviewState,
+    title: "ROW 3: Types de travaux Row Variants",
+    items: [
+      {
+        id: "H-TT1",
+        name: "In Progress",
+        trigger: "Triggers when work types have active partial capture progress.",
+        kind: "types-in-progress" as HomeComponentPreviewKind,
+      },
+      {
+        id: "H-TT2",
+        name: "100% Completed",
+        trigger: "Triggers when every work type is fully completed.",
+        kind: "types-complete" as HomeComponentPreviewKind,
+      },
+    ],
   },
   {
-    id: "H-TA4",
-    title: "Vide",
-    note: "No active jobs remaining — all captures completed.",
-    frameView: "data" as HomeFrameView,
-    previewState: "home-travaux-actifs-empty" as HomePreviewState,
+    title: "ROW 4: Travaux actifs Card Variants",
+    items: [
+      {
+        id: "H-TA1",
+        name: "Overdue / En retard",
+        trigger: "Triggers when active tasks have passed their deadline.",
+        kind: "active-overdue" as HomeComponentPreviewKind,
+      },
+      {
+        id: "H-TA2",
+        name: "On Track / En cours",
+        trigger: "Triggers when active tasks are in progress before the deadline.",
+        kind: "active-in-progress" as HomeComponentPreviewKind,
+      },
+      {
+        id: "H-TA3",
+        name: "Planned / Planifié",
+        trigger: "Triggers when active tasks are scheduled but not started.",
+        kind: "active-planned" as HomeComponentPreviewKind,
+      },
+      {
+        id: "H-TA4",
+        name: "Empty / Vide",
+        trigger: "Triggers when no active work remains.",
+        kind: "active-empty" as HomeComponentPreviewKind,
+      },
+    ],
   },
 ] as const;
 
@@ -1857,6 +1930,8 @@ export default function Home() {
   const [homePreviewState, setHomePreviewState] = useState<HomePreviewState>("home-data");
   const [postFixeFrameView, setPostFixeFrameView] = useState<SecteursFrameView>("data");
   const [travailFrameView, setTravailFrameView] = useState<TravailFrameView>("data");
+  const [travailPreviewState, setTravailPreviewState] = useState<TravailPreviewState | undefined>();
+  const [travailPreviewJobId, setTravailPreviewJobId] = useState<string | undefined>();
   const [boiteFrameView, setBoiteFrameView] = useState<BoiteFrameView>("data");
   const [boitePreviewState, setBoitePreviewState] = useState<BoitePreviewState>("boite-data");
   const [profileFrameView, setProfileFrameView] = useState<ProfileFrameView>("data");
@@ -1950,6 +2025,18 @@ export default function Home() {
     testDs: "Test DS",
   };
   const activePageTitle = pageTitleByScreen[resolvedActiveScreen];
+  const openTravailFromBoite: HomeTravailNavigationHandler = (target) => {
+    if (target.kind !== "detail") {
+      return false;
+    }
+
+    setTravailFrameView("data");
+    setTravailPreviewState("detail-overview");
+    setTravailPreviewJobId(target.jobId);
+    setCanvasView("design");
+    setActiveScreen("travail");
+    return true;
+  };
   const renderComponentMilestones = (completed: number) => (
     <div className={styles.componentsProgressTrack} aria-hidden="true">
       {Array.from({ length: 3 }).map((_, index) => (
@@ -3096,9 +3183,24 @@ export default function Home() {
                   previewState: "home-offline" as HomePreviewState,
                 },
                 {
+                  label: "Syncing",
+                  frameView: "data" as HomeFrameView,
+                  previewState: "home-syncing" as HomePreviewState,
+                },
+                {
                   label: "Complete",
                   frameView: "data" as HomeFrameView,
                   previewState: "home-all-complete" as HomePreviewState,
+                },
+                {
+                  label: "Planifié",
+                  frameView: "data" as HomeFrameView,
+                  previewState: "home-travaux-actifs-planifie" as HomePreviewState,
+                },
+                {
+                  label: "Error",
+                  frameView: "data" as HomeFrameView,
+                  previewState: "home-error" as HomePreviewState,
                 },
               ].map((state) => (
                 <button
@@ -3350,14 +3452,14 @@ export default function Home() {
             <div className={styles.componentsCanvas}>
               <section className={styles.componentsPanel}>
                 <div className={styles.componentsPanelHeader}>
-                  <h3>Core Frames</h3>
-                  <p>Accueil screens in user journey order</p>
+                  <h3>Master Screen Shells</h3>
+                  <p>Full-screen Accueil layouts retained for global structure, header, and navigation</p>
                 </div>
-                <div className={styles.componentsCardsGrid}>
-                  {homeCoreFrames.map((frame) => (
+                <div className={`${styles.componentsCardsGrid} ${styles.homeMasterShellGrid}`}>
+                  {homeMasterFrames.map((frame) => (
                     <article key={frame.id} className={styles.componentCardItem}>
                       <p className={styles.componentCardStateLabel}>{frame.id}</p>
-                      <div className={styles.componentPosteCard}>
+                      <div className={`${styles.componentPosteCard} ${styles.homeMasterShellMetaCard}`}>
                         <h4>{frame.title}</h4>
                         <p className={styles.componentPosteCardMeta}>{frame.note}</p>
                       </div>
@@ -3377,55 +3479,26 @@ export default function Home() {
               </section>
               <section className={styles.componentsPanel}>
                 <div className={styles.componentsPanelHeader}>
-                  <h3>System States</h3>
-                  <p>Supporting frames outside the main happy path</p>
+                  <h3>Horizontal Component Matrix</h3>
+                  <p>State variants extracted from full-screen duplicates and grouped by section</p>
                 </div>
-                <div className={styles.componentsCardsGrid}>
-                  {homeSystemFrames.map((frame) => (
-                    <article key={frame.id} className={styles.componentCardItem}>
-                      <p className={styles.componentCardStateLabel}>{frame.id}</p>
-                      <div className={styles.componentPosteCard}>
-                        <h4>{frame.title}</h4>
-                        <p className={styles.componentPosteCardMeta}>{frame.note}</p>
+                <div className={styles.homeComponentMatrix}>
+                  {homeComponentMatrixRows.map((row) => (
+                    <div className={styles.homeComponentMatrixRow} key={row.title}>
+                      <h4>{row.title}</h4>
+                      <div className={styles.homeComponentMatrixScroller}>
+                        {row.items.map((item) => (
+                          <article className={styles.homeComponentMatrixItem} key={item.id}>
+                            <div className={styles.homeComponentMetaCard}>
+                              <strong>{item.id}</strong>
+                              <span>{item.name}</span>
+                              <p>{item.trigger}</p>
+                            </div>
+                            <WorkerAppHomeComponentPreview kind={item.kind} />
+                          </article>
+                        ))}
                       </div>
-                      <div className={styles.detailPreviewWidth}>
-                        <WorkerAppHomePage
-                          showDeviceFrame={showDeviceFrame}
-                          theme={canvasTheme}
-                          frameTheme={canvasFrameTheme}
-                          frameView={frame.frameView}
-                          previewState={frame.previewState}
-                          isInteractive={false}
-                        />
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              </section>
-              <section className={styles.componentsPanel}>
-                <div className={styles.componentsPanelHeader}>
-                  <h3>Travaux actifs</h3>
-                  <p>Job card states inside the active work section</p>
-                </div>
-                <div className={styles.componentsCardsGrid}>
-                  {homeTravailActifsFrames.map((frame) => (
-                    <article key={frame.id} className={styles.componentCardItem}>
-                      <p className={styles.componentCardStateLabel}>{frame.id}</p>
-                      <div className={styles.componentPosteCard}>
-                        <h4>{frame.title}</h4>
-                        <p className={styles.componentPosteCardMeta}>{frame.note}</p>
-                      </div>
-                      <div className={styles.detailPreviewWidth}>
-                        <WorkerAppHomePage
-                          showDeviceFrame={showDeviceFrame}
-                          theme={canvasTheme}
-                          frameTheme={canvasFrameTheme}
-                          frameView={frame.frameView}
-                          previewState={frame.previewState}
-                          isInteractive={false}
-                        />
-                      </div>
-                    </article>
+                    </div>
                   ))}
                 </div>
               </section>
@@ -4446,6 +4519,8 @@ export default function Home() {
               theme={canvasTheme}
               frameTheme={canvasFrameTheme}
               frameView={travailFrameView}
+              previewState={travailPreviewState}
+              previewJobId={travailPreviewJobId}
             />
           ) : resolvedActiveScreen === "postFixe" ? (
             <div className={styles.centeredCanvasScreen}>
@@ -4463,6 +4538,7 @@ export default function Home() {
               frameTheme={canvasFrameTheme}
               frameView={boiteFrameView}
               previewState={boitePreviewState}
+              onOpenTravail={openTravailFromBoite}
             />
           ) : resolvedActiveScreen === "profile" ? (
             <WorkerAppProfilePage

@@ -1,7 +1,11 @@
 import { useState } from "react";
 import styles from "./worker-app.module.css";
 import { WorkerAppBoitePage } from "./boite";
-import { WorkerAppHomePage, type HomeTravailNavigationTarget } from "./home";
+import {
+  WorkerAppHomePage,
+  type HomeTravailNavigationHandler,
+  type HomeTravailNavigationTarget,
+} from "./home";
 import { WorkerAppPostFixePage } from "./post-fixe";
 import { WorkerAppProfilePage } from "./profile";
 import { WorkerAppTravailPage, type TravailPreviewState } from "./travail";
@@ -35,17 +39,18 @@ export function WorkerAppFullPrototypePage({
     !(activeTab === "postFixe" && postFixeLayoutMode === "fullScreen") &&
     !(activeTab === "travail" && travailLayoutMode === "fullScreen");
 
-  const openTravailFromHome = (target: HomeTravailNavigationTarget) => {
+  const openTravailFromHome: HomeTravailNavigationHandler = (target: HomeTravailNavigationTarget) => {
     setIsProfileOpen(false);
     setActiveTab("travail");
     setTravailLayoutMode("default");
     if (target.kind === "detail") {
       setTravailPreviewState("detail-overview");
       setTravailPreviewJobId(target.jobId);
-      return;
+      return true;
     }
     setTravailPreviewJobId(undefined);
     setTravailPreviewState(target.filter === "active" ? "list-filters-active" : "list-data");
+    return true;
   };
 
   return (

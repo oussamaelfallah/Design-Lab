@@ -1,0 +1,325 @@
+.page {
+  min-block-size: 100vh;
+  background: var(--color-surface-default);
+  color: var(--color-text-primary);
+  font-family: var(--typography-font-family-base);
+  padding: var(--spacing-layout-padding-lg);
+}
+
+.toolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-component-gap-lg);
+  max-inline-size: calc(var(--spacing-layout-padding-xl) * 12);
+  margin-inline: auto;
+  margin-block-end: var(--spacing-layout-gap-md);
+}
+
+.toolbar p,
+.toolbar h1 {
+  margin: 0;
+}
+
+.toolbar p {
+  color: var(--color-brand-primary-text);
+  font-size: var(--typography-overline-font-size);
+  font-weight: var(--typography-overline-font-weight);
+  line-height: var(--typography-overline-line-height);
+  letter-spacing: var(--typography-overline-letter-spacing);
+  text-transform: uppercase;
+}
+
+.toolbar h1 {
+  color: var(--color-text-primary);
+  font-size: var(--typography-heading-lg-font-size);
+  font-weight: var(--typography-heading-lg-font-weight);
+  line-height: var(--typography-heading-lg-line-height);
+  letter-spacing: var(--typography-heading-lg-letter-spacing);
+}
+
+.switcher {
+  display: flex;
+  gap: var(--spacing-component-gap-xs);
+  border: 1px solid var(--color-border-default);
+  border-radius: 999px;
+  background: var(--color-surface-raised);
+  padding: var(--spacing-component-padding-xs);
+  box-shadow: var(--elevation-raised-xs);
+}
+
+.switcher button {
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: var(--typography-label-sm-font-size);
+  font-weight: var(--typography-label-sm-font-weight);
+  line-height: var(--typography-label-sm-line-height);
+  padding: var(--spacing-component-padding-sm) var(--spacing-component-padding-md);
+}
+
+.switcherActive {
+  background: var(--color-brand-primary-subtle) !important;
+  color: var(--color-brand-primary-text) !important;
+}
+
+.phoneStage {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, calc(var(--spacing-layout-padding-xl) * 8));
+  align-items: start;
+  justify-content: center;
+  gap: var(--spacing-layout-gap-md);
+}
+
+.tokenColorScope {
+  /*
+   * Color-only test: keep WorkerAppHomePage's existing layout, spacing, typography,
+   * and component classes. Only remap its local color variables to generated tokens.
+   */
+}
+
+.tokenColorScope :global([class*="androidScreen"]) {
+  --ds-brand: var(--color-brand-primary);
+  --ds-surface: var(--color-surface-default);
+  --ds-card: var(--color-surface-raised);
+  --ds-border: var(--color-border-default);
+  --ds-border-strong: var(--color-border-strong);
+  --ds-text-primary: var(--color-text-primary);
+  --ds-text-secondary: var(--color-text-secondary);
+  --ds-text-muted: var(--color-text-tertiary);
+  --ds-text-inverse: var(--color-text-inverse);
+  --ds-text-danger: var(--color-text-danger);
+  --ds-success-bg: var(--color-feedback-success-bg);
+  --ds-success-text: var(--color-feedback-success-text);
+  --ds-info-bg: var(--color-feedback-info-bg);
+  --ds-info-text: var(--color-feedback-info-text);
+  --ds-warning-bg: var(--color-feedback-warning-bg);
+  --ds-warning-text: var(--color-feedback-warning-text);
+  --ds-error-bg: var(--color-feedback-error-bg);
+  --ds-error-text: var(--color-feedback-error-text);
+  --ds-status-done-bg: var(--color-status-done-bg);
+  --ds-status-done-text: var(--color-status-done-text);
+  --ds-status-in-progress-bg: var(--color-status-in-progress-bg);
+  --ds-status-in-progress-text: var(--color-status-in-progress-text);
+  --ds-status-not-started-bg: var(--color-status-not-started-bg);
+  --ds-status-not-started-text: var(--color-status-not-started-text);
+  --ds-status-not-started-border: var(--color-status-not-started-border);
+  --ds-icon-green-bg: var(--color-card-icon-green-icon-bg);
+  --ds-icon-green-fg: var(--color-card-icon-green-icon-color);
+  --ds-icon-blue-bg: var(--color-card-icon-blue-icon-bg);
+  --ds-icon-blue-fg: var(--color-card-icon-blue-icon-color);
+  --post-fixe-page-surface: var(--color-surface-default);
+  --poste-card-surface: var(--color-surface-raised);
+  --poste-card-title: var(--color-card-title);
+  --poste-card-subtitle: var(--color-text-secondary);
+  --poste-card-meta: var(--color-text-tertiary);
+  --poste-card-divider: var(--color-card-divider);
+  --poste-card-progress-track: var(--color-surface-sunken);
+  --system-status-surface: var(--color-surface-default);
+  --system-status-content: var(--color-text-primary);
+  --system-cutout: var(--color-surface-overlay);
+  --system-navigation-default-surface: var(--color-surface-raised);
+  --system-navigation-page-surface: var(--color-surface-default);
+  --system-navigation-brand-surface: var(--color-brand-primary-subtle);
+  --system-nav-handle: var(--color-text-secondary);
+  --header-surface: var(--color-surface-default);
+  --header-title: var(--color-text-primary);
+  --header-subtitle: var(--color-text-secondary);
+  --header-icon: var(--color-text-tertiary);
+  --header-action-surface: var(--color-surface-raised);
+  --header-action-fg: var(--color-text-tertiary);
+  --header-action-success-bg: var(--color-status-done-bg);
+  --header-action-success-fg: var(--color-status-done-text);
+  --header-action-info-bg: var(--color-feedback-info-bg);
+  --header-action-info-fg: var(--color-feedback-info-text);
+  --header-action-warning-bg: var(--color-feedback-warning-bg);
+  --header-action-warning-fg: var(--color-feedback-warning-text);
+  --header-avatar-bg: var(--color-status-done-bg);
+  --header-avatar-fg: var(--color-status-done-text);
+  --nav-surface: var(--color-surface-raised);
+  --nav-border: var(--color-border-default);
+  --nav-on-surface: var(--color-text-primary);
+  --nav-on-surface-variant: var(--color-text-secondary);
+  --nav-on-surface-disabled: var(--color-text-disabled);
+  --nav-secondary-container: var(--color-brand-primary-subtle);
+  --nav-secondary-container-pressed: var(--color-brand-primary-subtle);
+  --nav-on-secondary-container: var(--color-brand-primary);
+  --nav-on-secondary-container-hover: var(--color-brand-primary-hover);
+  --nav-label-active: var(--color-brand-primary-text);
+  --nav-focus-ring: var(--elevation-focus-default);
+}
+
+.handoffPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-component-gap-md);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--spacing-inset-lg);
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  box-shadow: var(--elevation-raised-sm);
+  padding: var(--spacing-inset-md);
+}
+
+.handoffHeader p,
+.handoffHeader h2 {
+  margin: 0;
+}
+
+.handoffHeader p {
+  color: var(--color-brand-primary-text);
+  font-size: var(--typography-overline-font-size);
+  font-weight: var(--typography-overline-font-weight);
+  line-height: var(--typography-overline-line-height);
+  letter-spacing: var(--typography-overline-letter-spacing);
+  text-transform: uppercase;
+}
+
+.handoffHeader h2 {
+  color: var(--color-text-primary);
+  font-size: var(--typography-heading-sm-font-size);
+  font-weight: var(--typography-heading-sm-font-weight);
+  line-height: var(--typography-heading-sm-line-height);
+  letter-spacing: var(--typography-heading-sm-letter-spacing);
+}
+
+.annotationPreview {
+  position: relative;
+  min-block-size: calc(var(--spacing-section-gap-xl) * 1.4);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--spacing-inset-md);
+  background: var(--color-surface-default);
+  overflow: hidden;
+}
+
+.annotationPreview::before {
+  content: "Aujourd'hui";
+  position: absolute;
+  inset-block-start: var(--spacing-inset-md);
+  inset-inline-start: var(--spacing-inset-md);
+  color: var(--color-card-title);
+  font-size: var(--typography-label-lg-font-size);
+  font-weight: var(--typography-label-lg-font-weight);
+  line-height: var(--typography-label-lg-line-height);
+}
+
+.annotationPreview::after {
+  content: "5 en retard  • 1 prévu aujourd'hui";
+  position: absolute;
+  inset-block-start: calc(var(--spacing-inset-md) + var(--spacing-component-gap-xl));
+  inset-inline-start: var(--spacing-inset-md);
+  color: var(--color-text-secondary);
+  font-size: var(--typography-caption-sm-font-size);
+  line-height: var(--typography-caption-sm-line-height);
+}
+
+.markerTitle,
+.markerBody,
+.markerDanger,
+.markerAction,
+.markerWarning {
+  position: absolute;
+  display: grid;
+  inline-size: var(--spacing-inset-lg);
+  block-size: var(--spacing-inset-lg);
+  place-items: center;
+  border-radius: 999px;
+  background: var(--color-brand-primary);
+  color: var(--color-brand-primary-on);
+  font-size: var(--typography-label-sm-font-size);
+  font-weight: var(--typography-label-sm-font-weight);
+  line-height: var(--typography-label-sm-line-height);
+}
+
+.markerTitle {
+  inset-block-start: var(--spacing-component-padding-sm);
+  inset-inline-start: calc(var(--spacing-inset-xl) * 3.2);
+}
+
+.markerBody {
+  inset-block-start: calc(var(--spacing-inset-xl) * 1.7);
+  inset-inline-start: calc(var(--spacing-inset-xl) * 5.4);
+}
+
+.markerDanger {
+  inset-block-start: calc(var(--spacing-inset-xl) * 1.7);
+  inset-inline-start: var(--spacing-inset-md);
+  background: var(--color-text-danger);
+  color: var(--color-text-inverse);
+}
+
+.markerAction {
+  inset-block-start: var(--spacing-inset-md);
+  inset-inline-end: var(--spacing-inset-md);
+}
+
+.markerWarning {
+  inset-block-end: var(--spacing-inset-md);
+  inset-inline-start: var(--spacing-inset-md);
+  background: var(--color-feedback-warning-solid);
+  color: var(--color-feedback-warning-solid-text);
+}
+
+.handoffTable {
+  overflow: hidden;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--spacing-inset-md);
+}
+
+.handoffTableHeader,
+.handoffRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: var(--spacing-component-gap-sm);
+  align-items: start;
+  padding: var(--spacing-component-padding-md);
+}
+
+.handoffTableHeader {
+  background: var(--color-surface-sunken);
+  color: var(--color-text-secondary);
+  font-size: var(--typography-overline-font-size);
+  font-weight: var(--typography-overline-font-weight);
+  line-height: var(--typography-overline-line-height);
+  letter-spacing: var(--typography-overline-letter-spacing);
+  text-transform: uppercase;
+}
+
+.handoffRow {
+  background: var(--color-surface-raised);
+}
+
+.handoffRow + .handoffRow {
+  border-block-start: 1px solid var(--color-card-divider);
+}
+
+.handoffRow strong,
+.handoffRow small,
+.handoffRow code {
+  display: block;
+}
+
+.handoffRow strong {
+  color: var(--color-text-primary);
+  font-size: var(--typography-label-sm-font-size);
+  font-weight: var(--typography-label-sm-font-weight);
+  line-height: var(--typography-label-sm-line-height);
+}
+
+.handoffRow small {
+  margin-block-start: var(--spacing-component-gap-xs);
+  color: var(--color-text-tertiary);
+  font-size: var(--typography-caption-sm-font-size);
+  line-height: var(--typography-caption-sm-line-height);
+}
+
+.handoffRow code {
+  overflow-wrap: anywhere;
+  color: var(--color-text-secondary);
+  font-family: var(--typography-font-family-mono);
+  font-size: var(--typography-mono-sm-font-size);
+  font-weight: var(--typography-mono-sm-font-weight);
+  line-height: var(--typography-mono-sm-line-height);
+}
