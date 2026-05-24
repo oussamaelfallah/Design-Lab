@@ -1,10 +1,21 @@
-export type NotificationKind = "mission.created" | "mission.modified" | "alert.operational";
+export type NotificationKind =
+  | "mission.created"
+  | "mission.modified"
+  | "mission.objective"
+  | "mission.deadline"
+  | "mission.completed"
+  | "alert.sync_failed"
+  | "alert.sync_pending"
+  | "alert.offline"
+  | "alert.operational";
 
 export type BoiteTab = "missions" | "alertes";
+export type NotificationPriority = "high" | "info";
 
 export type WorkerNotification = {
   id: string;
   kind: NotificationKind;
+  priority: NotificationPriority;
   headline: string;
   metaParts: string[];
   createdAt: string;
@@ -59,6 +70,12 @@ export function formatNotificationTimestamp(isoDate: string): string {
 export function getNotificationIcon(kind: NotificationKind): string {
   if (kind === "mission.created") return "assignment";
   if (kind === "mission.modified") return "edit";
+  if (kind === "mission.objective") return "flag";
+  if (kind === "mission.deadline") return "event_upcoming";
+  if (kind === "mission.completed") return "check_circle";
+  if (kind === "alert.sync_failed") return "cloud_alert";
+  if (kind === "alert.sync_pending") return "cloud_upload";
+  if (kind === "alert.offline") return "wifi_off";
   return "warning";
 }
 
@@ -69,7 +86,7 @@ export function getNotificationIconTone(kind: NotificationKind): "assignment" | 
 }
 
 export function getNotificationTab(kind: NotificationKind): BoiteTab {
-  return kind === "alert.operational" ? "alertes" : "missions";
+  return kind.startsWith("alert.") ? "alertes" : "missions";
 }
 
 export function formatNotificationMeta(metaParts: string[]): string {
@@ -79,19 +96,21 @@ export function formatNotificationMeta(metaParts: string[]): string {
 export const DEFAULT_NOTIFICATIONS: WorkerNotification[] = [
   {
     id: "notif-3",
-    kind: "alert.operational",
-    headline: "Synchro requise",
-    metaParts: ["12 images en attente"],
+    kind: "alert.sync_failed",
+    priority: "high",
+    headline: "Échec de synchronisation",
+    metaParts: ["12 images bloquées", "Action requise"],
     createdAt: hoursAgo(3),
     read: false,
     expandedBody:
-      "12 images capturées aujourd'hui ne sont pas encore synchronisées. Connectez-vous au Wi-Fi de la ferme avant 18h.",
+      "12 images capturées aujourd'hui ne sont pas synchronisées. Connectez-vous au Wi-Fi de la ferme puis relancez la synchronisation.",
   },
   {
     id: "notif-7",
     kind: "alert.operational",
+    priority: "high",
     headline: "Batterie faible",
-    metaParts: ["15% restant"],
+    metaParts: ["15% restant", "Risque d’interruption"],
     createdAt: minutesAgo(10),
     read: false,
     expandedBody: "Pensez à charger votre appareil pour ne pas interrompre votre mission.",
@@ -99,6 +118,7 @@ export const DEFAULT_NOTIFICATIONS: WorkerNotification[] = [
   {
     id: "notif-1",
     kind: "mission.created",
+    priority: "high",
     headline: "Nouvelle mission : Parcelle 10612",
     metaParts: ["Estimation", "Secteur S2", "Échéance 18 mai"],
     createdAt: minutesAgo(5),
@@ -107,9 +127,10 @@ export const DEFAULT_NOTIFICATIONS: WorkerNotification[] = [
   },
   {
     id: "notif-2",
-    kind: "mission.modified",
-    headline: "Mission modifiée : Parcelle 10089",
-    metaParts: ["Calibre", "Secteur S1", "Échéance 22 mai"],
+    kind: "mission.deadline",
+    priority: "high",
+    headline: "Échéance modifiée : Parcelle 10089",
+    metaParts: ["Calibre", "Secteur S1", "Nouvelle échéance 22 mai"],
     createdAt: minutesAgo(42),
     read: false,
     jobId: "est-10089-2",
@@ -117,6 +138,7 @@ export const DEFAULT_NOTIFICATIONS: WorkerNotification[] = [
   {
     id: "notif-4",
     kind: "mission.created",
+    priority: "high",
     headline: "Nouvelle mission : Parcelle 10450",
     metaParts: ["Estimation", "Secteur S3", "Échéance 20 mai"],
     createdAt: hoursAgo(8),
@@ -125,8 +147,9 @@ export const DEFAULT_NOTIFICATIONS: WorkerNotification[] = [
   },
   {
     id: "notif-5",
-    kind: "mission.modified",
-    headline: "Mission modifiée : Parcelle 10374",
+    kind: "mission.objective",
+    priority: "high",
+    headline: "Objectif mis à jour : Parcelle 10374",
     metaParts: ["Estimation", "Secteur S2", "Objectif mis à jour"],
     createdAt: daysAgo(1),
     read: true,
@@ -134,13 +157,24 @@ export const DEFAULT_NOTIFICATIONS: WorkerNotification[] = [
   },
   {
     id: "notif-6",
-    kind: "alert.operational",
-    headline: "Échéance demain : Parcelle 10118",
-    metaParts: ["Estimation", "8 images restantes"],
+    kind: "alert.sync_pending",
+    priority: "info",
+    headline: "Synchronisation en attente",
+    metaParts: ["Parcelle 10118", "8 images restantes"],
     createdAt: daysAgo(1),
     read: true,
     expandedBody:
-      "La mission sur la parcelle 10118 arrive à échéance demain. Il reste 8 images à capturer.",
+      "Des images restent en attente de synchronisation pour la parcelle 10118. Elles seront envoyées dès que la connexion sera stable.",
+  },
+  {
+    id: "notif-8",
+    kind: "mission.completed",
+    priority: "info",
+    headline: "Mission terminée : Parcelle 10720",
+    metaParts: ["Estimation", "Secteur S1", "Envoyée au responsable"],
+    createdAt: daysAgo(2),
+    read: true,
+    jobId: "est-10720-2",
   },
 ];
 

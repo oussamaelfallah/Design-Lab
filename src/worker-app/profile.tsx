@@ -295,7 +295,7 @@ export function WorkerAppProfilePage({
             </>
           ) : (
             <>
-              {stackedRow("E-mail", profile.email)}
+              {stackedRow("Nom d’utilisateur", profile.username)}
               {stackedRow("Téléphone", profile.phone)}
             </>
           )}
@@ -551,9 +551,15 @@ export function WorkerAppProfilePage({
             <div className={styles.profileNameSheet}>
               <div className={styles.profileLanguageSheetHandle} aria-hidden="true" />
               <h4 id="profile-name-sheet-title" className={styles.profileLanguageSheetTitle}>
-                Modifier le nom
+                Modifier votre nom
               </h4>
+              <p className={styles.profileNameSheetText}>
+                Ce nom sera visible sur votre profil et pour votre responsable.
+              </p>
               <div className={styles.profileOutlinedField}>
+                <label className={styles.profileOutlinedLabel} htmlFor="profile-display-name">
+                  Nom complet
+                </label>
                 <input
                   id="profile-display-name"
                   ref={nameInputRef}
@@ -561,6 +567,7 @@ export function WorkerAppProfilePage({
                   type="text"
                   value={draftName}
                   aria-label="Nom"
+                  placeholder="Prénom et nom"
                   onChange={(event) => setDraftName(event.target.value)}
                   onKeyDown={(event) => {
                     if (event.key === "Enter") {
@@ -602,7 +609,7 @@ export function WorkerAppProfilePage({
                   disabled={!draftName.trim() || isSaving}
                   onClick={() => void saveName()}
                 >
-                  Enregistrer
+                  Mettre à jour
                 </button>
               </div>
             </div>
@@ -636,9 +643,12 @@ export function WorkerAppProfilePage({
         >
           <div className={styles.profileConfirmCard} onClick={(event) => event.stopPropagation()}>
             <h4 id="profile-logout-title" className={styles.profileConfirmTitle}>
-              Se déconnecter ?
+              Quitter la session ?
             </h4>
-            <p className={styles.profileConfirmText}>Voulez-vous vraiment vous déconnecter ?</p>
+            <p className={styles.profileConfirmText}>
+              Vous devrez saisir votre identifiant et votre mot de passe pour revenir sur
+              l’application.
+            </p>
             <div className={styles.profileConfirmActions}>
               <button className={styles.profileConfirmDanger} type="button" onClick={confirmLogout}>
                 Se déconnecter

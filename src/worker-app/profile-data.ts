@@ -3,7 +3,7 @@ export type WorkerLanguage = "fr" | "ar";
 export type WorkerProfile = {
   workerId: string;
   displayName: string;
-  email: string;
+  username: string;
   phone: string;
   managerName: string;
   role: string;
@@ -16,7 +16,7 @@ export const WORKER_PROFILE_STORAGE_KEY = "worker-app-profile-v2";
 export const DEFAULT_WORKER_PROFILE: WorkerProfile = {
   workerId: "worker-oussama",
   displayName: "Oussama Elfallah",
-  email: "oussama.elfallah@croplens.com",
+  username: "worker-1042",
   phone: "+212 6 12 34 56 78",
   managerName: "Nadia Benali",
   role: "Technicien",
@@ -45,10 +45,16 @@ export function loadStoredWorkerProfile(): WorkerProfile {
     if (!raw) return DEFAULT_WORKER_PROFILE;
 
     const parsed = JSON.parse(raw) as Partial<WorkerProfile>;
+    const legacyEmailUsername =
+      typeof (parsed as Partial<WorkerProfile> & { email?: string }).email === "string"
+        ? (parsed as Partial<WorkerProfile> & { email?: string }).email?.split("@")[0]
+        : undefined;
+
     return {
       ...DEFAULT_WORKER_PROFILE,
       ...parsed,
       displayName: parsed.displayName || DEFAULT_WORKER_PROFILE.displayName,
+      username: parsed.username || legacyEmailUsername || DEFAULT_WORKER_PROFILE.username,
       role:
         !parsed.role ||
         parsed.role.toLowerCase().includes("worker") ||

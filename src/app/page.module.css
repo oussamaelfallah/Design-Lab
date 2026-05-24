@@ -497,6 +497,75 @@
   color: var(--active-text);
 }
 
+.prototypeLoopToolbar {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 42px;
+  border: 1px solid var(--tab-border);
+  border-radius: 14px;
+  background: var(--tab-bg);
+  padding: 5px 6px 5px 12px;
+}
+
+.prototypeLoopToolbarCopy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.prototypeLoopToolbarLabel,
+.prototypeLoopToolbarStep {
+  overflow: hidden;
+  max-width: 180px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.prototypeLoopToolbarLabel {
+  color: var(--active-text);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.prototypeLoopToolbarStep {
+  color: var(--tabs-label);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.prototypeLoopToolbarActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.prototypeLoopToolbarButton {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--tab-text);
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-size: 20px;
+  font-variation-settings: "FILL" 1;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+}
+
+.prototypeLoopToolbarButton:hover {
+  border-color: var(--tab-hover-border);
+  background: var(--tab-hover-bg);
+  color: var(--active-text);
+}
+
 .frameViewRail {
   position: fixed;
   top: 50%;

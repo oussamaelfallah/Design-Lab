@@ -32,7 +32,10 @@ import {
   type BoiteFrameView,
   type BoitePreviewState,
 } from "../worker-app/boite";
-import { WorkerAppFullPrototypePage } from "../worker-app/full-prototype";
+import {
+  PROTOTYPE_LOOP_STEPS,
+  WorkerAppFullPrototypePage,
+} from "../worker-app/full-prototype";
 import { WorkerAppGetStartedPage } from "../worker-app/getstarted";
 import { WorkerAppGetStartedV2Page } from "../worker-app/getstarted-v2";
 import {
@@ -454,6 +457,34 @@ const boiteSystemFrames = [
     note: "No notifications at all.",
     frameView: "empty" as BoiteFrameView,
     previewState: "boite-empty" as BoitePreviewState,
+  },
+  {
+    id: "BS3",
+    title: "Boîte (Offline)",
+    note: "Cached feed warning when the worker is offline.",
+    frameView: "data" as BoiteFrameView,
+    previewState: "boite-offline" as BoitePreviewState,
+  },
+  {
+    id: "BS4",
+    title: "Boîte (Sync Failed)",
+    note: "Operational alert state for blocked synchronization.",
+    frameView: "data" as BoiteFrameView,
+    previewState: "boite-sync-failed" as BoitePreviewState,
+  },
+  {
+    id: "BS5",
+    title: "Boîte (Missions Empty)",
+    note: "Mission tab empty while operational alerts may still exist.",
+    frameView: "data" as BoiteFrameView,
+    previewState: "boite-missions-empty" as BoitePreviewState,
+  },
+  {
+    id: "BS6",
+    title: "Boîte (Alerts Empty)",
+    note: "Alerts tab empty while mission updates may still exist.",
+    frameView: "data" as BoiteFrameView,
+    previewState: "boite-alertes-empty" as BoitePreviewState,
   },
 ] as const;
 
@@ -1951,6 +1982,9 @@ export default function Home() {
 
   const [designSystemSpacingTab, setDesignSystemSpacingTab] =
     useState<DesignSystemFoundationTab>("primitive");
+  const [isPrototypeLoopPlaying, setIsPrototypeLoopPlaying] = useState(false);
+  const [prototypeLoopStepIndex, setPrototypeLoopStepIndex] = useState(0);
+  const [prototypeLoopRestartKey, setPrototypeLoopRestartKey] = useState(0);
   const [sidebarWidth, setSidebarWidth] = useState(300);
   const [isSidebarResizing, setIsSidebarResizing] = useState(false);
   const sidebarResizeStartXRef = useRef(0);
@@ -2025,6 +2059,15 @@ export default function Home() {
     testDs: "Test DS",
   };
   const activePageTitle = pageTitleByScreen[resolvedActiveScreen];
+  const prototypeLoopStep =
+    PROTOTYPE_LOOP_STEPS[prototypeLoopStepIndex % PROTOTYPE_LOOP_STEPS.length];
+
+  useEffect(() => {
+    if (resolvedActiveScreen !== "prototype") {
+      setIsPrototypeLoopPlaying(false);
+    }
+  }, [resolvedActiveScreen]);
+
   const openTravailFromBoite: HomeTravailNavigationHandler = (target) => {
     if (target.kind !== "detail") {
       return false;
@@ -3059,16 +3102,6 @@ export default function Home() {
                   </span>
                 </button>
                 <button
-                  className={`${styles.subTab} ${activeScreen === "boite" ? styles.activeSubTab : ""}`}
-                  type="button"
-                  onClick={() => {
-                    setActiveScreen("boite");
-                    setIsWorkerAppOpen(true);
-                  }}
-                >
-                  {WORKER_APP_BOITE_PAGE_NAME}
-                </button>
-                <button
                   className={`${styles.subTab} ${activeScreen === "profile" ? styles.activeSubTab : ""}`}
                   type="button"
                   onClick={() => {
@@ -3158,6 +3191,38 @@ export default function Home() {
                 </div>
               ) : null}
             </div>
+            {resolvedActiveScreen === "prototype" ? (
+              <div className={styles.prototypeLoopToolbar} aria-live="polite">
+                <div className={styles.prototypeLoopToolbarCopy}>
+                  <span className={styles.prototypeLoopToolbarLabel}>Prototype loop</span>
+                  <span className={styles.prototypeLoopToolbarStep}>{prototypeLoopStep.label}</span>
+                </div>
+                <div className={styles.prototypeLoopToolbarActions}>
+                  <button
+                    className={styles.prototypeLoopToolbarButton}
+                    type="button"
+                    aria-label={
+                      isPrototypeLoopPlaying ? "Pause prototype loop" : "Play prototype loop"
+                    }
+                    onClick={() => setIsPrototypeLoopPlaying((current) => !current)}
+                  >
+                    {isPrototypeLoopPlaying ? "pause" : "play_arrow"}
+                  </button>
+                  <button
+                    className={styles.prototypeLoopToolbarButton}
+                    type="button"
+                    aria-label="Restart prototype loop"
+                    onClick={() => {
+                      setPrototypeLoopStepIndex(0);
+                      setPrototypeLoopRestartKey((current) => current + 1);
+                      setIsPrototypeLoopPlaying(true);
+                    }}
+                  >
+                    restart_alt
+                  </button>
+                </div>
+              </div>
+            ) : null}
           </div>
           {resolvedActiveScreen === "home" && resolvedCanvasView !== "frames" ? (
             <div className={styles.frameViewRail} role="tablist" aria-label="Home states">
@@ -3300,6 +3365,10 @@ export default function Home() {
                 { label: "Alertes", frameView: "data" as BoiteFrameView, previewState: "boite-tab-alertes" as BoitePreviewState },
                 { label: "Loading", frameView: "loading" as BoiteFrameView, previewState: "boite-loading" as BoitePreviewState },
                 { label: "Empty", frameView: "empty" as BoiteFrameView, previewState: "boite-empty" as BoitePreviewState },
+                { label: "Offline", frameView: "data" as BoiteFrameView, previewState: "boite-offline" as BoitePreviewState },
+                { label: "Sync failed", frameView: "data" as BoiteFrameView, previewState: "boite-sync-failed" as BoitePreviewState },
+                { label: "Missions empty", frameView: "data" as BoiteFrameView, previewState: "boite-missions-empty" as BoitePreviewState },
+                { label: "Alerts empty", frameView: "data" as BoiteFrameView, previewState: "boite-alertes-empty" as BoitePreviewState },
               ].map((state) => (
                 <button
                   key={state.label}
@@ -3326,7 +3395,6 @@ export default function Home() {
                 { label: "Edit name", previewState: "profile-edit-name" as ProfilePreviewState, frameView: "data" as ProfileFrameView },
                 { label: "Language", previewState: "profile-language-sheet" as ProfilePreviewState, frameView: "data" as ProfileFrameView },
                 { label: "Logout", previewState: "profile-logout-dialog" as ProfilePreviewState, frameView: "data" as ProfileFrameView },
-                { label: "Saving", previewState: "profile-saving" as ProfilePreviewState, frameView: "data" as ProfileFrameView },
               ].map((state) => (
                 <button
                   key={state.label}
@@ -4497,6 +4565,11 @@ export default function Home() {
                 showDeviceFrame={showDeviceFrame}
                 theme={canvasTheme}
                 frameTheme={canvasFrameTheme}
+                isLoopPlaying={isPrototypeLoopPlaying}
+                loopStepIndex={prototypeLoopStepIndex}
+                loopRestartKey={prototypeLoopRestartKey}
+                onLoopPlayingChange={setIsPrototypeLoopPlaying}
+                onLoopStepIndexChange={setPrototypeLoopStepIndex}
               />
             </div>
           ) : resolvedActiveScreen === "home" ? (

@@ -9,7 +9,6 @@ const navItems: HomeNavItem[] = [
   { iconName: "home", label: "Accueil" },
   { iconName: "assignment", label: "Travail" },
   { iconName: "view_timeline", label: "Post Fixe" },
-  { iconName: "inbox", label: "Boîte" },
 ];
 
 type WorkerAppHomeBottomBarScreenProps = {

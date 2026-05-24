@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./worker-app.module.css";
-import { WorkerAppBoitePage } from "./boite";
 import {
   WorkerAppHomePage,
   type HomeTravailNavigationHandler,
@@ -17,14 +16,45 @@ type WorkerAppFullPrototypePageProps = {
   showDeviceFrame: boolean;
   theme: "dark" | "light";
   frameTheme?: "dark" | "light";
+  isLoopPlaying?: boolean;
+  loopStepIndex?: number;
+  loopRestartKey?: number;
+  onLoopPlayingChange?: (isPlaying: boolean) => void;
+  onLoopStepIndexChange?: (stepIndex: number) => void;
 };
 
 type PrototypeTab = "home" | "travail" | "postFixe" | "boite";
+
+export type PrototypeLoopStep = {
+  label: string;
+  tab: PrototypeTab;
+  isProfileOpen?: boolean;
+  travailPreviewState?: TravailPreviewState;
+  travailPreviewJobId?: string;
+};
+
+export const PROTOTYPE_LOOP_STEPS: PrototypeLoopStep[] = [
+  { label: "Today home", tab: "home" },
+  { label: "Work list", tab: "travail", travailPreviewState: "list-data" },
+  {
+    label: "Work detail",
+    tab: "travail",
+    travailPreviewState: "detail-overview",
+    travailPreviewJobId: "est-10112-2",
+  },
+  { label: "Poste fixe", tab: "postFixe" },
+  { label: "Worker profile", tab: "home", isProfileOpen: true },
+];
 
 export function WorkerAppFullPrototypePage({
   showDeviceFrame,
   theme,
   frameTheme,
+  isLoopPlaying = false,
+  loopStepIndex = 0,
+  loopRestartKey = 0,
+  onLoopPlayingChange,
+  onLoopStepIndexChange,
 }: WorkerAppFullPrototypePageProps) {
   const [activeTab, setActiveTab] = useState<PrototypeTab>("postFixe");
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -38,6 +68,34 @@ export function WorkerAppFullPrototypePage({
   const shouldShowPrototypeBottomBar =
     !(activeTab === "postFixe" && postFixeLayoutMode === "fullScreen") &&
     !(activeTab === "travail" && travailLayoutMode === "fullScreen");
+  const currentLoopStep = PROTOTYPE_LOOP_STEPS[loopStepIndex];
+
+  const applyLoopStep = (step: PrototypeLoopStep) => {
+    setActiveTab(step.tab);
+    setIsProfileOpen(Boolean(step.isProfileOpen));
+    setPostFixeLayoutMode("default");
+    setTravailLayoutMode("default");
+
+    if (step.tab === "travail") {
+      setTravailPreviewState(step.travailPreviewState ?? "list-data");
+      setTravailPreviewJobId(step.travailPreviewJobId);
+      return;
+    }
+
+    setTravailPreviewState("list-data");
+    setTravailPreviewJobId(undefined);
+  };
+
+  useEffect(() => {
+    if (!isLoopPlaying) return;
+
+    applyLoopStep(currentLoopStep);
+    const timer = window.setTimeout(() => {
+      onLoopStepIndexChange?.((loopStepIndex + 1) % PROTOTYPE_LOOP_STEPS.length);
+    }, 2200);
+
+    return () => window.clearTimeout(timer);
+  }, [currentLoopStep, isLoopPlaying, loopRestartKey, loopStepIndex, onLoopStepIndexChange]);
 
   const openTravailFromHome: HomeTravailNavigationHandler = (target: HomeTravailNavigationTarget) => {
     setIsProfileOpen(false);
@@ -89,14 +147,23 @@ export function WorkerAppFullPrototypePage({
             previewJobId={travailPreviewJobId}
             onLayoutModeChange={setTravailLayoutMode}
           />
-        ) : (
-          <WorkerAppBoitePage
+        ) : activeTab === "boite" ? (
+          <WorkerAppHomePage
             showDeviceFrame={false}
             theme={theme}
             frameTheme={frameTheme}
             embedded
-            onOpenProfile={() => setIsProfileOpen(true)}
             onOpenTravail={openTravailFromHome}
+            onOpenProfile={() => setIsProfileOpen(true)}
+          />
+        ) : (
+          <WorkerAppHomePage
+            showDeviceFrame={false}
+            theme={theme}
+            frameTheme={frameTheme}
+            embedded
+            onOpenTravail={openTravailFromHome}
+            onOpenProfile={() => setIsProfileOpen(true)}
           />
         )}
         {isProfileOpen ? (
@@ -113,12 +180,13 @@ export function WorkerAppFullPrototypePage({
         {shouldShowPrototypeBottomBar ? (
           <WorkerAppHomeBottomBarScreen
             activeIndex={
-              activeTab === "home" ? 0 : activeTab === "travail" ? 1 : activeTab === "postFixe" ? 2 : 3
+              activeTab === "home" ? 0 : activeTab === "travail" ? 1 : 2
             }
             onSelect={(index) => {
+              onLoopPlayingChange?.(false);
               setIsProfileOpen(false);
               const nextTab: PrototypeTab =
-                index === 0 ? "home" : index === 1 ? "travail" : index === 2 ? "postFixe" : "boite";
+                index === 0 ? "home" : index === 1 ? "travail" : "postFixe";
               setActiveTab(nextTab);
               if (nextTab === "travail") {
                 setTravailPreviewState("list-data");

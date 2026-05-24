@@ -8730,6 +8730,15 @@
   line-height: 1.15;
 }
 
+.profileNameSheetText {
+  margin: -4px 6px 18px;
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 400;
+  line-height: 1.45;
+}
+
 .profileNameSheetActions {
   display: flex;
   align-items: center;
@@ -8777,6 +8786,20 @@
   margin-top: 2px;
 }
 
+.profileOutlinedLabel {
+  position: absolute;
+  top: -7px;
+  left: 12px;
+  z-index: 1;
+  background: var(--ds-card);
+  color: var(--ds-brand);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 0 4px;
+}
+
 .profileOutlinedInput {
   width: 100%;
   height: 56px;
@@ -8789,6 +8812,11 @@
   font-weight: 500;
   line-height: 1.3;
   padding: 0 48px 0 16px;
+}
+
+.profileOutlinedInput::placeholder {
+  color: color-mix(in srgb, var(--ds-text-muted) 76%, transparent);
+  font-weight: 400;
 }
 
 .profileOutlinedInput:focus {
@@ -8990,7 +9018,7 @@
 }
 
 .secteursContent.boiteContent {
-  gap: 18px;
+  gap: 14px;
   padding-top: 16px;
   padding-bottom: 32px;
 }
@@ -9021,70 +9049,235 @@
   line-height: 1.3;
 }
 
-.boiteNotificationList {
-  overflow: hidden;
+.boiteBriefingCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid color-mix(in srgb, var(--ds-brand) 18%, var(--ds-border));
+  border-radius: var(--radius-2xl);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--ds-success-bg) 68%, var(--ds-card)) 0%,
+    var(--ds-card) 100%
+  );
+  padding: 14px;
+}
+
+.boiteBriefingTop,
+.boiteBriefingStats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.boiteBriefingEyebrow {
+  color: var(--ds-brand);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.boiteBriefingCount {
+  display: grid;
+  min-width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--ds-brand);
+  color: var(--ds-text-inverse);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.boiteBriefingCard h3 {
+  margin: 0;
+  color: var(--ds-text-primary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-title-large);
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.boiteBriefingCard p {
+  margin: 0;
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-body-secondary);
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.boiteBriefingStats {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+.boiteBriefingStats span {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ds-brand) 10%, var(--ds-card));
+  color: var(--ds-success-text);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 7px 9px;
+}
+
+.boiteStatusBanner {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  border: 1px solid color-mix(in srgb, var(--ds-warning-text) 20%, transparent);
+  border-radius: 14px;
+  background: var(--ds-warning-bg);
+  color: var(--ds-warning-text);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  line-height: 1.35;
+  padding: 10px 12px;
+}
+
+.boiteStatusBanner .googleSymbol {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  font-size: 18px;
+  font-variation-settings: "FILL" 0;
+  line-height: 1;
+}
+
+.boiteStatusBannerError {
+  border-color: color-mix(in srgb, var(--ds-error-text) 20%, transparent);
+  background: var(--ds-error-bg);
+  color: var(--ds-error-text);
+}
+
+.boiteTabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 2px 0;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.boiteTabs::-webkit-scrollbar {
+  display: none;
+}
+
+.boiteTab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 38px;
+  flex: 1 0 0;
+  border: 1px solid var(--ds-border);
+  border-radius: 999px;
+  background: var(--ds-card);
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  line-height: 1;
+  padding: 0 12px;
+}
+
+.boiteTab .googleSymbol {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+  font-variation-settings: "FILL" 0;
+  line-height: 1;
+}
+
+.boiteTabActive {
+  border-color: color-mix(in srgb, var(--ds-brand) 30%, var(--ds-border));
+  background: var(--ds-success-bg);
+  color: var(--ds-success-text);
+  box-shadow: none;
+}
+
+.boiteTabCount {
+  display: grid;
+  min-width: 18px;
+  height: 18px;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--ds-brand);
+  color: var(--ds-text-inverse);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  padding: 0 5px;
+}
+
+.boiteUpdateList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.boiteUpdateCard {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  align-items: start;
+  column-gap: 10px;
+  width: 100%;
+  min-height: 82px;
+  border: 1px solid var(--ds-border);
   border-radius: var(--radius-2xl);
   background: var(--ds-card);
-}
-
-.boiteNotificationList::before,
-.boiteNotificationList::after {
-  content: "";
-  display: block;
-  height: 16px;
-}
-
-.boiteNotificationRow {
-  position: relative;
-  display: grid;
-  grid-template-columns: 16px 36px minmax(0, 1fr);
-  align-items: center;
-  column-gap: 3px;
-  width: 100%;
-  min-height: 64px;
-  border: none;
-  border-bottom: 1px solid #f2f2f2;
-  background: transparent;
-  padding: 12px 16px;
+  padding: 12px;
   text-align: left;
   cursor: pointer;
-  transition: background-color 0.2s;
+  box-shadow: 0 1px 4px rgb(15 23 42 / 5%);
+  transition:
+    border-color 0.2s,
+    background-color 0.2s;
 }
 
-.boiteNotificationRow:last-child {
-  border-bottom: none;
+.boiteUpdateCardHigh {
+  border-color: color-mix(in srgb, var(--ds-warning-text) 18%, var(--ds-border));
+  background: color-mix(in srgb, var(--ds-warning-bg) 42%, var(--ds-card));
 }
 
-.boiteNotificationRow:active {
+.boiteUpdateCard:active {
   background-color: var(--ds-status-not-started-bg);
 }
 
-.boiteUnreadIndicator {
-  width: 16px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .boiteUnreadDot {
-  width: 8px;
-  height: 8px;
+  display: block;
+  width: 7px;
+  height: 7px;
   border-radius: 999px;
-  background: #34c759; /* Green dot */
+  background: var(--ds-brand);
 }
 
-.boiteNotificationIconWrap {
+.boiteUpdateCardIconWrap {
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  background: #f5f5f5;
-  color: #8a8a8a;
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  background: var(--ds-status-not-started-bg);
+  color: var(--ds-text-secondary);
 }
 
-.boiteNotificationIconWrap .googleSymbol {
+.boiteUpdateCardHigh .boiteUpdateCardIconWrap {
+  background: var(--ds-warning-bg);
+  color: var(--ds-warning-text);
+}
+
+.boiteUpdateCardIconWrap .googleSymbol {
   width: 20px;
   height: 20px;
   font-size: 20px;
@@ -9092,65 +9285,85 @@
   line-height: 1;
 }
 
-.boiteNotificationBody {
+.boiteUpdateCardBody {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
   min-width: 0;
-  padding-right: 73px;
 }
 
-.boiteNotificationTitle {
+.boiteUpdateMetaLine {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  color: var(--ds-text-muted);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.boiteUpdateMetaLabel {
+  color: var(--ds-brand);
+}
+
+.boiteUpdateMetaDot {
+  width: 3px;
+  height: 3px;
+  border-radius: 999px;
+  background: currentcolor;
+}
+
+.boiteUpdateTitle {
   margin: 0;
   color: var(--ds-text-primary);
   font-family: var(--font-geist-sans), sans-serif;
   font-size: 14px;
-  font-weight: 700;
-  line-height: 1.3;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-weight: 800;
+  line-height: 1.25;
 }
 
-.boiteNotificationRowRead .boiteNotificationTitle {
+.boiteNotificationRowRead .boiteUpdateTitle {
   color: var(--ds-text-secondary);
-  font-weight: 400;
+  font-weight: 700;
 }
 
-.boiteNotificationSubtitle {
+.boiteUpdateSubtitle {
   margin: 0;
-  color: var(--ds-text-muted);
+  color: var(--ds-text-secondary);
   font-family: var(--font-geist-sans), sans-serif;
   font-size: 12px;
   font-weight: 400;
   line-height: 1.3;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-.boiteNotificationMeta {
-  position: absolute;
-  top: 50%;
-  right: 16px;
-  transform: translateY(-50%);
+.boiteUpdateDetail {
+  margin: 4px 0 0;
+  color: var(--ds-text-secondary);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.boiteUpdateCardSide {
   display: flex;
+  min-width: 54px;
+  flex-direction: column;
   align-items: flex-end;
-  justify-content: flex-end;
-  width: max-content;
-  max-width: 64px;
+  gap: 10px;
 }
 
-.boiteNotificationTimestamp {
-  color: var(--ds-text-muted);
+.boiteUpdateAction {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ds-brand) 10%, var(--ds-card));
+  color: var(--ds-success-text);
   font-family: var(--font-geist-sans), sans-serif;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 800;
   line-height: 1;
-  text-align: right;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  padding: 7px 9px;
 }
 
 .boiteEmptyState {
