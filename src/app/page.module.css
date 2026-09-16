@@ -605,6 +605,53 @@
   background: var(--tab-hover-bg);
 }
 
+/* Grouped rail: stays inside the viewport and scrolls if the groups get tall. */
+.frameViewRailGrouped {
+  gap: 0;
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+}
+
+.frameViewRailGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.frameViewRailGroup + .frameViewRailGroup {
+  margin-top: 8px;
+  border-top: 1px solid var(--tab-border);
+  padding-top: 8px;
+}
+
+.frameViewRailGroupLabel {
+  margin: 0;
+  color: var(--tab-text);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  opacity: 0.55;
+  padding: 4px 12px 2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.frameViewRailSegment {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+}
+
+.frameViewRailSegment .frameViewRailTab {
+  min-width: 0;
+  text-align: center;
+}
+
+.frameViewRailGrouped .frameViewRailTab {
+  padding: 9px 12px;
+  white-space: nowrap;
+}
+
 .frameViewRailTabActive {
   border-color: var(--active-border);
   background: var(--active-bg);
@@ -650,6 +697,24 @@
   .frameViewRailTab {
     min-width: 0;
     text-align: center;
+  }
+
+  .frameViewRailGrouped {
+    flex-wrap: wrap;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .frameViewRailGroup {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .frameViewRailGroup + .frameViewRailGroup {
+    margin-top: 0;
+    border-top: 0;
+    padding-top: 0;
   }
 }
 

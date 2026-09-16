@@ -87,7 +87,8 @@ export type TravailPreviewState =
   | "detail-map"
   | "detail-gallery"
   | "detail-sheet-parcel"
-  | "detail-sheet-config";
+  | "detail-sheet-config"
+  | "detail-sheet-results";
 
 type WorkerAppTravailPageProps = {
   showDeviceFrame: boolean;
@@ -98,8 +99,12 @@ type WorkerAppTravailPageProps = {
   previewState?: TravailPreviewState;
   previewJobId?: string;
   isInteractive?: boolean;
+  /** A = dominant summary + distribution sheet, B = dominant hero + other calibres inline. */
+  resultsDesign?: CalibreResultsDesign;
   onLayoutModeChange?: (mode: "default" | "fullScreen") => void;
 };
+
+export type CalibreResultsDesign = "A" | "B";
 
 function getCurrentIsoDate(): string {
   const now = new Date();
@@ -178,7 +183,19 @@ type EstimationDetailSeed = {
   parcel: TravailJobDetail["parcel"];
 };
 
-type CalibreDetailSeed = EstimationDetailSeed;
+// Parcel-level only: sector/domain comparisons belong to the manager product.
+// `classes` follows the variety's grading table (2–10 classes), ordered C1 first
+// (largest fruit); shares must add up to 100.
+type CalibreResults = {
+  classes: { range: string; share: number }[];
+  averageDiameterMm: number;
+  updatedLabel: string;
+};
+
+// null = nothing synced yet.
+type CalibreDetailSeed = EstimationDetailSeed & {
+  results: CalibreResults | null;
+};
 
 const ESTIMATION_DETAILS: EstimationDetailSeed[] = [
   {
@@ -351,6 +368,22 @@ const CALIBRE_DETAILS: CalibreDetailSeed[] = [
     lastCaptureLabel: "Il y a 25 min",
     settings: { mode: "Manuel" },
     parcel: { fruitType: "Orange", variety: "Navel Late", rootstock: "Carrizo", treeCount: 286, spacing: "6 m × 4 m" },
+    results: {
+      classes: [
+        { range: "> 88 mm", share: 2 },
+        { range: "84–88 mm", share: 5 },
+        { range: "81–84 mm", share: 9 },
+        { range: "77–81 mm", share: 14 },
+        { range: "73–77 mm", share: 22 },
+        { range: "70–73 mm", share: 18 },
+        { range: "67–70 mm", share: 13 },
+        { range: "64–67 mm", share: 9 },
+        { range: "62–64 mm", share: 5 },
+        { range: "< 62 mm", share: 3 },
+      ],
+      averageDiameterMm: 74,
+      updatedLabel: "Il y a 25 min",
+    },
   },
   {
     id: "cal-20240-1",
@@ -359,6 +392,19 @@ const CALIBRE_DETAILS: CalibreDetailSeed[] = [
     lastCaptureLabel: "Il y a 1 h",
     settings: { mode: "Sur plan" },
     parcel: { fruitType: "Citron", variety: "Eureka", rootstock: "Citrange Troyer", treeCount: 194, spacing: "5 m × 3 m" },
+    results: {
+      classes: [
+        { range: "> 72 mm", share: 6 },
+        { range: "67–72 mm", share: 14 },
+        { range: "63–67 mm", share: 24 },
+        { range: "58–63 mm", share: 26 },
+        { range: "53–58 mm", share: 17 },
+        { range: "48–53 mm", share: 9 },
+        { range: "< 48 mm", share: 4 },
+      ],
+      averageDiameterMm: 62,
+      updatedLabel: "Il y a 1 h",
+    },
   },
   {
     id: "cal-20410-2",
@@ -367,6 +413,16 @@ const CALIBRE_DETAILS: CalibreDetailSeed[] = [
     lastCaptureLabel: "Il y a 3 h",
     settings: { mode: "Manuel" },
     parcel: { fruitType: "Mandarine", variety: "Nadorcott", rootstock: "Poncirus", treeCount: 248, spacing: "5 m × 3.5 m" },
+    results: {
+      classes: [
+        { range: "> 63 mm", share: 18 },
+        { range: "58–63 mm", share: 34 },
+        { range: "54–58 mm", share: 32 },
+        { range: "< 54 mm", share: 16 },
+      ],
+      averageDiameterMm: 58,
+      updatedLabel: "Il y a 3 h",
+    },
   },
   {
     id: "cal-20622-1",
@@ -375,8 +431,22 @@ const CALIBRE_DETAILS: CalibreDetailSeed[] = [
     lastCaptureLabel: "Il y a 40 min",
     settings: { mode: "Manuel" },
     parcel: { fruitType: "Pamplemousse", variety: "Star Ruby", rootstock: "Swingle", treeCount: 132, spacing: "7 m × 5 m" },
+    // Nothing synced yet, so the results section shows its empty state.
+    results: null,
   },
 ];
+
+function getDominantCalibre(results: CalibreResults) {
+  const index = results.classes.reduce(
+    (best, calibreClass, i) => (calibreClass.share > results.classes[best].share ? i : best),
+    0
+  );
+  return { index, ...results.classes[index] };
+}
+
+function getCalibreResults(jobId: string): CalibreDetailSeed["results"] {
+  return CALIBRE_DETAILS.find((d) => d.id === jobId)?.results ?? null;
+}
 
 function buildTravailJobs(todayIso: string): TravailJob[] {
   const year = Number(todayIso.slice(0, 4));
@@ -404,8 +474,7 @@ function buildTravailJobs(todayIso: string): TravailJob[] {
     { id: "cal-20518-1", type: "calibre", parcelName: "Parcelle 20518", sectorName: "Secteur S5", year, yearlySequence: 1, capturedImages: 86, syncedImages: 42, targetImages: 190, dueDate: addDays(todayIso, -2) },
     { id: "cal-20240-1", type: "calibre", parcelName: "Parcelle 20240", sectorName: "Secteur S1", year, yearlySequence: 1, capturedImages: 74, syncedImages: 74, targetImages: 120, dueDate: addDays(todayIso, 1) },
     { id: "cal-20410-2", type: "calibre", parcelName: "Parcelle 20410", sectorName: "Secteur S6", year, yearlySequence: 2, capturedImages: 110, syncedImages: 110, targetImages: 110, dueDate: addDays(todayIso, -3) },
-    { id: "cal-20622-1", type: "calibre", parcelName: "Parcelle 20622", sectorName: "Secteur S3", year, yearlySequence: 1, capturedImages: 28, syncedImages: 0, targetImages: 140, dueDate: addDays(todayIso, 6) },
-  ];
+    { id: "cal-20622-1", type: "calibre", parcelName: "Parcelle 20622", sectorName: "Secteur S3", year, yearlySequence: 1, capturedImages: 28, syncedImages: 0, targetImages: 140, dueDate: addDays(todayIso, 6) },  ];
 
   return seeds.map((seed) => {
     const remainingImages = Math.max(seed.targetImages - seed.capturedImages, 0);
@@ -507,7 +576,8 @@ function shouldOpenDetailForPreview(previewState?: TravailPreviewState): boolean
     previewState === "detail-map" ||
     previewState === "detail-gallery" ||
     previewState === "detail-sheet-parcel" ||
-    previewState === "detail-sheet-config"
+    previewState === "detail-sheet-config" ||
+    previewState === "detail-sheet-results"
   );
 }
 
@@ -530,6 +600,7 @@ export function WorkerAppTravailPage({
   previewState,
   previewJobId,
   isInteractive = true,
+  resultsDesign = "A",
   onLayoutModeChange,
 }: WorkerAppTravailPageProps) {
   const [syncStateIndex, setSyncStateIndex] = useState(2);
@@ -571,6 +642,7 @@ export function WorkerAppTravailPage({
   const [isDetailScrolled, setIsDetailScrolled] = useState(false);
   const [isParcelleSheetOpen, setIsParcelleSheetOpen] = useState(false);
   const [isJobConfigSheetOpen, setIsJobConfigSheetOpen] = useState(false);
+  const [isCalibreSheetOpen, setIsCalibreSheetOpen] = useState(previewState === "detail-sheet-results");
   const detailContentRef = useRef<HTMLDivElement>(null);
   const syncState = syncStates[syncStateIndex];
   const isOffline = syncState.offline;
@@ -771,6 +843,140 @@ export function WorkerAppTravailPage({
     </div>
   );
 
+  const renderCalibreResults = (job: TravailJob) => {
+    const results = getCalibreResults(job.id);
+    const isFinal = job.status === "done";
+
+    if (!results) {
+      return (
+        <section className={styles.travailDetailSection}>
+          <h3 className={styles.posteSectionTitle}>Résultats</h3>
+          <div className={`${styles.travailProgressCard} ${styles.calibreResultsPlaceholder}`}>
+            <span className={styles.calibreResultsPlaceholderIcon} aria-hidden="true">
+              straighten
+            </span>
+            <div className={styles.calibreResultsPlaceholderText}>
+              <strong>Pas encore de résultats</strong>
+              <span>Les calibres s’afficheront après la synchronisation des premières captures.</span>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    const dominant = getDominantCalibre(results);
+    const titleRow = (
+      <div className={styles.calibreResultsTitleRow}>
+        <h3 className={styles.posteSectionTitle}>Résultats</h3>
+        <span
+          className={`${styles.calibreResultsBadge} ${isFinal ? styles.calibreResultsBadgeFinal : ""}`}
+        >
+          {isFinal ? "Final" : "Provisoire"}
+        </span>
+      </div>
+    );
+    const footnote = (
+      <p className={styles.calibreResultsFootnote}>
+        Mis à jour {results.updatedLabel.toLocaleLowerCase("fr-FR")}
+        {isFinal ? "" : " • évolue avec les nouvelles captures"}
+      </p>
+    );
+
+    // Design B: dominant calibre as the hero, the other calibres listed underneath (C1 first).
+    if (resultsDesign === "B") {
+      const others = results.classes
+        .map((calibreClass, index) => ({ ...calibreClass, index }))
+        .filter((calibreClass) => calibreClass.index !== dominant.index);
+      return (
+        <section className={styles.travailDetailSection}>
+          {titleRow}
+          <div className={`${styles.posteConfigCard} ${styles.calibreResultsCard}`}>
+            <div className={styles.calibreHero}>
+              <span className={styles.calibreHeroLabel}>Calibre dominant</span>
+              <div className={styles.calibreHeroMain}>
+                <span className={styles.calibreHeroCode}>C{dominant.index + 1}</span>
+                <div className={styles.calibreHeroText}>
+                  <strong>{dominant.range}</strong>
+                </div>
+                <span className={styles.calibreHeroShare}>
+                  {dominant.share}
+                  <small>%</small>
+                </span>
+              </div>
+              <p className={styles.calibreHeroMeta}>
+                Diamètre moyen {results.averageDiameterMm} mm
+              </p>
+            </div>
+
+            <div className={styles.travailDetailDivider} />
+
+            <div className={styles.calibreOthers}>
+              <span className={styles.calibreOthersLabel}>Autres calibres</span>
+              <ol className={styles.calibreOthersList}>
+                {others.map((calibreClass) => (
+                  <li key={calibreClass.range} className={styles.calibreOthersRow}>
+                    <span className={styles.calibreOthersCode}>C{calibreClass.index + 1}</span>
+                    <span className={styles.calibreOthersRange}>{calibreClass.range}</span>
+                    <strong className={styles.calibreOthersShare}>
+                      {calibreClass.share}
+                      {" "}%
+                    </strong>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
+          {footnote}
+        </section>
+      );
+    }
+
+    return (
+      <section className={styles.travailDetailSection}>
+        {titleRow}
+        <div className={`${styles.posteConfigCard} ${styles.calibreResultsCard}`}>
+          <div className={styles.calibreDominant}>
+            <span className={styles.calibreDominantCode}>C{dominant.index + 1}</span>
+            <div className={styles.calibreDominantText}>
+              <span>Calibre dominant</span>
+              <strong>{dominant.range}</strong>
+            </div>
+            <span className={styles.calibreDominantShare}>
+              {dominant.share}
+              <small>%</small>
+            </span>
+          </div>
+
+          <div className={styles.travailDetailDivider} />
+          {renderDetailRows([
+            { label: "Diamètre moyen", value: `${results.averageDiameterMm} mm` },
+          ])}
+          <div className={styles.travailDetailDivider} />
+
+          <button
+            type="button"
+            className={`${styles.travailParcelleNavInline} ${styles.calibreNavRow}`}
+            onClick={() => setIsCalibreSheetOpen(true)}
+            aria-label="Voir la répartition par calibre"
+          >
+            <div className={styles.travailParcelleNavIcon} aria-hidden="true">
+              <span>format_list_numbered</span>
+            </div>
+            <div className={styles.travailParcelleNavText}>
+              <strong>Répartition par calibre</strong>
+              <span>
+                {results.classes.length} calibres • {results.classes[0].range} à{" "}
+                {results.classes[results.classes.length - 1].range}
+              </span>
+            </div>
+            <span className={styles.travailParcelleNavChevron} aria-hidden="true">chevron_right</span>
+          </button>
+        </div>
+        {footnote}
+      </section>
+    );
+  };
+
   const openTravailDetail = (job: TravailJob) => {
     setSelectedTravailJob(job);
     setActiveDetailTab("overview");
@@ -781,6 +987,7 @@ export function WorkerAppTravailPage({
     setIsCameraDemoOpen(false);
     setIsParcelleSheetOpen(false);
     setIsJobConfigSheetOpen(false);
+    setIsCalibreSheetOpen(false);
   };
 
   const closeTravailDetail = () => {
@@ -793,6 +1000,7 @@ export function WorkerAppTravailPage({
     setIsCameraDemoOpen(false);
     setIsParcelleSheetOpen(false);
     setIsJobConfigSheetOpen(false);
+    setIsCalibreSheetOpen(false);
   };
 
   const handleDetailScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
@@ -841,6 +1049,7 @@ export function WorkerAppTravailPage({
     setIsDetailScrolled(false);
     setIsParcelleSheetOpen(previewState === "detail-sheet-parcel");
     setIsJobConfigSheetOpen(previewState === "detail-sheet-config");
+    setIsCalibreSheetOpen(previewState === "detail-sheet-results");
   }, [isInteractive, previewJob, previewSearchQuery, previewState]);
 
   useEffect(() => {
@@ -992,6 +1201,9 @@ export function WorkerAppTravailPage({
                           </div>
                         </section>
                       ) : null}
+
+                      {/* ── Résultats (calibre only) ── */}
+                      {selectedTravailJob.type === "calibre" ? renderCalibreResults(selectedTravailJob) : null}
 
                       {/* ── Informations ── */}
                       <section className={styles.travailDetailSection}>
@@ -1187,7 +1399,7 @@ export function WorkerAppTravailPage({
                   )}
                 </div>
 
-                {!isParcelleSheetOpen ? (
+                {!isParcelleSheetOpen && !isCalibreSheetOpen ? (
                 <div className={styles.travailDetailFloatingBar} aria-label={`Actions ${selectedJobTypeLabel.toLocaleLowerCase("fr-FR")}`}>
                   <div className={styles.travailDetailViewTabs} role="tablist" aria-label={`Vue ${selectedJobTypeLabel.toLocaleLowerCase("fr-FR")}`}>
                     {detailTabs.map((tab) => (
@@ -1347,6 +1559,65 @@ export function WorkerAppTravailPage({
                     </div>
                   </div>
                 ) : null}
+                {isCalibreSheetOpen && selectedTravailJob.type === "calibre" ? (() => {
+                  const results = getCalibreResults(selectedTravailJob.id);
+                  if (!results) return null;
+                  const dominant = getDominantCalibre(results);
+                  const isFinal = selectedTravailJob.status === "done";
+                  return (
+                    <div
+                      className={styles.travailParcelleSheetOverlay}
+                      role="dialog"
+                      aria-modal="true"
+                      aria-label="Répartition par calibre"
+                      onClick={() => setIsCalibreSheetOpen(false)}
+                    >
+                      <div
+                        className={styles.travailParcelleSheet}
+                        onClick={(event) => event.stopPropagation()}
+                      >
+                        <div className={styles.travailParcelleSheetHandle} aria-hidden="true" />
+                        <div className={styles.travailParcelleSheetHeader}>
+                          <div className={styles.travailParcelleSheetHeaderIcon} aria-hidden="true">
+                            <span>format_list_numbered</span>
+                          </div>
+                          <div className={styles.travailParcelleSheetHeaderText}>
+                            <h3>Répartition par calibre</h3>
+                            <p>
+                              {selectedTravailJob.displayTitle}
+                            </p>
+                          </div>
+                          <span className={styles.travailParcelleSheetTag}>{isFinal ? "Final" : "Provisoire"}</span>
+                        </div>
+                        <div className={styles.calibreSheetColumns} aria-hidden="true">
+                          <span>Calibre</span>
+                          <span>Part</span>
+                        </div>
+                        {/* Grading table order: C1 (largest) at the top. */}
+                        <ol className={styles.calibreSheetList}>
+                          {results.classes.map((calibreClass, index) => {
+                            const isDominant = index === dominant.index;
+                            return (
+                              <li
+                                key={calibreClass.range}
+                                className={`${styles.calibreSheetRow} ${isDominant ? styles.calibreSheetRowDominant : ""}`}
+                              >
+                                <span className={styles.calibreSheetCode}>C{index + 1}</span>
+                                <span className={styles.calibreSheetRange}>
+                                  <strong>{calibreClass.range}</strong>
+                                  {isDominant ? <span className={styles.calibreSheetDominantTag}>Dominant</span> : null}
+                                </span>
+                                <span className={styles.calibreSheetValue}>
+                                  <strong>{calibreClass.share}{" "}%</strong>
+                                </span>
+                              </li>
+                            );
+                          })}
+                        </ol>
+                      </div>
+                    </div>
+                  );
+                })() : null}
                 {isCameraDemoOpen ? (
                   <div className={styles.travailCameraOverlay} role="dialog" aria-modal="true">
                     <div className={styles.travailCameraHeader}>

@@ -57,7 +57,12 @@ import {
   type ProfilePreviewState,
 } from "../worker-app/profile";
 import { WorkerAppSynchronisationPage } from "../worker-app/synchronisation";
-import { TravailFrameView, TravailPreviewState, WorkerAppTravailPage } from "../worker-app/travail";
+import {
+  TravailFrameView,
+  TravailPreviewState,
+  WorkerAppTravailPage,
+  type CalibreResultsDesign,
+} from "../worker-app/travail";
 
 const posteFixeComponentStates = [
   {
@@ -854,6 +859,56 @@ const travailCoreFrames = [
     frameView: "data" as TravailFrameView,
     previewState: "detail-sheet-config" as TravailPreviewState,
   },
+  {
+    id: "T11",
+    title: "Calibre Detail (Résultats · Provisoire)",
+    note: "In-progress calibre job with a provisional 10-class distribution.",
+    frameView: "data" as TravailFrameView,
+    previewState: "detail-overview" as TravailPreviewState,
+    previewJobId: "cal-20518-1",
+  },
+  {
+    id: "T12",
+    title: "Calibre Detail (Résultats · Final)",
+    note: "Completed calibre job with a final 4-class distribution.",
+    frameView: "data" as TravailFrameView,
+    previewState: "detail-overview" as TravailPreviewState,
+    previewJobId: "cal-20410-2",
+  },
+  {
+    id: "T13",
+    title: "Calibre Detail (Résultats · Empty)",
+    note: "No synced captures yet, so no caliber results.",
+    frameView: "data" as TravailFrameView,
+    previewState: "detail-overview" as TravailPreviewState,
+    previewJobId: "cal-20622-1",
+  },
+  {
+    id: "T14",
+    title: "Répartition Sheet (10 calibres)",
+    note: "Full calibre list opened from the results card, C1 at the top.",
+    frameView: "data" as TravailFrameView,
+    previewState: "detail-sheet-results" as TravailPreviewState,
+    previewJobId: "cal-20518-1",
+  },
+  {
+    id: "T15",
+    title: "Design B · Dominant + autres (10 calibres)",
+    note: "Dominant calibre on top, the other nine listed underneath.",
+    frameView: "data" as TravailFrameView,
+    previewState: "detail-overview" as TravailPreviewState,
+    previewJobId: "cal-20518-1",
+    resultsDesign: "B" as CalibreResultsDesign,
+  },
+  {
+    id: "T16",
+    title: "Design B · Dominant + autres (4 calibres)",
+    note: "Short grading table, final results.",
+    frameView: "data" as TravailFrameView,
+    previewState: "detail-overview" as TravailPreviewState,
+    previewJobId: "cal-20410-2",
+    resultsDesign: "B" as CalibreResultsDesign,
+  },
 ] as const;
 
 const travailCoreFrameGroups = [
@@ -874,6 +929,18 @@ const travailCoreFrameGroups = [
     title: "Detail Sheets",
     note: "Supporting sheets opened from the estimation overview.",
     frameIds: ["T09", "T10"],
+  },
+  {
+    id: "calibre-results",
+    title: "Calibre Results · Design A",
+    note: "Dominant calibre summary; full distribution in a sheet.",
+    frameIds: ["T11", "T12", "T14", "T13"],
+  },
+  {
+    id: "calibre-results-b",
+    title: "Calibre Results · Design B",
+    note: "Dominant calibre on top, other calibres listed underneath.",
+    frameIds: ["T15", "T16"],
   },
 ] as const;
 
@@ -919,6 +986,35 @@ const travailCardStateFrames = [
     previewJobId: "est-10300-1",
   },
 ] as const;
+
+// State rail groups for the Travail canvas. Detail states open a specific calibre job
+// (see CALIBRE_DETAILS in travail.tsx) so each result shape is one click away.
+type TravailRailState = {
+  label: string;
+  frameView: TravailFrameView;
+  previewState?: TravailPreviewState;
+  previewJobId?: string;
+};
+
+const travailRailGroups: { title: string; states: TravailRailState[] }[] = [
+  {
+    title: "List",
+    states: [
+      { label: "Design", frameView: "data" },
+      { label: "Loading", frameView: "loading" },
+      { label: "Empty", frameView: "empty" },
+    ],
+  },
+  {
+    title: "Calibre results",
+    states: [
+      { label: "Results (4 classes)", frameView: "data", previewState: "detail-overview", previewJobId: "cal-20410-2" },
+      { label: "Results (10 classes)", frameView: "data", previewState: "detail-overview", previewJobId: "cal-20518-1" },
+      { label: "Distribution sheet", frameView: "data", previewState: "detail-sheet-results", previewJobId: "cal-20518-1" },
+      { label: "No results", frameView: "data", previewState: "detail-overview", previewJobId: "cal-20622-1" },
+    ],
+  },
+];
 
 const travailSystemFrames = [
   {
@@ -1963,6 +2059,7 @@ export default function Home() {
   const [travailFrameView, setTravailFrameView] = useState<TravailFrameView>("data");
   const [travailPreviewState, setTravailPreviewState] = useState<TravailPreviewState | undefined>();
   const [travailPreviewJobId, setTravailPreviewJobId] = useState<string | undefined>();
+  const [travailResultsDesign, setTravailResultsDesign] = useState<CalibreResultsDesign>("A");
   const [boiteFrameView, setBoiteFrameView] = useState<BoiteFrameView>("data");
   const [boitePreviewState, setBoitePreviewState] = useState<BoitePreviewState>("boite-data");
   const [profileFrameView, setProfileFrameView] = useState<ProfileFrameView>("data");
@@ -3322,40 +3419,60 @@ export default function Home() {
               </button>
             </div>
           ) : resolvedActiveScreen === "travail" && resolvedCanvasView !== "frames" ? (
-            <div className={styles.frameViewRail} role="tablist" aria-label="Travail states">
-              <button
-                type="button"
-                role="tab"
-                aria-selected={travailFrameView === "data"}
-                className={`${styles.frameViewRailTab} ${
-                  travailFrameView === "data" ? styles.frameViewRailTabActive : ""
-                }`}
-                onClick={() => setTravailFrameView("data")}
-              >
-                Design
-              </button>
-              <button
-                type="button"
-                role="tab"
-                aria-selected={travailFrameView === "loading"}
-                className={`${styles.frameViewRailTab} ${
-                  travailFrameView === "loading" ? styles.frameViewRailTabActive : ""
-                }`}
-                onClick={() => setTravailFrameView("loading")}
-              >
-                Loading
-              </button>
-              <button
-                type="button"
-                role="tab"
-                aria-selected={travailFrameView === "empty"}
-                className={`${styles.frameViewRailTab} ${
-                  travailFrameView === "empty" ? styles.frameViewRailTabActive : ""
-                }`}
-                onClick={() => setTravailFrameView("empty")}
-              >
-                Empty
-              </button>
+            <div className={`${styles.frameViewRail} ${styles.frameViewRailGrouped}`} aria-label="Travail states">
+              <div className={styles.frameViewRailGroup} role="group" aria-label="Results design">
+                <p className={styles.frameViewRailGroupLabel}>Results design</p>
+                <div className={styles.frameViewRailSegment}>
+                  {(["A", "B"] as const).map((design) => (
+                    <button
+                      key={design}
+                      type="button"
+                      aria-pressed={travailResultsDesign === design}
+                      title={design === "A" ? "Dominant summary + distribution sheet" : "Dominant on top, others listed underneath"}
+                      className={`${styles.frameViewRailTab} ${
+                        travailResultsDesign === design ? styles.frameViewRailTabActive : ""
+                      }`}
+                      onClick={() => {
+                        setTravailResultsDesign(design);
+                        // The distribution sheet only exists in design A.
+                        if (design !== "A" && travailPreviewState === "detail-sheet-results") {
+                          setTravailPreviewState("detail-overview");
+                        }
+                      }}
+                    >
+                      Design {design}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {travailRailGroups.map((group) => (
+                <div key={group.title} className={styles.frameViewRailGroup} role="group" aria-label={group.title}>
+                  <p className={styles.frameViewRailGroupLabel}>{group.title}</p>
+                  {group.states
+                    .filter((state) => travailResultsDesign === "A" || state.previewState !== "detail-sheet-results")
+                    .map((state) => {
+                    const isActive =
+                      travailFrameView === state.frameView &&
+                      travailPreviewState === state.previewState &&
+                      travailPreviewJobId === state.previewJobId;
+                    return (
+                      <button
+                        key={state.label}
+                        type="button"
+                        aria-pressed={isActive}
+                        className={`${styles.frameViewRailTab} ${isActive ? styles.frameViewRailTabActive : ""}`}
+                        onClick={() => {
+                          setTravailFrameView(state.frameView);
+                          setTravailPreviewState(state.previewState);
+                          setTravailPreviewJobId(state.previewJobId);
+                        }}
+                      >
+                        {state.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              ))}
             </div>
           ) : resolvedActiveScreen === "boite" && resolvedCanvasView !== "frames" ? (
             <div className={styles.frameViewRail} role="tablist" aria-label="Boîte states">
@@ -3447,6 +3564,8 @@ export default function Home() {
                                   frameTheme={canvasFrameTheme}
                                   frameView={frame.frameView}
                                   previewState={frame.previewState}
+                                  previewJobId={"previewJobId" in frame ? frame.previewJobId : undefined}
+                                  resultsDesign={"resultsDesign" in frame ? frame.resultsDesign : undefined}
                                   isInteractive={false}
                                 />
                               </div>
@@ -4588,12 +4707,15 @@ export default function Home() {
             />
           ) : resolvedActiveScreen === "travail" ? (
             <WorkerAppTravailPage
+              // Remount so a state picked in the rail reopens the matching screen.
+              key={`${travailFrameView}-${travailPreviewState ?? "none"}-${travailPreviewJobId ?? "none"}`}
               showDeviceFrame={showDeviceFrame}
               theme={canvasTheme}
               frameTheme={canvasFrameTheme}
               frameView={travailFrameView}
               previewState={travailPreviewState}
               previewJobId={travailPreviewJobId}
+              resultsDesign={travailResultsDesign}
             />
           ) : resolvedActiveScreen === "postFixe" ? (
             <div className={styles.centeredCanvasScreen}>
